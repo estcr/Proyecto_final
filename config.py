@@ -22,7 +22,7 @@ def get_db_engine():
     
     # Configuración de la base de datos y la conexión
     bd = "planificador_viajes"
-    connection_string = 'mysql+pymysql://root:' + password + '@localhost/' + bd
+    connection_string = 'mysql+pymysql://root:' + password + '@127.0.0.1/' + bd
     engine = create_engine(connection_string)
     
     return engine
