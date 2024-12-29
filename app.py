@@ -1,6 +1,30 @@
 import streamlit as st
 import funciones as f  # Asegúrate de que 'funciones.py' esté correctamente importado
 
+import pymysql
+import streamlit as st
+
+# Función para verificar la conexión a la base de datos
+def verificar_conexion():
+    try:
+        # Intentamos conectar a la base de datos
+        conn = pymysql.connect(
+            host="localhost",  # Cambia esto si tu base de datos está en otro host
+            user="root",       # Asegúrate de que el usuario y contraseña sean correctos
+            password="tu_contraseña",  # Cambia esto por la contraseña correcta
+            db="planificador_viajes"    # Nombre de tu base de datos
+        )
+        st.success("Conexión exitosa a la base de datos.")
+        conn.close()  # Cerramos la conexión después de verificar
+    except Exception as e:
+        st.error(f"Error al conectar a la base de datos: {e}")
+
+# Llamamos a la función para verificar la conexión
+verificar_conexion()
+
+# El resto de tu código de Streamlit sigue aquí...
+
+
 # Función para mostrar la página de inicio con explicación del proyecto y registro de usuario
 def pagina_inicio():
     st.title("Bienvenido a la Aplicación de Recomendación de Viajes")
