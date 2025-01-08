@@ -12,7 +12,7 @@ def verificar_conexion():
             host="localhost",  # Cambia esto si tu base de datos está en otro host
             user="root",       # Asegúrate de que el usuario y contraseña sean correctos
             password="tu_contraseña",  # Cambia esto por la contraseña correcta
-            db="planificador_viajes"    # Nombre de tu base de datos
+            db="travel_planner"    # Nombre de tu base de datos
         )
         st.success("Conexión exitosa a la base de datos.")
         conn.close()  # Cerramos la conexión después de verificar

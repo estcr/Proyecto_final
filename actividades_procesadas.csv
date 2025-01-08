@@ -1,0 +1,151 @@
+Actividad,Ubicación,Descripción,Descripcion_Clean,Cluster
+Visitar museo,"Museo del Prado, Madrid",Explora la rica historia del arte y la cultura en un museo famoso.,explora rica historia arte cultura museo famoso,0
+Senderismo,"Sendero en los Alpes, Suiza",Disfruta de una caminata por senderos naturales rodeados de hermosos paisajes.,disfruta caminata senderos naturales rodeados hermosos paisajes,3
+Ir a la playa,"Playa Waikiki, Hawái",Relájate en una playa paradisíaca con aguas cristalinas y arena blanca.,relájate playa paradisíaca aguas cristalinas arena blanca,4
+Paseo en barco,"Bahía de Ha Long, Vietnam",Navega por aguas tranquilas mientras disfrutas de vistas espectaculares.,navega aguas tranquilas mientras disfrutas vistas espectaculares,4
+Clases de cocina,"Florencia, Italia",Aprende a preparar deliciosos platos en un taller de cocina local.,aprende preparar deliciosos platos taller cocina local,0
+Esquí,"Estación de esquí en Aspen, Colorado",Desciende por pistas de esquí cubiertas de nieve en un ambiente invernal.,desciende pistas esquí cubiertas nieve ambiente invernal,0
+Ciclismo de montaña,"Montañas Rocosas, Canadá",Explora senderos en bicicleta de montaña y disfruta de la adrenalina.,explora senderos bicicleta montaña disfruta adrenalina,3
+Tour gastronómico,"Distrito de Shibuya, Tokio",Descubre los sabores locales con un tour gastronómico lleno de delicias.,descubre sabores locales tour gastronómico lleno delicias,3
+Surf,"Playa de Bondi, Australia",Domina las olas con clases de surf en una playa espectacular.,domina olas clases surf playa espectacular,0
+Explorar ruinas antiguas,"Machu Picchu, Perú",Adéntrate en ruinas antiguas llenas de historia y misterio.,adéntrate ruinas antiguas llenas historia misterio,0
+Yoga en la playa,"Playa de Tulum, México",Relájate con una sesión de yoga al aire libre junto al mar.,relájate sesión yoga aire libre junto mar,0
+Cine al aire libre,"Parque de Chapultepec, Ciudad de México",Disfruta de una película bajo las estrellas en un cine al aire libre.,disfruta película bajo estrellas cine aire libre,3
+Trekking,"Sendero en el Monte Kilimanjaro, Tanzania",Camina por rutas de montaña impresionantes para conectar con la naturaleza.,camina rutas montaña impresionantes conectar naturaleza,0
+Visitar un parque nacional,"Parque Nacional Yellowstone, EE.UU.",Visita un parque nacional y contempla su flora y fauna únicas.,visita parque nacional contempla flora fauna únicas,0
+Bungee jumping,"Puente de Kawarau, Nueva Zelanda",Experimenta la adrenalina al saltar desde grandes alturas con bungee jumping.,experimenta adrenalina saltar grandes alturas bungee jumping,0
+Paintball,"Campo de Paintball en Ámsterdam, Países Bajos",Compite con amigos en una divertida partida de paintball al aire libre.,compite amigos divertida partida paintball aire libre,0
+Escalada en roca,"Parque Nacional Joshua Tree, California",Escala paredes de roca desafiantes en medio de impresionantes paisajes.,escala paredes roca desafiantes medio impresionantes paisajes,1
+Noche de fiesta,"Ibiza, España",Vive una noche inolvidable disfrutando de música y baile en la ciudad.,vive noche inolvidable disfrutando música baile ciudad,2
+Tour histórico,"Centro histórico de Roma, Italia",Descubre la historia local con un recorrido por sitios emblemáticos.,descubre historia local recorrido sitios emblemáticos,3
+Visitar un mercado local,"Mercado de San Miguel, Madrid",Sumérgete en la cultura local explorando un mercado lleno de vida y colores.,sumérgete cultura local explorando mercado lleno vida colores,0
+Parapente,"Montañas de Annecy, Francia",Vuela entre montañas y valles en una emocionante aventura de parapente.,vuela montañas valles emocionante aventura parapente,0
+Volar en globo,"Capadocia, Turquía",Disfruta de vistas espectaculares desde un globo aerostático flotando en el cielo.,disfruta vistas espectaculares globo aerostático flotando cielo,4
+Safari,"Reserva Nacional Maasai Mara, Kenia",Vive la emoción de un safari y observa animales salvajes en su hábitat natural.,vive emoción safari observa animales salvajes hábitat natural,2
+Paseo en globo aerostático,"Templos de Bagan, Myanmar",Admira el paisaje desde un globo aerostático mientras el sol se pone.,admira paisaje globo aerostático mientras sol pone,4
+Pesca,"Lago Baikal, Rusia",Pesca en aguas tranquilas y experimenta la serenidad del entorno natural.,pesca aguas tranquilas experimenta serenidad entorno natural,4
+Patinaje sobre hielo,"Río Ottawa, Canadá",Patina sobre hielo en una pista al aire libre con ambiente festivo.,patina hielo pista aire libre ambiente festivo,0
+Buceo,"Gran Barrera de Coral, Australia",Explora la vida submarina con una experiencia de buceo inolvidable.,explora vida submarina experiencia buceo inolvidable,0
+Snorkel,Islas Maldivas,Nada junto a peces tropicales en una actividad de snorkel única.,junto peces tropicales actividad snorkel única,0
+Rafting,"Río Zambeze, Zambia",Desafía los rápidos en una emocionante aventura de rafting.,desafía rápidos emocionante aventura rafting,0
+Concierto al aire libre,"Anfiteatro de Red Rocks, Colorado",Asiste a un concierto al aire libre y disfruta de música en vivo bajo las estrellas.,asiste concierto aire libre disfruta música vivo bajo estrellas,3
+Observación de aves,"Parque Nacional de Doñana, España",Observa aves exóticas en su hábitat natural durante una tranquila caminata.,observa aves exóticas hábitat natural tranquila caminata,2
+Viaje en tren panorámico,"Ferrocarril de Bernina, Suiza",Viaja en un tren panorámico mientras contemplas paisajes impresionantes.,viaja tren panorámico mientras contemplas paisajes impresionantes,1
+Rally de autos,Dunas del desierto de Dubái,Participa en un rally de autos para sentir la velocidad y la emoción.,participa rally autos sentir velocidad emoción,2
+Caminata nocturna,"Parque Nacional Manuel Antonio, Costa Rica",Descubre la magia de la noche con una caminata bajo el cielo estrellado.,descubre magia noche caminata bajo cielo estrellado,3
+Clases de baile,"Academia de Baile en La Habana, Cuba",Aprende nuevos movimientos con clases de baile llenas de ritmo.,aprende nuevos movimientos clases baile llenas ritmo,0
+Visitar una viña,"Viñedos de Napa Valley, California",Visita una viña y disfruta de catas de vinos mientras recorres los viñedos.,visita viña disfruta catas vinos mientras recorres viñedos,4
+Espectáculo de flamenco,"Tablao en Sevilla, España",Déjate maravillar por un espectáculo de flamenco lleno de pasión y arte.,déjate maravillar espectáculo flamenco lleno pasión arte,0
+Tour en bicicleta,"Ámsterdam en bicicleta, Países Bajos",Recorre una ciudad en bicicleta mientras exploras sus calles y monumentos.,recorre ciudad bicicleta mientras exploras calles monumentos,4
+Excursión a un volcán,"Volcán Arenal, Costa Rica",Explora un volcán activo y maravíllate con su poder natural.,explora volcán activo maravíllate poder natural,2
+Vivir con una familia local,"Villa local en Chiang Mai, Tailandia",Conoce la vida local hospedándote con una familia en su hogar.,conoce vida local hospedándote familia hogar,0
+Noche de karaoke,"Bar de karaoke en Seúl, Corea del Sur",Canta tus canciones favoritas en una noche de karaoke divertida.,canta canciones favoritas noche karaoke divertida,0
+Navegación a vela,"Bahía de Halong, Vietnam",Navega por aguas abiertas mientras disfrutas del sol y la brisa marina.,navega aguas abiertas mientras disfrutas sol brisa marina,4
+Patinaje en línea,"Parque del Retiro, Madrid",Deslízate en patines por parques y calles llenas de vida.,deslízate patines parques calles llenas vida,0
+Ciclismo urbano,"Calles de París, Francia",Explora la ciudad en bicicleta mientras descubres su encanto urbano.,explora ciudad bicicleta mientras descubres encanto urbano,4
+Paseo en coche antiguo,Fábrica de chocolate en Suiza,Disfruta de un paseo en coche antiguo que revive épocas pasadas.,disfruta paseo coche antiguo revive épocas pasadas,3
+Visitar una fábrica de chocolate,"Barcelona, España",Descubre los secretos detrás de la elaboración del chocolate en una fábrica.,descubre secretos detrás elaboración chocolate fábrica,3
+Tour en segway,"Londres, Inglaterra",Recorre la ciudad de manera divertida con un tour en segway.,recorre ciudad manera divertida tour segway,1
+Excursión en 4x4,"Selva amazónica, Brasil",Explora terrenos difíciles con una excursión en 4x4 llena de adrenalina.,explora terrenos difíciles excursión 4x4 llena adrenalina,0
+Trekking en la jungla,"Parque Kruger, Sudáfrica",Camina por la jungla y conecta con la naturaleza en su estado más puro.,camina jungla conecta naturaleza puro,0
+Visitar un zoológico,Zoológico de Singapur,Conoce la vida animal en un zoológico lleno de especies fascinantes.,conoce vida animal zoológico lleno especies fascinantes,0
+Cena en un restaurante elegante,"Restaurante en Dubai Marina, Dubái",Deléitate con una cena en un restaurante exclusivo con vistas impresionantes.,deléitate cena restaurante exclusivo vistas impresionantes,4
+Ballet clásico,"Teatro Bolshói, Moscú",Admira la gracia y técnica de una presentación de ballet clásico.,admira gracia técnica presentación ballet clásico,0
+Subir a una torre de observación,"Mirador en Berlín, Alemania",Sube a una torre de observación para vistas panorámicas espectaculares.,sube torre observación vistas panorámicas espectaculares,4
+Rugby,"Estadio de rugby en Dublín, Irlanda",Participa en un partido de rugby y siente la emoción del deporte.,participa partido rugby emoción deporte,2
+Correr una maratón,"Calles de Berlín, Alemania",Corre una maratón y supera tus propios límites.,corre maratón supera propios límites,0
+Arquería,"Parque Nacional Yosemite, California",Pon a prueba tu puntería con una actividad de arquería al aire libre.,pon prueba puntería actividad arquería aire libre,0
+Espectáculo de magia,"Las Vegas, EE.UU.",Sorpréndete con un espectáculo de magia lleno de ilusiones increíbles.,sorpréndete espectáculo magia lleno ilusiones increíbles,0
+Tiro con arco,"Acuario de Atlanta, Georgia",Practica tiro con arco rodeado de naturaleza y tranquilidad.,practica tiro arco rodeado naturaleza tranquilidad,0
+Visitar un acuario,"Escuela de arte en Florencia, Italia",Explora la vida marina en un acuario repleto de especies exóticas.,explora vida marina acuario repleto especies exóticas,3
+Tomar clases de arte,Bahamas,Despierta tu creatividad con clases de arte y técnicas únicas.,despierta creatividad clases arte técnicas únicas,0
+Nadar con delfines,"Cueva de Waitomo, Nueva Zelanda",Nada con delfines y crea recuerdos inolvidables junto a estas criaturas.,delfines crea recuerdos inolvidables junto criaturas,0
+Visitar una cueva,"Bali, Indonesia",Adéntrate en cuevas misteriosas llenas de formaciones únicas.,adéntrate cuevas misteriosas llenas formaciones únicas,0
+Día de spa,"Lago Baikal congelado, Rusia",Relájate y rejuvenece en un spa con tratamientos exclusivos.,relájate rejuvenece spa tratamientos exclusivos,0
+Pesca en hielo,"Playa de Copacabana, Brasil",Atrévete a pescar en hielo en un entorno invernal impresionante.,atrévete pescar hielo entorno invernal impresionante,0
+Rugby en la playa,"Parque Nacional Everglades, Florida",Juega rugby en la playa rodeado de olas y arena suave.,juega rugby playa rodeado olas arena suave,0
+Canoas,"Monte Everest, Nepal",Rema en canoas por ríos tranquilos mientras disfrutas del paisaje.,rema canoas ríos tranquilos mientras disfrutas paisaje,4
+Tour en helicóptero,"Castillo de Edimburgo, Escocia",Vuela sobre paisajes asombrosos con un tour en helicóptero.,vuela paisajes asombrosos tour helicóptero,1
+Visitar un castillo,"Lago Titicaca, Bolivia/Perú",Recorre un castillo histórico y descubre su arquitectura y secretos.,recorre castillo histórico descubre arquitectura secretos,3
+Esquí acuático,"Parque Nacional Torres del Paine, Chile",Esquía sobre el agua mientras disfrutas de la velocidad y el sol.,esquía agua mientras disfrutas velocidad sol,4
+Visitar una reserva natural,"Museo de Historia Natural, Londres",Explora reservas naturales y observa su flora y fauna en estado puro.,explora reservas naturales observa flora fauna puro,3
+Bajo el agua en un túnel de vidrio,"Mercado de Chatuchak, Tailandia",Camina bajo el agua en un túnel de vidrio con vistas únicas.,camina bajo agua túnel vidrio vistas únicas,4
+Clases de cerámica,"Parque Nacional de los Glaciares, Argentina",Crea hermosas piezas en clases de cerámica prácticas y creativas.,crea hermosas piezas clases cerámica prácticas creativas,0
+Ver una película en 3D,"Castillo de Windsor, Reino Unido",Mira una película en 3D y disfruta de una experiencia inmersiva.,mira película 3d disfruta experiencia inmersiva,3
+Navegar por un río,"Pirineos, España",Navega por un río tranquilo y disfruta de los paisajes a tu alrededor.,navega río tranquilo disfruta paisajes alrededor,4
+Volver al pasado en un museo de historia,"Casco antiguo de Dubrovnik, Croacia",Viaja al pasado visitando un museo histórico lleno de artefactos.,viaja pasado visitando museo histórico lleno artefactos,1
+Día de compras,"Monte Elbrús, Rusia",Compra productos únicos y disfruta de una experiencia de compras local.,compra productos únicos disfruta experiencia compras local,3
+Excursión a la selva,"Desierto del Sahara, Marruecos",Adéntrate en la selva y vive una experiencia salvaje y aventurera.,adéntrate selva vive experiencia salvaje aventurera,2
+Visitar una ciudad medieval,"Club de golf en St. Andrews, Escocia",Descubre una ciudad medieval llena de historia y encanto antiguo.,descubre ciudad medieval llena historia encanto antiguo,3
+Esquí de fondo,Tirolesa en Costa Rica,Esquía en terreno plano mientras exploras paisajes invernales.,esquía terreno plano mientras exploras paisajes invernales,4
+Paseo a caballo,"Lago de Como, Italia",Monta a caballo y conecta con la naturaleza en una experiencia inolvidable.,monta caballo conecta naturaleza experiencia inolvidable,0
+Excursión a la montaña,"Catedral de Notre Dame, París",Camina por senderos montañosos con vistas espectaculares.,camina senderos montañosos vistas espectaculares,4
+Saltar en paracaídas,"Himalaya, Nepal",Vive la adrenalina al saltar en paracaídas desde grandes alturas.,vive adrenalina saltar paracaídas grandes alturas,2
+Volar en parapente,"Patagonia, Argentina/Chile",Vuela en parapente sobre paisajes de ensueño.,vuela parapente paisajes ensueño,1
+Senderismo en el desierto,"Río Danubio, Austria",Recorre el desierto con senderismo y vive paisajes únicos.,recorre desierto senderismo vive paisajes únicos,1
+Jugar golf,"Catedral de Milán, Italia",Juega golf en campos perfectamente diseñados.,juega golf campos perfectamente diseñados,0
+Parques de aventuras,"Templos de Angkor, Camboya",Diviértete en parques de aventuras con actividades emocionantes.,diviértete parques aventuras actividades emocionantes,0
+Montar en bicicleta de agua,Glaciares en Islandia,Monta en bicicleta de agua y recorre lagos o playas tranquilas.,monta bicicleta agua recorre lagos playas tranquilas,4
+Paseo en bote por el río,"Castillo de Bran, Rumanía",Disfruta de un paseo en bote mientras observas el paisaje natural.,disfruta paseo bote mientras observas paisaje natural,2
+Ciclismo en la ciudad,"Nueva York, EE.UU.",Explora la ciudad mientras disfrutas de un paseo en bicicleta urbana.,explora ciudad mientras disfrutas paseo bicicleta urbana,4
+Visitar una torre Eiffel,"Selva Negra, Alemania",Admira la arquitectura icónica de la Torre Eiffel y su entorno.,admira arquitectura icónica torre eiffel entorno,0
+Tomar clases de canto,"Noruega, Cabo Norte",Aprende a cantar con clases personalizadas y divertidas.,aprende cantar clases personalizadas divertidas,0
+Cañonismo,"Playa de Bora Bora, Polinesia Francesa",Desciende por cañones y explora ríos en una experiencia de cañonismo.,desciende cañones explora ríos experiencia cañonismo,0
+Aventura en el mar,"Islas Galápagos, Ecuador",Vive la emoción del mar con actividades acuáticas y aventura.,vive emoción mar actividades acuáticas aventura,2
+Excursión al mar,"Campamento en las Montañas Rocosas, Canadá",Explora el océano en una excursión marina llena de sorpresas.,explora océano excursión marina llena sorpresas,0
+Campamento en la montaña,"Monte Fuji, Japón",Disfruta de una noche bajo las estrellas en un campamento montañoso.,disfruta noche bajo estrellas campamento montañoso,3
+Alquilar una moto,"Estación de esquí en Chamonix, Francia",Alquila una moto y recorre paisajes impresionantes a tu ritmo.,alquila moto recorre paisajes impresionantes ritmo,1
+Bicicross,Fiordos de Noruega,Vive la emoción del ciclismo extremo con bicis especializadas.,vive emoción ciclismo extremo bicis especializadas,2
+Ver las auroras boreales,"Pirámides de Giza, Egipto",Contempla las auroras boreales y maravíllate con su magia.,contempla auroras boreales maravíllate magia,0
+Visitar una ciudad histórica,"Desierto de Atacama, Chile",Explora una ciudad histórica llena de cultura y arquitectura antigua.,explora ciudad histórica llena cultura arquitectura antigua,0
+Ver una ópera,"Catedral de Sevilla, España",Asiste a una ópera y disfruta de la música y la actuación en vivo.,asiste ópera disfruta música actuación vivo,3
+Aventura en el desierto,"Torres del Paine, Chile",Recorre el desierto y vive una experiencia auténtica y única.,recorre desierto vive experiencia auténtica única,1
+Ski en la montaña,"Auroras boreales en Laponia, Finlandia",Esquía por montañas nevadas y disfruta de paisajes invernales.,esquía montañas nevadas disfruta paisajes invernales,1
+Tiro con arco en la naturaleza,"Parque Nacional Banff, Canadá",Practica tiro con arco en la naturaleza y perfecciona tu puntería.,practica tiro arco naturaleza perfecciona puntería,0
+Tour en autobús turístico,Islas Maldivas,Explora la ciudad con un tour en autobús turístico lleno de información.,explora ciudad tour autobús turístico lleno información,0
+Disfrutar de una tarde de café,"Ruta del vino en La Rioja, España",Relájate y disfruta de una tarde tranquila con café y buena compañía.,relájate disfruta tarde tranquila café buena compañía,3
+Pesca en el mar,"Copenhague, Dinamarca",Pesca en el mar abierto y experimenta la calma del océano.,pesca mar abierto experimenta calma océano,0
+Excursión a la isla,"Ciudad histórica de Quebec, Canadá",Descubre islas exóticas y disfruta de sus maravillas naturales.,descubre islas exóticas disfruta maravillas naturales,3
+Areneros en el desierto,"Ópera de Sídney, Australia",Conduce areneros por dunas en el desierto y vive la adrenalina.,conduce areneros dunas desierto vive adrenalina,2
+Hacer rafting,"Desierto del Namib, Namibia",Haz rafting en ríos rápidos rodeados de naturaleza impresionante.,haz rafting ríos rápidos rodeados naturaleza impresionante,0
+Bailar salsa,Islas Feroe,Baila salsa y deja que el ritmo te contagie en una noche llena de energía.,baila salsa deja ritmo contagie noche llena energía,0
+Tomar un taller de cocina local,Alpes Suizos,Toma un taller de cocina local y aprende recetas auténticas.,toma taller cocina local aprende recetas auténticas,0
+Paseo en limusina,"Río Sena, Francia",Recorre la ciudad en una lujosa limusina y siente el glamour.,recorre ciudad lujosa limusina glamour,1
+Tener una tarde de relax,Nueva Zelanda,Relájate con una tarde dedicada al descanso y el bienestar personal.,relájate tarde dedicada descanso bienestar personal,0
+Trekking de montaña,Islas Seychelles,Haz trekking por montañas altas y admira la grandeza de la naturaleza.,haz trekking montañas altas admira grandeza naturaleza,0
+Recorrido por el patrimonio cultural,"Toscana, Italia",Explora el patrimonio cultural con un recorrido lleno de historia.,explora patrimonio cultural recorrido lleno historia,0
+Cena con vista al mar,"Central Park, Nueva York",Disfruta de una cena romántica con vistas al mar y buena compañía.,disfruta cena romántica vistas mar buena compañía,4
+Visitar una catedral,"Monte Roraima, Venezuela",Visita una catedral histórica y maravíllate con su arquitectura.,visita catedral histórica maravíllate arquitectura,0
+Hacer yoga en la montaña,"Castillos de Loira, Francia",Relájate con yoga en un entorno natural montañoso.,relájate yoga entorno natural montañoso,2
+Ciclismo de carretera,"Bali, Indonesia",Recorre carreteras en bicicleta y disfruta del aire libre.,recorre carreteras bicicleta disfruta aire libre,1
+Recorrer una ciudad medieval,"Costa de Amalfi, Italia",Camina por ciudades medievales y revive la historia en sus calles.,camina ciudades medievales revive historia calles,0
+Vivir la experiencia del desierto,"Tokio, Japón",Vive una experiencia en el desierto explorando sus paisajes y tradiciones.,vive experiencia desierto explorando paisajes tradiciones,2
+Explorar las Islas Galápagos,"Océano Atlántico, Portugal",Explora las Islas Galápagos y sus maravillas naturales únicas.,explora islas galápagos maravillas naturales únicas,3
+Clases de cerámica,"Bangkok, Tailandia",Aprende a crear cerámica en talleres creativos y prácticos.,aprende crear cerámica talleres creativos prácticos,0
+Surf en las Islas Canarias,"Desierto de Arizona, EE.UU.",Surfea en las Islas Canarias y domina las olas como un profesional.,surfea islas canarias domina olas profesional,3
+Trekking en el Himalaya,"Coliseo Romano, Italia",Haz trekking en el Himalaya y admira sus impresionantes paisajes.,haz trekking himalaya admira impresionantes paisajes,1
+Tour en bici de montaña,"Sorrento, Italia",Explora rutas en bici de montaña y vive la aventura.,explora rutas bici montaña vive aventura,2
+Día de compras en Nueva York,"Islas Baleares, España",Disfruta de un día de compras en Nueva York y encuentra lo último en moda.,disfruta día compras nueva york encuentra último moda,3
+Campamento en el bosque,"Múnich, Alemania",Acampa en el bosque y conéctate con la naturaleza.,acampa bosque conéctate naturaleza,0
+Recorrer los Alpes en tren,"Cotswolds, Inglaterra",Viaja por los Alpes en tren y maravíllate con sus vistas nevadas.,viaja alpes tren maravíllate vistas nevadas,1
+Nadar con tiburones,Ruta de la seda en Uzbekistán,Nada con tiburones en una experiencia submarina única.,tiburones experiencia submarina única,0
+Escalar un glaciar,"Santorini, Grecia",Escala un glaciar y vive la majestuosidad del hielo.,escala glaciar vive majestuosidad hielo,2
+Alquilar una villa en la Toscana,"Pompeya, Italia",Alquila una villa en la Toscana y vive la tranquilidad del campo.,alquila villa toscana vive tranquilidad campo,2
+Tener un picnic en Central Park,"Campos de lavanda en Provenza, Francia",Disfruta de un picnic en Central Park rodeado de naturaleza en la ciudad.,disfruta picnic central park rodeado naturaleza ciudad,3
+Vivir la experiencia de un refugio en las montañas,"Glaciares de Alaska, EE.UU.",Vive la experiencia de un refugio en las montañas rodeado de serenidad.,vive experiencia refugio montañas rodeado serenidad,2
+Excursión a las Islas Seychelles,Ciudad de México,Haz una excursión a las Islas Seychelles y descubre sus playas vírgenes.,haz excursión islas seychelles descubre playas vírgenes,3
+Explorar las montañas de Colorado,"Cusco, Perú",Explora las montañas de Colorado y disfruta de sus paisajes inigualables.,explora montañas colorado disfruta paisajes inigualables,1
+Bajo el agua en Australia,"Islas Canarias, España",Admira la vida submarina en Australia con experiencias únicas bajo el agua.,admira vida submarina australia experiencias únicas bajo agua,0
+Recorrido por los castillos de Escocia,"Himalayas, Nepal",Recorre castillos en Escocia y sumérgete en su historia medieval.,recorre castillos escocia sumérgete historia medieval,1
+Disfrutar de un día de bienestar en Bali,"Picos de Europa, España",Relájate en Bali con un día dedicado al bienestar y la tranquilidad.,relájate bali día dedicado bienestar tranquilidad,0
+Aventura en la selva tropical,Escocia,Explora la selva tropical y descubre su biodiversidad única.,explora selva tropical descubre biodiversidad única,3
+Escalada en las Torres del Paine,Ruta de los castillos de Escocia,Escala las Torres del Paine y admira sus paisajes impresionantes.,escala torres paine admira paisajes impresionantes,1
+Safari en Sudáfrica,"Monte Colorado, EE.UU.",Haz un safari en Sudáfrica y descubre su increíble vida salvaje.,haz safari sudáfrica descubre increíble vida salvaje,2
+Viaje en tren por Europa,Bajo el agua en Australia,Viaja en tren por Europa y recorre paisajes y culturas diversas.,viaja tren europa recorre paisajes culturas diversas,1
+Ruta en coche por la costa de Italia,Selva tropical de Brasil,Haz una ruta en coche por la costa de Italia y disfruta de su belleza.,haz ruta coche costa italia disfruta belleza,3
+Conocer las Islas Baleares,Safari en Sudáfrica,Conoce las Islas Baleares y disfruta de sus playas y paisajes.,conoce islas baleares disfruta playas paisajes,3
+Visitar la Torre Eiffel,Ruta costera en Italia,Admira la icónica Torre Eiffel y disfruta de la vista de París.,admira icónica torre eiffel disfruta vista parís,3
+Visitar las ruinas de Pompeya,"Pompeya, Italia",Visita las ruinas de Pompeya y revive la historia de esta ciudad antigua.,visita ruinas pompeya revive historia ciudad antigua,0
+Recorrer Tokio en bicicleta,"Tokio, Japón",Recorre Tokio en bicicleta y descubre su mezcla de tradición y modernidad.,recorre tokio bicicleta descubre mezcla tradición modernidad,3
+Pesca en el océano Atlántico,"Pacífico, Ecuador",Pesca en el océano Atlántico y disfruta de una experiencia única en alta mar.,pesca océano atlántico disfruta experiencia única alta mar,3
+Clases de cocina tailandesa,"Bangkok, Tailandia",Toma clases de cocina tailandesa y aprende sus técnicas y sabores únicos.,toma clases cocina tailandesa aprende técnicas sabores únicos,0
