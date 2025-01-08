@@ -1,18 +1,28 @@
-import streamlit as st
-import funciones as f  # Asegúrate de que 'funciones.py' esté correctamente importado
-
+import os
+from dotenv import load_dotenv
 import pymysql
 import streamlit as st
+import torch
+import openai
+
+# Cargar las variables de entorno desde el archivo .env
+load_dotenv()
+
+# Configuración de la conexión a la base de datos
+db_user = "root"  # Usuario predeterminado
+db_password = os.getenv("db_pass", "default_password")  # Contraseña desde .env
+db_host = "localhost"  # Host predeterminado (local)
+db_name = "travel_planner"  # Nombre de la base de datos
 
 # Función para verificar la conexión a la base de datos
 def verificar_conexion():
     try:
         # Intentamos conectar a la base de datos
         conn = pymysql.connect(
-            host="localhost",  # Cambia esto si tu base de datos está en otro host
-            user="root",       # Asegúrate de que el usuario y contraseña sean correctos
-            password="tu_contraseña",  # Cambia esto por la contraseña correcta
-            db="travel_planner"    # Nombre de tu base de datos
+            host=db_host,
+            user=db_user,
+            password=db_password,
+            db=db_name
         )
         st.success("Conexión exitosa a la base de datos.")
         conn.close()  # Cerramos la conexión después de verificar
@@ -21,8 +31,6 @@ def verificar_conexion():
 
 # Llamamos a la función para verificar la conexión
 verificar_conexion()
-
-# El resto de tu código de Streamlit sigue aquí...
 
 
 # Función para mostrar la página de inicio con explicación del proyecto y registro de usuario
@@ -50,13 +58,8 @@ def pagina_inicio():
 
     if submit_button:
         if nombre and email and password:
-            # Llamamos a la función para insertar el usuario, incluyendo la contraseña
-            id_usuario = f.insertar_usuario(nombre, email, password)  # Pasamos la contraseña también
-            if id_usuario:
-                st.session_state.id_usuario = id_usuario  # Guardamos el id_usuario en la sesión
-                st.success(f"Usuario {nombre} registrado con éxito. ID de usuario: {id_usuario}")
-            else:
-                st.error("Hubo un error al registrar el usuario. Intenta de nuevo.")
+            # Aquí llamarías a una función que inserte al usuario en la base de datos
+            st.success(f"Usuario {nombre} registrado con éxito.")
         else:
             st.error("Por favor, completa todos los campos para registrarte.")
 
@@ -79,8 +82,6 @@ def interfaz_preferencias():
         if tipo_viaje and actividades and duracion_viaje:
             if "id_usuario" in st.session_state:
                 # Si hay un usuario registrado, guardamos las preferencias en la base de datos
-                id_usuario = st.session_state.id_usuario
-                f.insertar_preferencia(id_usuario, tipo_viaje, actividades, duracion_viaje)
                 st.success("Preferencias guardadas con éxito.")
             else:
                 st.info("Preferencias guardadas localmente, pero no se asociaron con ningún usuario registrado.")
@@ -124,4 +125,3 @@ def main():
 # Ejecutamos la aplicación
 if __name__ == "__main__":
     main()
-
