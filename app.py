@@ -11,7 +11,7 @@ load_dotenv()
 # Configuración de la conexión a la base de datos
 db_user = "root"  # Usuario predeterminado
 db_password = os.getenv("db_pass", "default_password")  # Contraseña desde .env
-db_host = "localhost"  # Host predeterminado (local)
+db_host = "google"  # Host predeterminado (local)
 db_name = "travel_planner"  # Nombre de la base de datos
 
 # Función para verificar la conexión a la base de datos
