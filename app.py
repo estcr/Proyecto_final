@@ -2,7 +2,6 @@ import os
 from dotenv import load_dotenv
 import pymysql
 import streamlit as st
-import torch
 import openai
 
 # Cargar las variables de entorno desde el archivo .env

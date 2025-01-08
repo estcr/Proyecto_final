@@ -4,7 +4,6 @@ pymysql==1.0.2
 sqlalchemy==2.0.34
 bcrypt==3.2.0
 openai==1.59.3
-pytorch==2.5.1
 nltk==3.9.1
 scikit-learn==1.5.2
 pinecone-client==5.0.1
