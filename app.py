@@ -5,7 +5,7 @@ import streamlit as st
 import openai
 import toml
 
-config = toml.load("claves.toml")
+config = toml.load(".streamlit/secrets.toml")
 
 
 # Configuración de la conexión a la base de datos
