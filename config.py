@@ -4,8 +4,6 @@ import streamlit as st
 
 
 
-config = toml.load("./claves.toml")
-
 # Configuración de la conexión a la base de datos
 db_user = "root"  # Usuario predeterminado
 db_password = st.secrets["database"]["db_pass"],
