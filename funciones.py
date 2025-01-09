@@ -4,17 +4,17 @@ import openai
 import config as c
 
 
-def insertar_usuario(nombre, email, travel_style, registration_date):
-    print(f"Intentando insertar usuario: {nombre}, {email}, {travel_style}, {registration_date}")
+def insertar_usuario(name, email, travel_style, registration_date):
+    print(f"Intentando insertar usuario: {name}, {email}, {travel_style}, {registration_date}")
     conn = c.conectar_bd()
     try:
         with conn.cursor() as cursor:
-            sql = "INSERT INTO users (nombre, email, travel_style, registration_date) VALUES (%s, %s, %s, %s)"
-            cursor.execute(sql, (nombre, email, travel_style, registration_date))
+            sql = "INSERT INTO users (name, email, travel_style, registration_date) VALUES (%s, %s, %s, %s)"
+            cursor.execute(sql, (name, email, travel_style, registration_date))
         conn.commit()
         print("Usuario insertado correctamente")
     except Exception as e:
-        print(f"Error al insertar datos en la base de datos: {e}, Datos: {nombre}, {email}, {travel_style}, {registration_date}")
+        print(f"Error al insertar datos en la base de datos: {e}, Datos: {name}, {email}, {travel_style}, {registration_date}")
         raise Exception(f"Error al insertar datos en la base de datos: {e}, Datos: {nombre}, {email}, {travel_style}, {registration_date}")
     finally:
         conn.close()

@@ -30,9 +30,9 @@ def pagina_inicio():
         submit_button = st.form_submit_button(label="Registrar Usuario")
 
     if submit_button:
-        if nombre and email:
+        if name and email:
             f.insertar_usuario(name, email, travel_style, registration_date)
-            st.success(f"Usuario {nombre} registrado con éxito.")
+            st.success(f"Usuario {name} registrado con éxito.")
         else:
             st.error("Por favor, completa todos los campos para registrarte.")
 
