@@ -15,7 +15,7 @@ def insertar_usuario(name, email, travel_style, registration_date):
         print("Usuario insertado correctamente")
     except Exception as e:
         print(f"Error al insertar datos en la base de datos: {e}, Datos: {name}, {email}, {travel_style}, {registration_date}")
-        raise Exception(f"Error al insertar datos en la base de datos: {e}, Datos: {nombre}, {email}, {travel_style}, {registration_date}")
+        raise Exception(f"Error al insertar datos en la base de datos: {e}, Datos: {name}, {email}, {travel_style}, {registration_date}")
     finally:
         conn.close()
     
