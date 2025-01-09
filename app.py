@@ -25,7 +25,7 @@ def pagina_inicio():
     with st.form(key="form_usuario"):
         name = st.text_input("Nombre")
         email = st.text_input("Email")
-        travel_style = st.selectbox("Estilo de viaje", ["Aventura", "Relajación", "Cultural", "Negocios"])
+        travel_style = st.selectbox("Estilo de viaje", ["solo", "pareja", "amigos", "trabajo"])
         registration_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         submit_button = st.form_submit_button(label="Registrar Usuario")
 
