@@ -8,8 +8,8 @@ def insertar_usuario(nombre, email, fecha_registro, travel_style):
     conn = c.conectar_bd()
     try:
         with conn.cursor() as cursor:
-            sql = "INSERT INTO usuarios (nombre, email, fecha_registro, travel_style) VALUES (%s, %s, %s, %s)"
-            cursor.execute(sql, (nombre, email, fecha_registro, travel_style))
+            sql = "INSERT INTO usuarios (nombre, email, travel_style, registration_date) VALUES (%s, %s, %s, %s)"
+            cursor.execute(sql, (nombre, email, travel_style, registration_date))
         conn.commit()
     except Exception as e:
         raise Exception(f"Error al insertar datos en la base de datos: {e}")
