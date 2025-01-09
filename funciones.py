@@ -4,7 +4,7 @@ import openai
 import config as c
 
 
-def insertar_usuario(nombre, email, fecha_registro, travel_style):
+def insertar_usuario(nombre, email, travel_style, registration_date):
     conn = c.conectar_bd()
     try:
         with conn.cursor() as cursor:
