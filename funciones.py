@@ -12,7 +12,7 @@ def insertar_usuario(nombre, email, travel_style, registration_date):
             cursor.execute(sql, (nombre, email, travel_style, registration_date))
         conn.commit()
     except Exception as e:
-        raise Exception(f"Error al insertar datos en la base de datos: {e}")
+        raise Exception(f"Error al insertar datos en la base de datos: {e}, Datos: {nombre}, {email}, {travel_style}, {registration_date}")
     finally:
         conn.close()
     
