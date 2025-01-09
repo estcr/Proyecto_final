@@ -1,10 +1,7 @@
 import os
 import funciones as f
 import config as c
-import pymysql
 import streamlit as st
-import openai
-import toml
 import pandas as pd
 from datetime import datetime
 
