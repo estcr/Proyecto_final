@@ -1,7 +1,7 @@
 import toml
 import pymysql
 
-config = toml.load("./config.py")
+config = toml.load(".streamlit/config.toml")
 
 # Configuración de la conexión a la base de datos
 db_user = "root"  # Usuario predeterminado
