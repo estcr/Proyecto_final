@@ -5,13 +5,16 @@ import config as c
 
 
 def insertar_usuario(nombre, email, travel_style, registration_date):
+    print(f"Intentando insertar usuario: {nombre}, {email}, {travel_style}, {registration_date}")
     conn = c.conectar_bd()
     try:
         with conn.cursor() as cursor:
             sql = "INSERT INTO usuarios (nombre, email, travel_style, registration_date) VALUES (%s, %s, %s, %s)"
             cursor.execute(sql, (nombre, email, travel_style, registration_date))
         conn.commit()
+        print("Usuario insertado correctamente")
     except Exception as e:
+        print(f"Error al insertar datos en la base de datos: {e}, Datos: {nombre}, {email}, {travel_style}, {registration_date}")
         raise Exception(f"Error al insertar datos en la base de datos: {e}, Datos: {nombre}, {email}, {travel_style}, {registration_date}")
     finally:
         conn.close()
