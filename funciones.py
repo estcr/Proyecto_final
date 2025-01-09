@@ -9,7 +9,7 @@ def insertar_usuario(nombre, email, travel_style, registration_date):
     conn = c.conectar_bd()
     try:
         with conn.cursor() as cursor:
-            sql = "INSERT INTO usuarios (nombre, email, travel_style, registration_date) VALUES (%s, %s, %s, %s)"
+            sql = "INSERT INTO users (nombre, email, travel_style, registration_date) VALUES (%s, %s, %s, %s)"
             cursor.execute(sql, (nombre, email, travel_style, registration_date))
         conn.commit()
         print("Usuario insertado correctamente")
