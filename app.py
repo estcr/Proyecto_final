@@ -96,11 +96,11 @@ def obtener_datos_usuario():
     
     nombre = st.text_input("Nombre")
     email = st.text_input("Email")
-    fecha_registro = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    registration_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     travel_style = st.selectbox("Estilo de viaje", ["Aventura", "Relajación", "Cultural", "Negocios"])
     
     if st.button("Registrar"):
-        f.insertar_usuario(nombre, email, fecha_registro, travel_style)
+        f.insertar_usuario(nombre, email, travel_style, registration_date)
         st.success("Usuario registrado exitosamente")
 
 # Llamamos a la interfaz principal con la barra lateral
