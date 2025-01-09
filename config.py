@@ -13,12 +13,14 @@ def conectar_bd():
     db_name = "travel_planner"  # Nombre de la base de datos
 
     try:
+        print("Intentando conectar a la base de datos")
         conn = pymysql.connect(
             host=db_host,
             user=db_user,
             password=db_password,
             db=db_name
         )
+        print("Conexión a la base de datos establecida correctamente")
         return conn
     except Exception as e:
         raise Exception(f"Error al conectar a la base de datos: {e}")
