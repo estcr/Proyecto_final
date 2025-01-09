@@ -23,6 +23,7 @@ def conectar_bd():
         print("Conexión a la base de datos establecida correctamente")
         return conn
     except Exception as e:
+        print(f"Error al conectar a la base de datos: {e}")
         raise Exception(f"Error al conectar a la base de datos: {e}")
 
 
