@@ -23,7 +23,7 @@ def pagina_inicio():
     # Formulario de registro de usuario
     st.write("#### Registra tu información (opcional)")
     with st.form(key="form_usuario"):
-        nombre = st.text_input("Nombre")
+        name = st.text_input("Nombre")
         email = st.text_input("Email")
         travel_style = st.selectbox("Estilo de viaje", ["Aventura", "Relajación", "Cultural", "Negocios"])
         registration_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -31,7 +31,7 @@ def pagina_inicio():
 
     if submit_button:
         if nombre and email:
-            f.insertar_usuario(nombre, email, travel_style, registration_date)
+            f.insertar_usuario(name, email, travel_style, registration_date)
             st.success(f"Usuario {nombre} registrado con éxito.")
         else:
             st.error("Por favor, completa todos los campos para registrarte.")
