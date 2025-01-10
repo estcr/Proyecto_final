@@ -2,6 +2,7 @@ import streamlit as st
 from sqlalchemy import text
 import openai
 import config as c
+import pinecone
 
 
 def insertar_usuario(name, email, travel_style, registration_date):
@@ -74,7 +75,7 @@ def insertar_preferencias_viaje(user_id, actividades):
         conn.close()
 
 def analizar_preferencias(destino, preferencias):
-    openai.api_key = st.secrets["openai"]["api_key"]
+    openai.api_key = st.secrets["database"]["apigpt_key"]
     
     # Crear el prompt para la API de ChatGPT
     prompt = f"Analiza las siguientes preferencias del usuario para el destino {destino}: {preferencias}"
@@ -94,13 +95,22 @@ def generar_recomendaciones(destino, user_id):
     if preferencias:
         # Analizar las preferencias usando la API de ChatGPT
         recomendaciones = analizar_preferencias(destino, preferencias)
-        
-        # Cargar la tabla vectorial
-        tabla_vectorial = pd.read_csv("ruta/a/tu/archivo/vectorial.csv")
-        
-        # Filtrar la tabla vectorial según las recomendaciones
-        recomendaciones_filtradas = tabla_vectorial[tabla_vectorial["destino"] == destino]
-        
+
+        # Inicializar Pinecone
+        pinecone.init(api_key=st.secrets["database"]["apipinecone"], environment=st.secrets["database"]["pinecone_env"])
+
+        # Conectar a un índice de Pinecone
+        index = pinecone.Index("tuguia")
+
+        # Convertir las recomendaciones en un vector de consulta
+        query_vector = [recomendaciones]
+
+        # Buscar en el índice de Pinecone
+        search_results = index.query(queries=query_vector, top_k=10, include_values=True)
+
+        # Filtrar los resultados según el destino
+        recomendaciones_filtradas = [result for result in search_results['matches'] if result['metadata']['destino'] == destino]
+
         # Retornar las recomendaciones
         return recomendaciones, recomendaciones_filtradas
     else:
