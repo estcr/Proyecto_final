@@ -98,33 +98,33 @@ def generar_recomendaciones(destino, user_id):
         actividades = [pref[0] for pref in preferencias]
         prompt = f"Quiero recomendaciones de viaje para {destino}. Me interesan las siguientes actividades: {', '.join(actividades)}."
 
-        try:
+        #try:
             # Llamar a la API de OpenAI utilizando la nueva interfaz de completions.create
-            client= OpenAI(st.secrets["api_keys"]["apigpt_key"])
-            response = client.chat.completions.create(
-                model="gpt-4o",
-                messages=[
-                    {
-                        "role": "system",
-                        "content": "Eres un asistente experto en recomendaciones de viajes."
-                    },
-                    {
-                        "role": "user",
-                        "content": prompt
-                    }
-                ],
-                temperature=1,
-                max_tokens=2048,
-                top_p=1,
+        client= OpenAI(st.secrets["api_keys"]["apigpt_key"])
+        response = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "Eres un asistente experto en recomendaciones de viajes."
+                },
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+            temperature=1,
+            max_tokens=2048,
+             top_p=1,
                 frequency_penalty=0,
-                presence_penalty=0
-            )
+             presence_penalty=0
+         )
 
             # Obtener la respuesta del modelo
-            recomendaciones = response.choices[0].message['content'].strip()
-            return recomendaciones
+        recomendaciones = response.choices[0].message['content'].strip()
+        return recomendaciones
 
-        except Exception as e:
-            return f"Error al generar recomendaciones: {str(e)}"
+        #except Exception as e:
+        #    return f"Error al generar recomendaciones: {str(e)}"
     else:
         return "No se encontraron preferencias para el usuario."
