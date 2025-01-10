@@ -41,6 +41,22 @@ def obtener_preferencias_usuario(user_id):
         print(f"Error al obtener las preferencias del usuario: {e}")
         return None
 
+def obtener_usuario_por_email(email):
+    conn = c.conectar_bd()
+    try:
+        cursor = conn.cursor()
+        query = "SELECT user_id FROM users WHERE email = %s"
+        cursor.execute(query, (email,))
+        result = cursor.fetchone()
+        conn.close()
+        if result:
+            return result[0]
+        else:
+            return None
+    except Exception as e:
+        print(f"Error al obtener el usuario: {e}")
+        return None
+
 def insertar_preferencias_viaje(user_id, actividades):
     conn = c.conectar_bd()
     try:
