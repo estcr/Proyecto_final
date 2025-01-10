@@ -81,13 +81,25 @@ def interfaz_itinerario():
     st.title("Generar Itinerario")
     st.write("Aquí podrás crear tu itinerario basado en las recomendaciones de lugares.")
     
+    # Verificamos si el usuario está registrado
+    if "id_usuario" not in st.session_state or st.session_state.id_usuario is None:
+        st.error("Por favor, inicia sesión para generar un itinerario.")
+        return
+    
     # Input para el destino
     destino = st.text_input("Introduce tu destino")
     
     if st.button("Generar Itinerario"):
         if destino: 
             # Llamar a la función para analizar preferencias y generar recomendaciones
-            f.generar_recomendaciones(destino)
+            recomendaciones, recomendaciones_filtradas = f.generar_recomendaciones(destino, st.session_state.id_usuario)
+            if recomendaciones and recomendaciones_filtradas:
+                st.write("Recomendaciones:")
+                st.write(recomendaciones)
+                st.write("Recomendaciones Filtradas:")
+                st.write(recomendaciones_filtradas)
+            else:
+                st.error("No se encontraron recomendaciones.")
         else:
             st.error("Por favor, introduce un destino.")
 
