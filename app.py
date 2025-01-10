@@ -92,12 +92,10 @@ def interfaz_itinerario():
     if st.button("Generar Itinerario"):
         if destino: 
             # Llamar a la función para analizar preferencias y generar recomendaciones
-            recomendaciones, recomendaciones_filtradas = f.generar_recomendaciones(destino, st.session_state.id_usuario)
-            if recomendaciones and recomendaciones_filtradas:
+            recomendaciones = f.generar_recomendaciones(destino, st.session_state.id_usuario)
+            if recomendaciones:
                 st.write("Recomendaciones:")
                 st.write(recomendaciones)
-                st.write("Recomendaciones Filtradas:")
-                st.write(recomendaciones_filtradas)
             else:
                 st.error("No se encontraron recomendaciones.")
         else:

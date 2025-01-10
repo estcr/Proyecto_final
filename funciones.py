@@ -93,25 +93,37 @@ def generar_recomendaciones(destino, user_id):
     preferencias = obtener_preferencias_usuario(user_id)
     
     if preferencias:
-        # Analizar las preferencias usando la API de ChatGPT
-        recomendaciones = analizar_preferencias(destino, preferencias)
+        # Crear el mensaje de entrada para la API
+        actividades = [pref[0] for pref in preferencias]
+        prompt = f"Quiero recomendaciones de viaje para {destino}. Me interesan las siguientes actividades: {', '.join(actividades)}."
 
-        # Inicializar Pinecone
-        pinecone.init(api_key=st.secrets["api_keys"]["apipinecone"], environment=st.secrets["api_keys"]["pinecone_env"])
+        try:
+            # Llamar a la API de OpenAI utilizando la nueva interfaz de completions.create
+            openai.api_key = st.secrets["api_keys"]["apigpt_key"]
+            response = openai.ChatCompletion.create(
+                model="gpt-4o",
+                messages=[
+                    {
+                        "role": "system",
+                        "content": "Eres un asistente experto en recomendaciones de viajes."
+                    },
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ],
+                temperature=1,
+                max_tokens=2048,
+                top_p=1,
+                frequency_penalty=0,
+                presence_penalty=0
+            )
 
-        # Conectar a un índice de Pinecone
-        index = pinecone.Index("tuguia")
+            # Obtener la respuesta del modelo
+            recomendaciones = response.choices[0].message['content'].strip()
+            return recomendaciones
 
-        # Convertir las recomendaciones en un vector de consulta
-        query_vector = [recomendaciones]
-
-        # Buscar en el índice de Pinecone
-        search_results = index.query(queries=query_vector, top_k=10, include_values=True)
-
-        # Filtrar los resultados según el destino
-        recomendaciones_filtradas = [result for result in search_results['matches'] if result['metadata']['destino'] == destino]
-
-        # Retornar las recomendaciones
-        return recomendaciones, recomendaciones_filtradas
+        except Exception as e:
+            return f"Error al generar recomendaciones: {str(e)}"
     else:
-        return None, None
+        return "No se encontraron preferencias para el usuario."
