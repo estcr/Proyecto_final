@@ -104,6 +104,40 @@ def obtener_datos_usuario():
         f.insertar_usuario(name, email, travel_style, registration_date)
         st.success("Usuario registrado exitosamente")
 
+# Función para manejar el inicio de sesión
+def login():
+    st.title("Inicio de Sesión")
+    email = st.text_input("Email")
+    if st.button("Iniciar Sesión"):
+        user_id = obtener_usuario_por_email(email)
+        if user_id:
+            st.session_state.id_usuario = user_id
+            st.success("Inicio de sesión exitoso")
+        else:
+            st.error("Usuario no encontrado")
+
+# Función para manejar el cierre de sesión
+def logout():
+    st.session_state.id_usuario = None
+    st.success("Sesión cerrada exitosamente")
+
+# Función para obtener el ID del usuario por email
+def obtener_usuario_por_email(email):
+    conn = c.conectar_bd()
+    try:
+        cursor = conn.cursor()
+        query = "SELECT user_id FROM users WHERE email = %s"
+        cursor.execute(query, (email,))
+        result = cursor.fetchone()
+        conn.close()
+        if result:
+            return result[0]
+        else:
+            return None
+    except Exception as e:
+        st.error(f"Error al obtener el usuario: {e}")
+        return None
+
 # Llamamos a la interfaz principal con la barra lateral
 def main():
     # Aseguramos que las variables de sesión estén inicializadas
@@ -112,12 +146,22 @@ def main():
 
     # Barra lateral de navegación
     st.sidebar.title("Navegación")
-    pagina_actual = st.sidebar.radio(
-        "Selecciona una página", ["Inicio", "Preferencias de Viaje", "Recomendaciones", "Itinerario"]
-    )
+    if st.session_state.id_usuario:
+        st.sidebar.button("Cerrar Sesión", on_click=logout)
+        pagina_actual = st.sidebar.radio(
+            "Selecciona una página", ["Inicio", "Preferencias de Viaje", "Recomendaciones", "Itinerario"]
+        )
+    else:
+        pagina_actual = st.sidebar.radio(
+            "Selecciona una página", ["Inicio de Sesión", "Registro de Usuario"]
+        )
 
     # Condicionales para mostrar las páginas correspondientes
-    if pagina_actual == "Inicio":
+    if pagina_actual == "Inicio de Sesión":
+        login()
+    elif pagina_actual == "Registro de Usuario":
+        obtener_datos_usuario()
+    elif pagina_actual == "Inicio":
         pagina_inicio()
     elif pagina_actual == "Preferencias de Viaje":
         interfaz_preferencias()
