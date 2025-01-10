@@ -121,7 +121,7 @@ def generar_recomendaciones(destino, user_id):
          )
 
             # Obtener la respuesta del modelo
-        recomendaciones = response.choices[0].message['content'].strip()
+        recomendaciones = response.choices[0].message.content
         return recomendaciones
 
         #except Exception as e:
