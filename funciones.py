@@ -75,7 +75,7 @@ def insertar_preferencias_viaje(user_id, actividades):
         conn.close()
 
 def analizar_preferencias(destino, preferencias):
-    openai.api_key = st.secrets["database"]["apigpt_key"]
+    openai.api_key = st.secrets["api_keys"]["apigpt_key"]
     
     # Crear el prompt para la API de ChatGPT
     prompt = f"Analiza las siguientes preferencias del usuario para el destino {destino}: {preferencias}"
@@ -97,7 +97,7 @@ def generar_recomendaciones(destino, user_id):
         recomendaciones = analizar_preferencias(destino, preferencias)
 
         # Inicializar Pinecone
-        pinecone.init(api_key=st.secrets["database"]["apipinecone"], environment=st.secrets["database"]["pinecone_env"])
+        pinecone.init(api_key=st.secrets["api_keys"]["apipinecone"], environment=st.secrets["api_keys"]["pinecone_env"])
 
         # Conectar a un índice de Pinecone
         index = pinecone.Index("tuguia")
