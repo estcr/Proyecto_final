@@ -1,4 +1,4 @@
-import bcrypt
+import streamlit as st
 from sqlalchemy import text
 import openai
 import config as c
@@ -20,44 +20,37 @@ def insertar_usuario(name, email, travel_style, registration_date):
         conn.close()
     
 #---------------------------------------------------------------------------------------------------------------
-def obtener_preferencias_usuario(id_usuario):
-    import pymysql
-    import config as c 
+def obtener_preferencias_usuario(user_id):
+    conn = c.conectar_bd()
     try:
-        # Conectar a la base de datos
-        conn = pymysql.connect(
-            host=c.db_host,
-            user=c.db_user,
-            password=c.db_password,
-            db=c.db_name
-        )
         cursor = conn.cursor()
         
         # Ejecutar la consulta para obtener las preferencias del usuario
-        query = "SELECT preferencias FROM usuarios WHERE id = %s"
-        cursor.execute(query, (id_usuario,))
-        result = cursor.fetchone()
+        query = "SELECT activity_name, preference_level FROM user_activity_preferences WHERE user_id = %s"
+        cursor.execute(query, (user_id,))
+        result = cursor.fetchall()
         
         # Cerrar la conexión
         conn.close()
         
         if result:
-            return result[0]  # Retornar las preferencias del usuario
+            return result  # Retornar las preferencias del usuario
         else:
             return None
     except Exception as e:
         print(f"Error al obtener las preferencias del usuario: {e}")
         return None
 
-def insertar_preferencias_viaje(id_usuario, tipo_viaje, actividades, duracion_viaje):
+def insertar_preferencias_viaje(user_id, actividades):
     conn = c.conectar_bd()
     try:
         with conn.cursor() as cursor:
-            sql = """
-            INSERT INTO preferencias_viaje (id_usuario, tipo_viaje, actividades, duracion_viaje)
-            VALUES (%s, %s, %s, %s)
-            """
-            cursor.execute(sql, (id_usuario, tipo_viaje, ",".join(actividades), duracion_viaje))
+            for actividad, nivel in actividades.items():
+                sql = """
+                INSERT INTO user_activity_preferences (user_id, activity_name, preference_level)
+                VALUES (%s, %s, %s)
+                """
+                cursor.execute(sql, (user_id, actividad, nivel))
         conn.commit()
     except Exception as e:
         raise Exception(f"Error al insertar preferencias de viaje en la base de datos: {e}")
@@ -65,7 +58,7 @@ def insertar_preferencias_viaje(id_usuario, tipo_viaje, actividades, duracion_vi
         conn.close()
 
 def analizar_preferencias(destino, preferencias):
-    openai.api_key = config["openai"]["api_key"]
+    openai.api_key = st.secrets["openai"]["api_key"]
     
     # Crear el prompt para la API de ChatGPT
     prompt = f"Analiza las siguientes preferencias del usuario para el destino {destino}: {preferencias}"
@@ -78,9 +71,9 @@ def analizar_preferencias(destino, preferencias):
     
     return response.choices[0].text.strip()
 
-def generar_recomendaciones(destino, id_usuario):
+def generar_recomendaciones(destino, user_id):
     # Obtener las preferencias del usuario desde la base de datos
-    preferencias = obtener_preferencias_usuario(id_usuario)
+    preferencias = obtener_preferencias_usuario(user_id)
     
     if preferencias:
         # Analizar las preferencias usando la API de ChatGPT

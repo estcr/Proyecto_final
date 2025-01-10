@@ -48,21 +48,22 @@ def interfaz_preferencias():
 
     with st.form(key="form_preferencias"):
         actividades = {
-            "Cultura": st.slider("Cultura", 1, 5, 3),
             "Aventura": st.slider("Aventura", 1, 5, 3),
-            "Relax": st.slider("Relax", 1, 5, 3),
-            "Deportes": st.slider("Deportes", 1, 5, 3),
+            "Cultural": st.slider("Cultural", 1, 5, 3),
             "Gastronomía": st.slider("Gastronomía", 1, 5, 3),
-            "Party": st.slider("Party", 1, 5, 3)
+            "Relax": st.slider("Relax", 1, 5, 3),
+            "Naturaleza": st.slider("Naturaleza", 1, 5, 3),
+            "Urbano": st.slider("Urbano", 1, 5, 3),
+            "Nocturno": st.slider("Nocturno", 1, 5, 3),
+            "Deportivo": st.slider("Deportivo", 1, 5, 3)
         }
-        duracion_viaje = st.number_input("Duración del Viaje (días)", min_value=1, max_value=365)
 
         submit_button = st.form_submit_button(label="Guardar Preferencias")
 
     if submit_button:
-        if actividades and duracion_viaje:
+        if actividades:
             if "id_usuario" in st.session_state:
-                f.insertar_preferencias_viaje(st.session_state.id_usuario, actividades, duracion_viaje)
+                f.insertar_preferencias_viaje(st.session_state.id_usuario, actividades)
                 st.success("Preferencias guardadas con éxito.")
             else:
                 st.info("Preferencias guardadas localmente, pero no se asociaron con ningún usuario registrado.")
@@ -86,7 +87,7 @@ def interfaz_itinerario():
     if st.button("Generar Itinerario"):
         if destino: 
             # Llamar a la función para analizar preferencias y generar recomendaciones
-            generar_recomendaciones(destino)
+            f.generar_recomendaciones(destino)
         else:
             st.error("Por favor, introduce un destino.")
 
@@ -127,5 +128,4 @@ def main():
 
 # Ejecutamos la aplicación
 if __name__ == "__main__":
-    obtener_datos_usuario()
     main()
