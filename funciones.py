@@ -100,7 +100,7 @@ def generar_recomendaciones(destino, user_id):
 
         #try:
             # Llamar a la API de OpenAI utilizando la nueva interfaz de completions.create
-        client= OpenAI(st.secrets["api_keys"]["apigpt_key"])
+        client= OpenAI(api_key=st.secrets["api_keys"]["apigpt_key"])
         response = client.chat.completions.create(
             model="gpt-4o",
             messages=[
