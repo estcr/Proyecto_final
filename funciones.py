@@ -89,6 +89,7 @@ def analizar_preferencias(destino, preferencias):
     return response.choices[0].text.strip()
 
 def generar_recomendaciones(destino, user_id):
+    from openai import OpenAI
     # Obtener las preferencias del usuario desde la base de datos
     preferencias = obtener_preferencias_usuario(user_id)
     
@@ -99,8 +100,8 @@ def generar_recomendaciones(destino, user_id):
 
         try:
             # Llamar a la API de OpenAI utilizando la nueva interfaz de completions.create
-            openai.api_key = st.secrets["api_keys"]["apigpt_key"]
-            response = openai.ChatCompletion.create(
+            client= OpenAI(st.secrets["api_keys"]["apigpt_key"])
+            response = client.chat.completions.create(
                 model="gpt-4o",
                 messages=[
                     {
