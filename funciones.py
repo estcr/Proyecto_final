@@ -158,7 +158,6 @@ def obtener_mejores_actividades(destino, embeddings):
     return mejores_actividades
 
 def generar_recomendaciones(destino, user_id):
-    from openai import OpenAI
     # Obtener las preferencias del usuario desde la base de datos
     preferencias = obtener_preferencias_usuario(user_id)
     
@@ -167,36 +166,36 @@ def generar_recomendaciones(destino, user_id):
         actividades = [pref[0] for pref in preferencias]
         prompt = f"Quiero recomendaciones de viaje para {destino}. Me interesan las siguientes actividades: {', '.join(actividades)}."
 
-        #try:
+        try:
             # Llamar a la API de OpenAI utilizando la nueva interfaz de completions.create
-        client= OpenAI(api_key=st.secrets["api_keys"]["apigpt_key"])
-        response = client.chat.completions.create(
-            model="gpt-4o",
-            messages=[
-                {
-                    "role": "system",
-                    "content": "Eres un asistente experto en recomendaciones de viajes."
-                },
-                {
-                    "role": "user",
-                    "content": prompt
-                }
-            ],
-            temperature=1,
-            max_tokens=2048,
-            top_p=1,
-            frequency_penalty=0,
-            presence_penalty=0
-        )
+            openai.api_key = st.secrets["api_keys"]["apigpt_key"]
+            response = openai.ChatCompletion.create(
+                model="gpt-4",
+                messages=[
+                    {
+                        "role": "system",
+                        "content": "Eres un asistente experto en recomendaciones de viajes."
+                    },
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ],
+                temperature=1,
+                max_tokens=2048,
+                top_p=1,
+                frequency_penalty=0,
+                presence_penalty=0
+            )
 
             # Obtener la respuesta del modelo
-        recomendaciones = response.choices[0].message.content
-        # Split the recommendations into a list of tuples
-        recomendaciones_list = [tuple(rec.split(': ')) for rec in recomendaciones.split('\n') if ': ' in rec]
-        return recomendaciones_list
+            recomendaciones = response.choices[0].message['content'].strip()
+            # Procesar las recomendaciones en una lista de tuplas
+            recomendaciones_list = [tuple(rec.split(': ')) for rec in recomendaciones.split('\n') if ': ' in rec]
+            return recomendaciones_list
 
-        #except Exception as e:
-        #    return f"Error al generar recomendaciones: {str(e)}"
+        except Exception as e:
+            return f"Error al generar recomendaciones: {str(e)}"
     else:
         return "No se encontraron preferencias para el usuario."
 
