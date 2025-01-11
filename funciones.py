@@ -191,7 +191,11 @@ def generar_recomendaciones(destino, user_id):
             # Obtener la respuesta del modelo
             recomendaciones = response.choices[0].message['content'].strip()
             # Procesar las recomendaciones en una lista de tuplas
-            recomendaciones_list = [tuple(rec.split(': ')) for rec in recomendaciones.split('\n') if ': ' in rec]
+            recomendaciones_list = []
+            for rec in recomendaciones.split('\n'):
+                if ': ' in rec:
+                    actividad, descripcion = rec.split(': ', 1)
+                    recomendaciones_list.append((actividad, descripcion))
             return recomendaciones_list
 
         except Exception as e:
