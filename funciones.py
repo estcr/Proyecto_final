@@ -42,6 +42,27 @@ def obtener_preferencias_usuario(user_id):
         print(f"Error al obtener las preferencias del usuario: {e}")
         return None
 
+def obtener_puntos_actividades(destino):
+    conn = c.conectar_bd()
+    try:
+        cursor = conn.cursor()
+        
+        # Ejecutar la consulta para obtener puntos de actividades
+        query = "SELECT actividad, descripcion FROM actividades WHERE destino = %s"
+        cursor.execute(query, (destino,))
+        result = cursor.fetchall()
+        
+        # Cerrar la conexión
+        conn.close()
+        
+        if result:
+            return result  # Retornar los puntos de actividades
+        else:
+            return None
+    except Exception as e:
+        print(f"Error al obtener puntos de actividades: {e}")
+        return None
+
 def obtener_usuario_por_email(email):
     conn = c.conectar_bd()
     try:
@@ -74,6 +95,7 @@ def insertar_preferencias_viaje(user_id, actividades):
     finally:
         conn.close()
 
+
 def analizar_preferencias(destino, preferencias):
     openai.api_key = st.secrets["api_keys"]["apigpt_key"]
     
@@ -87,6 +109,7 @@ def analizar_preferencias(destino, preferencias):
     )
     
     return response.choices[0].text.strip()
+
 
 def generar_recomendaciones(destino, user_id):
     from openai import OpenAI
@@ -128,3 +151,50 @@ def generar_recomendaciones(destino, user_id):
         #    return f"Error al generar recomendaciones: {str(e)}"
     else:
         return "No se encontraron preferencias para el usuario."
+    
+
+import openai
+
+def vectorizar_actividades(actividades):
+    from openai import OpenAI
+    client= OpenAI(api_key=st.secrets["api_keys"]["apigpt_key"])
+    
+    embeddings = []
+    for actividad in actividades:
+        response = client.embeddings.create(
+            model="text-embedding-3-small",
+            input=actividad,
+            encoding_format="float")
+        embeddings.append(response['data'][0]['embedding'])
+    
+    return embeddings
+
+
+import pinecone
+import numpy as np
+
+
+# Initialize Pinecone
+pc = pinecone.Pinecone(api_key=st.secrets["api_keys"]["apipinecone"])
+
+index = pc.Index('tuguia')
+
+
+def obtener_mejores_actividades(destino, embeddings):
+    # Convertir los embeddings a un formato adecuado para Pinecone
+    query_vectors = [embedding.tolist() for embedding in embeddings]
+    
+    # Realizar la búsqueda en Pinecone
+    response = index.query(queries=query_vectors, top_k=5, include_values=True)
+    
+    # Procesar la respuesta para obtener las mejores actividades
+    mejores_actividades = []
+    for match in response['matches']:
+        actividad = match['metadata']['actividad']
+        descripcion = match['metadata']['descripcion']
+        mejores_actividades.append((actividad, descripcion))
+    
+    return mejores_actividades
+
+def cosine_similarity(vec1, vec2):
+    return np.dot(vec1, vec2) / (np.linalg.norm(vec1) * np.linalg.norm(vec2))

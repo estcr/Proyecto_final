@@ -94,8 +94,11 @@ def interfaz_itinerario():
             # Llamar a la función para analizar preferencias y generar recomendaciones
             recomendaciones = f.generar_recomendaciones(destino, st.session_state.id_usuario)
             if recomendaciones:
-                st.write("Recomendaciones:")
-                st.write(recomendaciones)
+                st.write("Recomendaciones basadas en tus preferencias:")
+                for actividad, descripcion in recomendaciones:
+                    st.write(f"**Actividad:** {actividad}")
+                    st.write(f"**Descripción:** {descripcion}")
+                    st.write("---")
             else:
                 st.error("No se encontraron recomendaciones.")
         else:
