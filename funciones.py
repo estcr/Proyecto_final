@@ -132,6 +132,9 @@ def vectorizar_actividades(actividades):
             encoding_format="float")
         embeddings.append(response['data'][0]['embedding'])
     
+    # Imprimir los embeddings para depuración
+    print(f"Embeddings generados: {embeddings}")
+    
     return embeddings
 
 
@@ -151,6 +154,9 @@ def obtener_mejores_actividades(destino, embeddings):
     # Realizar la búsqueda en Pinecone
     response = index.query(queries=query_vectors, top_k=5, include_values=True)
     
+    # Imprimir la respuesta de Pinecone para depuración
+    print(f"Respuesta de Pinecone: {response}")
+    
     # Procesar la respuesta para obtener las mejores actividades
     mejores_actividades = []
     for match in response['matches']:
@@ -169,6 +175,9 @@ def generar_recomendaciones(destino, user_id):
         # Crear el mensaje de entrada para la API
         actividades = [pref[0] for pref in preferencias]
         prompt = f"Quiero recomendaciones de viaje para {destino}. Me interesan las siguientes actividades: {', '.join(actividades)}."
+        
+        # Imprimir el prompt para depuración
+        print(f"Prompt enviado a la API de OpenAI: {prompt}")
 
         try:
             # Llamar a la API de OpenAI utilizando la nueva interfaz de completions.create
@@ -194,6 +203,9 @@ def generar_recomendaciones(destino, user_id):
 
             # Obtener la respuesta del modelo
             recomendaciones = response.choices[0].message['content'].strip()
+            # Imprimir la respuesta de la API para depuración
+            print(f"Respuesta de la API de OpenAI: {recomendaciones}")
+
             # Procesar las recomendaciones en una lista de tuplas
             recomendaciones_list = []
             for rec in recomendaciones.split('\n'):
