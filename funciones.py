@@ -91,14 +91,18 @@ def obtener_preferencias_usuario(user_id):
         print(f"Error al obtener las preferencias del usuario: {e}")
         return None
 
-def obtener_puntos_actividades(destino):
+def obtener_puntos_actividades(user_id):
     conn = c.conectar_bd()
     try:
         cursor = conn.cursor()
         
         # Ejecutar la consulta para obtener puntos de actividades
-        query = "SELECT actividad, descripcion FROM actividades WHERE destino = %s"
-        cursor.execute(query, (destino,))
+        query = """
+        SELECT activity_name, preference_level 
+        FROM user_activity_preferences 
+        WHERE user_id = %s
+        """
+        cursor.execute(query, (user_id,))
         result = cursor.fetchall()
         
         # Cerrar la conexión
