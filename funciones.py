@@ -19,6 +19,55 @@ def insertar_usuario(name, email, travel_style, registration_date):
         raise Exception(f"Error al insertar datos en la base de datos: {e}, Datos: {name}, {email}, {travel_style}, {registration_date}")
     finally:
         conn.close()
+
+def obtener_usuario_por_email(email):
+    conn = c.conectar_bd()
+    try:
+        cursor = conn.cursor()
+        query = "SELECT user_id FROM users WHERE email = %s"
+        cursor.execute(query, (email,))
+        result = cursor.fetchone()
+        conn.close()
+        if result:
+            return result[0]
+        else:
+            return None
+    except Exception as e:
+        print(f"Error al obtener el usuario: {e}")
+        return None
+    
+
+def insertar_preferencias_viaje(user_id, actividades):
+    conn = c.conectar_bd()
+    try:
+        with conn.cursor() as cursor:
+            for actividad, nivel in actividades.items():
+                sql = """
+                INSERT INTO user_activity_preferences (user_id, activity_name, preference_level)
+                VALUES (%s, %s, %s)
+                """
+                cursor.execute(sql, (user_id, actividad, nivel))
+        conn.commit()
+    except Exception as e:
+        raise Exception(f"Error al insertar preferencias de viaje en la base de datos: {e}")
+    finally:
+        conn.close()
+
+def insertar_preferencias_viaje(user_id, actividades):
+    conn = c.conectar_bd()
+    try:
+        with conn.cursor() as cursor:
+            for actividad, nivel in actividades.items():
+                sql = """
+                INSERT INTO user_activity_preferences (user_id, activity_name, preference_level)
+                VALUES (%s, %s, %s)
+                """
+                cursor.execute(sql, (user_id, actividad, nivel))
+        conn.commit()
+    except Exception as e:
+        raise Exception(f"Error al insertar preferencias de viaje en la base de datos: {e}")
+    finally:
+        conn.close()
     
 #---------------------------------------------------------------------------------------------------------------
 def obtener_preferencias_usuario(user_id):
@@ -63,53 +112,50 @@ def obtener_puntos_actividades(destino):
         print(f"Error al obtener puntos de actividades: {e}")
         return None
 
-def obtener_usuario_por_email(email):
-    conn = c.conectar_bd()
-    try:
-        cursor = conn.cursor()
-        query = "SELECT user_id FROM users WHERE email = %s"
-        cursor.execute(query, (email,))
-        result = cursor.fetchone()
-        conn.close()
-        if result:
-            return result[0]
-        else:
-            return None
-    except Exception as e:
-        print(f"Error al obtener el usuario: {e}")
-        return None
-
-def insertar_preferencias_viaje(user_id, actividades):
-    conn = c.conectar_bd()
-    try:
-        with conn.cursor() as cursor:
-            for actividad, nivel in actividades.items():
-                sql = """
-                INSERT INTO user_activity_preferences (user_id, activity_name, preference_level)
-                VALUES (%s, %s, %s)
-                """
-                cursor.execute(sql, (user_id, actividad, nivel))
-        conn.commit()
-    except Exception as e:
-        raise Exception(f"Error al insertar preferencias de viaje en la base de datos: {e}")
-    finally:
-        conn.close()
 
 
-def analizar_preferencias(destino, preferencias):
-    openai.api_key = st.secrets["api_keys"]["apigpt_key"]
+import openai
+
+def vectorizar_actividades(actividades):
+    from openai import OpenAI
+    client= OpenAI(api_key=st.secrets["api_keys"]["apigpt_key"])
     
-    # Crear el prompt para la API de ChatGPT
-    prompt = f"Analiza las siguientes preferencias del usuario para el destino {destino}: {preferencias}"
+    embeddings = []
+    for actividad in actividades:
+        response = client.embeddings.create(
+            model="text-embedding-3-small",
+            input=actividad,
+            encoding_format="float")
+        embeddings.append(response['data'][0]['embedding'])
     
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=prompt,
-        max_tokens=150
-    )
-    
-    return response.choices[0].text.strip()
+    return embeddings
 
+
+import pinecone
+import numpy as np
+
+
+# Initialize Pinecone
+pc = pinecone.Pinecone(api_key=st.secrets["api_keys"]["apipinecone"])
+pinecone.init(api_key=st.secrets["api_keys"]["apipinecone"])
+index = pc.Index('tuguia')
+
+
+def obtener_mejores_actividades(destino, embeddings):
+    # Convertir los embeddings a un formato adecuado para Pinecone
+    query_vectors = [embedding.tolist() for embedding in embeddings]
+    
+    # Realizar la búsqueda en Pinecone
+    response = index.query(queries=query_vectors, top_k=5, include_values=True)
+    
+    # Procesar la respuesta para obtener las mejores actividades
+    mejores_actividades = []
+    for match in response['matches']:
+        actividad = match['metadata']['actividad']
+        descripcion = match['metadata']['descripcion']
+        mejores_actividades.append((actividad, descripcion))
+    
+    return mejores_actividades
 
 def generar_recomendaciones(destino, user_id):
     from openai import OpenAI
@@ -138,63 +184,21 @@ def generar_recomendaciones(destino, user_id):
             ],
             temperature=1,
             max_tokens=2048,
-             top_p=1,
-                frequency_penalty=0,
-             presence_penalty=0
-         )
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0
+        )
 
             # Obtener la respuesta del modelo
         recomendaciones = response.choices[0].message.content
-        return recomendaciones
+        # Split the recommendations into a list of tuples
+        recomendaciones_list = [tuple(rec.split(': ')) for rec in recomendaciones.split('\n') if ': ' in rec]
+        return recomendaciones_list
 
         #except Exception as e:
         #    return f"Error al generar recomendaciones: {str(e)}"
     else:
         return "No se encontraron preferencias para el usuario."
-    
-
-import openai
-
-def vectorizar_actividades(actividades):
-    from openai import OpenAI
-    client= OpenAI(api_key=st.secrets["api_keys"]["apigpt_key"])
-    
-    embeddings = []
-    for actividad in actividades:
-        response = client.embeddings.create(
-            model="text-embedding-3-small",
-            input=actividad,
-            encoding_format="float")
-        embeddings.append(response['data'][0]['embedding'])
-    
-    return embeddings
-
-
-import pinecone
-import numpy as np
-
-
-# Initialize Pinecone
-pc = pinecone.Pinecone(api_key=st.secrets["api_keys"]["apipinecone"])
-
-index = pc.Index('tuguia')
-
-
-def obtener_mejores_actividades(destino, embeddings):
-    # Convertir los embeddings a un formato adecuado para Pinecone
-    query_vectors = [embedding.tolist() for embedding in embeddings]
-    
-    # Realizar la búsqueda en Pinecone
-    response = index.query(queries=query_vectors, top_k=5, include_values=True)
-    
-    # Procesar la respuesta para obtener las mejores actividades
-    mejores_actividades = []
-    for match in response['matches']:
-        actividad = match['metadata']['actividad']
-        descripcion = match['metadata']['descripcion']
-        mejores_actividades.append((actividad, descripcion))
-    
-    return mejores_actividades
 
 def cosine_similarity(vec1, vec2):
     return np.dot(vec1, vec2) / (np.linalg.norm(vec1) * np.linalg.norm(vec2))
