@@ -137,7 +137,6 @@ import numpy as np
 
 # Initialize Pinecone
 pc = pinecone.Pinecone(api_key=st.secrets["api_keys"]["apipinecone"])
-pinecone.init(api_key=st.secrets["api_keys"]["apipinecone"])
 index = pc.Index('tuguia')
 
 
