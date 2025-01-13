@@ -114,3 +114,9 @@ def generar_recomendaciones_completas(destino, user_id):
     except Exception as e:
         st.error(f"Error en generar_recomendaciones_completas: {e}")
         return f"Error: {str(e)}"
+
+def obtener_usuario_actual():
+    """Obtiene el ID del usuario actual desde la sesión de Streamlit"""
+    if "id_usuario" in st.session_state and st.session_state.id_usuario is not None:
+        return st.session_state.id_usuario
+    return None

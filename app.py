@@ -80,16 +80,21 @@ def interfaz_recomendaciones():
 def mostrar_itinerario():
     st.title("Generar Itinerario de Viaje")
     
-    # Obtener el ID del usuario actual
-    user_id = f.obtener_usuario_actual()
-    if not user_id:
+    # Verificar si hay un usuario en la sesión
+    if "id_usuario" not in st.session_state or st.session_state.id_usuario is None:
         st.warning("Por favor, inicia sesión primero")
         return
+    
+    user_id = st.session_state.id_usuario
     
     # Input para el destino
     destino = st.text_input("¿A dónde quieres viajar?")
     
     if st.button("Generar Recomendaciones"):
+        if not destino:
+            st.warning("Por favor, ingresa un destino")
+            return
+            
         with st.spinner("Generando recomendaciones personalizadas..."):
             resultado = f.generar_recomendaciones_completas(destino, user_id)
             
