@@ -77,32 +77,35 @@ def interfaz_recomendaciones():
     # Aquí iría la lógica para mostrar las recomendaciones según las preferencias del usuario.
 
 # Función para generar itinerario
-def interfaz_itinerario():
-    st.title("Generar Itinerario")
-    st.write("Aquí podrás crear tu itinerario basado en las recomendaciones de lugares.")
+def mostrar_itinerario():
+    st.title("Generar Itinerario de Viaje")
     
-    # Verificamos si el usuario está registrado
-    if "id_usuario" not in st.session_state or st.session_state.id_usuario is None:
-        st.error("Por favor, inicia sesión para generar un itinerario.")
+    # Obtener el ID del usuario actual
+    user_id = f.obtener_usuario_actual()
+    if not user_id:
+        st.warning("Por favor, inicia sesión primero")
         return
     
     # Input para el destino
-    destino = st.text_input("Introduce tu destino")
+    destino = st.text_input("¿A dónde quieres viajar?")
     
-    if st.button("Generar Itinerario"):
-        if destino: 
-            # Llamar a la función para analizar preferencias y generar recomendaciones
-            recomendaciones = f.generar_recomendaciones(destino, st.session_state.id_usuario)
-            if recomendaciones and isinstance(recomendaciones, list):
-                st.write("Recomendaciones basadas en tus preferencias:")
-                for actividad, descripcion in recomendaciones:
-                    st.write(f"**Actividad:** {actividad}")
-                    st.write(f"**Descripción:** {descripcion}")
-                    st.write("---")
+    if st.button("Generar Recomendaciones"):
+        with st.spinner("Generando recomendaciones personalizadas..."):
+            resultado = f.generar_recomendaciones_completas(destino, user_id)
+            
+            if isinstance(resultado, dict):
+                # Mostrar recomendaciones de ChatGPT
+                st.subheader("Recomendaciones Personalizadas")
+                st.write(resultado['recomendaciones_gpt'])
+                
+                # Mostrar actividades similares
+                st.subheader("Actividades Similares de Nuestra Base de Datos")
+                for i, act in enumerate(resultado['actividades_similares'], 1):
+                    with st.expander(f"{i}. {act['Actividad']}"):
+                        st.write(f"**Descripción:** {act['Descripción']}")
+                        st.write(f"**Relevancia:** {act['score']:.2f}")
             else:
-                st.error("No se encontraron recomendaciones.")
-        else:
-            st.error("Por favor, introduce un destino.")
+                st.error(resultado)
 
 # Función para obtener datos del usuario y guardarlos en la base de datos
 def obtener_datos_usuario():
@@ -181,7 +184,7 @@ def main():
     elif pagina_actual == "Recomendaciones":
         interfaz_recomendaciones()
     elif pagina_actual == "Itinerario":
-        interfaz_itinerario()
+        mostrar_itinerario()
 
 # Ejecutamos la aplicación
 if __name__ == "__main__":
