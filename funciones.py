@@ -3,15 +3,11 @@ from openai import OpenAI
 import numpy as np
 import pinecone
 import streamlit as st
+import config as c
 
 def obtener_preferencias_usuario(user_id):
     """Obtiene las preferencias del usuario desde la base de datos"""
-    conn = pymysql.connect(
-        host=st.secrets["host"],
-        user=st.secrets["user"],
-        password=st.secrets["password"],
-        database=st.secrets["database"]
-    )
+    conn = c.conectar_bd()
     try:
         cursor = conn.cursor()
         query = "SELECT activity_name, preference_level FROM user_activity_preferences WHERE user_id = %s"
