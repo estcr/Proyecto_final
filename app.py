@@ -295,41 +295,49 @@ st.markdown("""
     
     .descripcion {
         background: #f8f9fa;
-        padding: 1em;
-        border-radius: 10px;
-        margin: 1em 0;
-        line-height: 1.6;
+        padding: 20px;
+        border-radius: 12px;
+        margin: 15px 0;
+        line-height: 1.8;
         color: #333;
+        font-size: 16px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
     
     .info-tag {
         display: inline-block;
-        padding: 0.5em 1em;
-        margin: 0.5em;
-        border-radius: 20px;
-        font-size: 0.9em;
+        padding: 10px 20px;
+        margin: 8px;
+        border-radius: 25px;
+        font-size: 15px;
+        font-weight: 500;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     
     .epoca {
         background: #e3f2fd;
         color: #1976d2;
+        border: 1px solid #bbdefb;
     }
     
     .duracion {
         background: #f3e5f5;
         color: #7b1fa2;
+        border: 1px solid #e1bee7;
     }
     
     .actividad-btn {
         display: inline-block;
         background: #FF4B4B;
         color: white !important;
-        padding: 0.8em 1.5em;
+        padding: 12px 25px;
         border-radius: 25px;
         text-decoration: none;
-        margin-top: 1em;
+        margin-top: 15px;
         transition: all 0.3s ease;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        font-weight: 500;
+        font-size: 15px;
+        box-shadow: 0 2px 4px rgba(255,75,75,0.2);
     }
     
     .actividad-btn:hover {
@@ -338,13 +346,20 @@ st.markdown("""
     }
     
     .imagen-placeholder {
-        background: #f8f9fa;
-        height: 200px;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+        height: 300px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 3em;
-        border-radius: 10px;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    
+    .placeholder-text {
+        font-size: 24px;
+        color: #666;
+        text-align: center;
+        padding: 20px;
     }
     
     .destinos-wrapper {
@@ -679,12 +694,27 @@ def interfaz_recomendaciones():
                         with col1:
                             try:
                                 imagen_url = f.obtener_imagen_lugar(f"{ciudad}, {pais}")
-                                if imagen_url and requests.get(imagen_url).status_code == 200:
-                                    img = Image.open(BytesIO(requests.get(imagen_url).content))
-                                    st.image(img, use_container_width=True)
+                                if imagen_url:
+                                    response = requests.get(imagen_url, timeout=10)  # Agregamos timeout
+                                    if response.status_code == 200:
+                                        try:
+                                            img = Image.open(BytesIO(response.content))
+                                            st.image(img, use_container_width=True)
+                                        except:
+                                            # Si falla al abrir la imagen, intentamos con Unsplash
+                                            unsplash_url = f"https://source.unsplash.com/800x600/?{ciudad.replace(' ', '+')},{pais.replace(' ', '+')},landmark"
+                                            st.image(unsplash_url, use_container_width=True)
+                                    else:
+                                        # Si falla la primera URL, intentamos con Unsplash
+                                        unsplash_url = f"https://source.unsplash.com/800x600/?{ciudad.replace(' ', '+')},{pais.replace(' ', '+')},landmark"
+                                        st.image(unsplash_url, use_container_width=True)
                             except:
-                                st.markdown("""<div class="imagen-placeholder">🖼️</div>""", 
-                                          unsafe_allow_html=True)
+                                # Si todo falla, mostramos un placeholder con estilo
+                                st.markdown(f"""
+                                <div class="imagen-placeholder">
+                                    <div class="placeholder-text">🌄 {ciudad}</div>
+                                </div>
+                                """, unsafe_allow_html=True)
                         
                         with col2:
                             for line in lines:
