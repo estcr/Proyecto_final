@@ -216,6 +216,23 @@ st.markdown("""
         font-size: 18px;
         margin-top: 5px;
     }
+    
+    .destino-content {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .destino-card {
+        background-color: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        position: relative;
+        border-left: 5px solid #FF4B4B;
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -381,7 +398,6 @@ def interfaz_recomendaciones():
                         if i > 1:
                             st.markdown("<div class='separador'></div>", unsafe_allow_html=True)
                         
-                        # Procesar el destino
                         lines = [line.strip() for line in rec.split('\n') if line.strip()]
                         destino_line = next((line for line in lines if line.startswith('Destino:')), None)
                         if not destino_line:
@@ -390,18 +406,22 @@ def interfaz_recomendaciones():
                         destino = destino_line.replace('Destino:', '').strip()
                         ciudad, pais = [part.strip() for part in destino.split(',')] if ',' in destino else (destino, '')
                         
-                        # Crear el contenedor del destino
-                        st.markdown(f"""
+                        # Iniciar el contenedor del destino (mantenerlo abierto)
+                        contenido_html = f"""
                         <div class="destino-card">
                             <div class="ranking-badge">#{i}</div>
                             <div class="destino-header">
                                 <div class="destino-titulo">{ciudad}</div>
                                 <div class="destino-subtitulo">{pais}</div>
                             </div>
-                        """, unsafe_allow_html=True)
+                            <div class="destino-content">
+                        """
+                        st.markdown(contenido_html, unsafe_allow_html=True)
                         
+                        # Crear columnas para la imagen y la información
                         col1, col2 = st.columns([1, 2])
                         
+                        # Columna de imagen
                         with col1:
                             try:
                                 imagen_url = f.obtener_imagen_lugar(f"{ciudad}, {pais}")
@@ -411,6 +431,7 @@ def interfaz_recomendaciones():
                             except:
                                 st.warning("🖼️ Imagen no disponible")
                         
+                        # Columna de información
                         with col2:
                             for line in lines:
                                 if line.startswith('Destino:'):
@@ -433,7 +454,11 @@ def interfaz_recomendaciones():
                                     st.markdown(f"""<a href="{link}" target="_blank" class="actividad-link">
                                         🎯 {nombre}</a>""", unsafe_allow_html=True)
                         
-                        st.markdown("</div>", unsafe_allow_html=True)
+                        # Cerrar los divs del contenedor
+                        st.markdown("""
+                            </div>
+                        </div>
+                        """, unsafe_allow_html=True)
                         
                     except Exception as e:
                         st.error(f"Error al procesar destino {i}: {str(e)}")
