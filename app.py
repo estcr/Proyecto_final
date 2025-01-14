@@ -163,108 +163,189 @@ def pagina_inicio():
 
 # Función de login modernizada
 def login():
+    # Fondo oscuro y contenedor principal
+    st.markdown("""
+        <style>
+        .main {
+            background-color: #1a1a1a;
+        }
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin: 20px auto;
+            max-width: 500px;
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .login-input {
+            background: #f8f9fa;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        .login-button {
+            background: #FF4B4B;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .login-button:hover {
+            background: #ff6b6b;
+            transform: translateY(-2px);
+        }
+        </style>
+    """, unsafe_allow_html=True)
+    
+    # Logo y contenido
     mostrar_logo()
     
     st.markdown("""
-        <div style="text-align: center; padding: 20px;">
-            <h1 style="color: #2e7bcf;">¡Bienvenido de Nuevo! 👋</h1>
-            <p style="font-size: 1.2em; color: #666;">
-                Inicia sesión para descubrir destinos increíbles personalizados para ti
-            </p>
-        </div>
+        <div class="login-container">
+            <div class="login-header">
+                <h1 style="color: #2e7bcf;">¡Bienvenido de Nuevo! 👋</h1>
+                <p style="color: #666; font-size: 1.1em;">
+                    Inicia sesión para descubrir destinos increíbles
+                </p>
+            </div>
     """, unsafe_allow_html=True)
     
-    col1, col2, col3 = st.columns([1,2,1])
-    with col2:
-        with st.form("login_form", clear_on_submit=True):
-            st.markdown("""
-                <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                """, unsafe_allow_html=True)
-            
-            email = st.text_input("📧 Email", placeholder="tucorreo@ejemplo.com")
-            
-            col1, col2 = st.columns([3,1])
-            with col1:
-                submitted = st.form_submit_button("Iniciar Sesión", 
-                    use_container_width=True,
-                    help="Haz clic para iniciar sesión")
-            
-            st.markdown("""</div>""", unsafe_allow_html=True)
-    
-    if submitted:
-        if email:
-            user_id = obtener_usuario_por_email(email)
-            if user_id:
-                st.session_state.id_usuario = user_id
-                st.balloons()
-                st.success("¡Bienvenido de nuevo! 🎉")
-                
-                col1, col2, col3 = st.columns([1,2,1])
-                with col2:
+    with st.form("login_form"):
+        email = st.text_input("📧 Email", placeholder="tucorreo@ejemplo.com")
+        submitted = st.form_submit_button("Iniciar Sesión", use_container_width=True)
+        
+        if submitted:
+            if email:
+                user_id = obtener_usuario_por_email(email)
+                if user_id:
+                    st.session_state.id_usuario = user_id
+                    st.balloons()
+                    st.success("¡Bienvenido de nuevo! 🎉")
                     if st.button("¡Comenzar mi aventura! 🚀", use_container_width=True):
                         st.session_state.pagina_actual = "🏠 Inicio"
                         st.rerun()
+                else:
+                    st.error("No encontramos tu cuenta 😕")
+                    st.info("¿Aún no tienes cuenta? ¡Regístrate ahora!")
             else:
-                st.error("No encontramos tu cuenta 😕")
-                st.info("¿Aún no tienes cuenta? ¡Regístrate ahora!")
-        else:
-            st.warning("Por favor, ingresa tu email 📧")
+                st.warning("Por favor, ingresa tu email 📧")
+
+    st.markdown("</div>", unsafe_allow_html=True)
 
 # Función de registro modernizada
 def obtener_datos_usuario():
+    # Estilos para el registro
+    st.markdown("""
+        <style>
+        .main {
+            background-color: #1a1a1a;
+        }
+        .registro-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin: 20px auto;
+            max-width: 600px;
+        }
+        .registro-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .registro-input {
+            background: #f8f9fa;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        .registro-button {
+            background: #FF4B4B;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .registro-button:hover {
+            background: #ff6b6b;
+            transform: translateY(-2px);
+        }
+        .travel-style-option {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .travel-style-option:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+        </style>
+    """, unsafe_allow_html=True)
+    
+    # Logo y contenido
     mostrar_logo()
     
     st.markdown("""
-        <div style="text-align: center; padding: 20px;">
-            <h1 style="color: #2e7bcf;">¡Únete a la Aventura! ✈️</h1>
-            <p style="font-size: 1.2em; color: #666;">
-                Crea tu cuenta y descubre destinos increíbles personalizados para ti
-            </p>
-        </div>
+        <div class="registro-container">
+            <div class="registro-header">
+                <h1 style="color: #2e7bcf;">¡Únete a la Aventura! ✈️</h1>
+                <p style="color: #666; font-size: 1.1em;">
+                    Crea tu cuenta y descubre destinos increíbles
+                </p>
+            </div>
     """, unsafe_allow_html=True)
     
-    col1, col2, col3 = st.columns([1,2,1])
-    with col2:
-        with st.form("registro_form", clear_on_submit=True):
-            st.markdown("""
-                <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                """, unsafe_allow_html=True)
-            
-            name = st.text_input("👤 Nombre", placeholder="Tu nombre")
-            email = st.text_input("📧 Email", placeholder="tucorreo@ejemplo.com")
-            
-            st.markdown("#### ¿Cómo te gusta viajar? 🌎")
-            travel_style = st.selectbox("", [
-                "Solo aventurero 🚶",
-                "Con amigos 👥",
-                "En pareja 💑",
-                "Por trabajo 💼"
-            ])
-            
-            submitted = st.form_submit_button("¡Crear mi cuenta!", 
-                use_container_width=True,
-                help="Haz clic para registrarte")
-            
-            st.markdown("""</div>""", unsafe_allow_html=True)
-    
-    if submitted:
-        if name and email:
-            registration_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            travel_style_clean = travel_style.split(" ")[0].lower()
-            
-            if f.insertar_usuario(name, email, travel_style_clean, registration_date):
-                st.balloons()
-                st.success("¡Bienvenido a bordo! 🎉")
+    with st.form("registro_form"):
+        name = st.text_input("👤 Nombre", placeholder="Tu nombre")
+        email = st.text_input("📧 Email", placeholder="tucorreo@ejemplo.com")
+        
+        st.markdown("#### ¿Cómo te gusta viajar? 🌎")
+        travel_style = st.selectbox("", [
+            "Solo aventurero 🚶",
+            "Con amigos 👥",
+            "En pareja 💑",
+            "Por trabajo 💼"
+        ])
+        
+        submitted = st.form_submit_button("¡Crear mi cuenta!", use_container_width=True)
+        
+        if submitted:
+            if name and email:
+                registration_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                travel_style_clean = travel_style.split(" ")[0].lower()
                 
-                col1, col2, col3 = st.columns([1,2,1])
-                with col2:
+                if f.insertar_usuario(name, email, travel_style_clean, registration_date):
+                    st.balloons()
+                    st.success("¡Bienvenido a bordo! 🎉")
                     if st.button("¡Comenzar mi aventura! 🚀", use_container_width=True):
                         st.session_state.pagina_actual = "⭐ Preferencias"
                         st.rerun()
+                else:
+                    st.error("Este email ya está registrado 📧")
             else:
-                st.error("Este email ya está registrado 📧")
-        else:
-            st.warning("Por favor, completa todos los campos 🙏")
+                st.warning("Por favor, completa todos los campos 🙏")
+
+    st.markdown("</div>", unsafe_allow_html=True)
 
 # Función de preferencias modernizada
 def interfaz_preferencias():
