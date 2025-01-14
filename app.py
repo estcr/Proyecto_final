@@ -163,7 +163,7 @@ def pagina_inicio():
 
 # Función de login modernizada
 def login():
-    mostrar_logo()  # Mostramos el logo al inicio
+    mostrar_logo()
     
     st.markdown("""
         <div style="text-align: center; padding: 20px;">
@@ -174,7 +174,6 @@ def login():
         </div>
     """, unsafe_allow_html=True)
     
-    # Crear un contenedor centrado para el formulario
     col1, col2, col3 = st.columns([1,2,1])
     with col2:
         with st.form("login_form", clear_on_submit=True):
@@ -200,7 +199,6 @@ def login():
                 st.balloons()
                 st.success("¡Bienvenido de nuevo! 🎉")
                 
-                # Botón para continuar
                 col1, col2, col3 = st.columns([1,2,1])
                 with col2:
                     if st.button("¡Comenzar mi aventura! 🚀", use_container_width=True):
@@ -214,7 +212,7 @@ def login():
 
 # Función de registro modernizada
 def obtener_datos_usuario():
-    mostrar_logo()  # Mostramos el logo al inicio
+    mostrar_logo()
     
     st.markdown("""
         <div style="text-align: center; padding: 20px;">
@@ -225,7 +223,6 @@ def obtener_datos_usuario():
         </div>
     """, unsafe_allow_html=True)
     
-    # Crear un contenedor centrado para el formulario
     col1, col2, col3 = st.columns([1,2,1])
     with col2:
         with st.form("registro_form", clear_on_submit=True):
@@ -253,14 +250,12 @@ def obtener_datos_usuario():
     if submitted:
         if name and email:
             registration_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            # Limpiamos el estilo de viaje para guardar solo el texto base
             travel_style_clean = travel_style.split(" ")[0].lower()
             
             if f.insertar_usuario(name, email, travel_style_clean, registration_date):
                 st.balloons()
                 st.success("¡Bienvenido a bordo! 🎉")
                 
-                # Botón para continuar
                 col1, col2, col3 = st.columns([1,2,1])
                 with col2:
                     if st.button("¡Comenzar mi aventura! 🚀", use_container_width=True):
