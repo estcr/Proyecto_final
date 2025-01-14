@@ -485,6 +485,9 @@ def interfaz_recomendaciones():
         st.warning("Por favor, inicia sesión primero")
         return
     
+    # Obtener el ID del usuario de la sesión
+    user_id = st.session_state.id_usuario
+    
     st.markdown("""
     ### ¿No sabes dónde viajar? 🤔
     Basándonos en tus preferencias y estilo de viaje, hemos seleccionado estos destinos 
