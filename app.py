@@ -91,8 +91,13 @@ st.markdown("""
         font-size: 28px !important;
         margin-bottom: 15px;
         font-weight: bold;
-        display: block !important;
         text-transform: uppercase;
+    }
+    
+    .pais-texto {
+        font-size: 18px;
+        color: #666;
+        text-transform: none;
     }
     
     .info-tag {
@@ -308,25 +313,19 @@ def interfaz_recomendaciones():
                     try:
                         lines = [line.strip() for line in rec.split('\n') if line.strip()]
                         
-                        # Obtener el destino de manera más robusta
                         destino_line = next((line for line in lines if line.startswith('Destino:')), None)
                         if not destino_line:
-                            continue  # Saltar esta recomendación si no tiene destino
+                            continue
                             
                         destino = destino_line.replace('Destino:', '').strip()
                         ciudad, pais = [part.strip() for part in destino.split(',')] if ',' in destino else (destino, '')
                         
-                        # Crear la tarjeta del destino
-                        st.markdown(f"""
+                        # Crear el contenedor principal de la tarjeta
+                        st.markdown("""
                         <div class="destino-card">
-                            <div class="numero-destino">#{i}</div>
-                            <div class="destino-titulo">
-                                {ciudad}<br>
-                                <span style="font-size: 18px; color: #666;">{pais}</span>
-                            </div>
-                        </div>
                         """, unsafe_allow_html=True)
                         
+                        # Crear las columnas
                         col1, col2 = st.columns([1, 2])
                         
                         # Columna de imagen
@@ -335,12 +334,22 @@ def interfaz_recomendaciones():
                                 imagen_url = f.obtener_imagen_lugar(f"{ciudad}, {pais}")
                                 if imagen_url and requests.get(imagen_url).status_code == 200:
                                     img = Image.open(BytesIO(requests.get(imagen_url).content))
-                                    st.image(img, width=200, use_container_width=True)
+                                    st.image(img, use_container_width=True)
                             except:
                                 st.warning("🖼️ Imagen no disponible")
                         
                         # Columna de información
                         with col2:
+                            # Número y título del destino
+                            st.markdown(f"""
+                            <div class="numero-destino">#{i}</div>
+                            <div class="destino-titulo">
+                                {ciudad}<br>
+                                <span class="pais-texto">{pais}</span>
+                            </div>
+                            """, unsafe_allow_html=True)
+                            
+                            # Resto de la información
                             for line in lines:
                                 if line.startswith('Destino:'):
                                     continue
@@ -356,14 +365,15 @@ def interfaz_recomendaciones():
                                     duracion = line.replace('Duración sugerida:', '').strip()
                                     st.markdown(f'<span class="info-tag">⏱️ {duracion}</span>', 
                                               unsafe_allow_html=True)
-                                elif '|' in line and 'Actividad destacada:' in line:
+                                elif 'Actividad destacada:' in line:
                                     nombre = line.split('|')[0].replace('Actividad destacada:', '').strip()
-                                    link = line.split('|')[1].strip()
+                                    link = line.split('|')[1].strip() if '|' in line else '#'
                                     st.markdown(f"<a href='{link}' target='_blank' class='actividad-link'>🎯 {nombre}</a>", 
                                               unsafe_allow_html=True)
-                        
-                        st.markdown("</div>", unsafe_allow_html=True)
-                        
+                            
+                            # Cerrar el contenedor de la tarjeta
+                            st.markdown("</div>", unsafe_allow_html=True)
+                            
                     except Exception as e:
                         st.error(f"Error al procesar destino {i}: {str(e)}")
                         continue
@@ -495,7 +505,7 @@ def main():
     # Manejo de páginas
     if pagina_actual == "🔑 Inicio de Sesión":
         login()
-    elif pagina_actual == "�� Registro":
+    elif pagina_actual == "📝 Registro":
         obtener_datos_usuario()
     elif pagina_actual == "🏠 Inicio":
         pagina_inicio()
