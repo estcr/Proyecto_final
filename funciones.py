@@ -170,3 +170,29 @@ def generar_recomendaciones_destinos(user_id):
     except Exception as e:
         st.error(f"Error al generar recomendaciones de destinos: {e}")
         return f"Error: {str(e)}"
+
+def insertar_preferencias_viaje(user_id, preferencias):
+    """Actualiza o inserta las preferencias del usuario"""
+    conn = c.conectar_bd()
+    try:
+        cursor = conn.cursor()
+        
+        # Primero eliminamos las preferencias existentes del usuario
+        delete_query = "DELETE FROM user_activity_preferences WHERE user_id = %s"
+        cursor.execute(delete_query, (user_id,))
+        
+        # Luego insertamos las nuevas preferencias
+        insert_query = """INSERT INTO user_activity_preferences 
+                         (user_id, activity_name, preference_level) 
+                         VALUES (%s, %s, %s)"""
+        
+        for actividad, nivel in preferencias.items():
+            cursor.execute(insert_query, (user_id, actividad, nivel))
+        
+        conn.commit()
+        st.success("Preferencias actualizadas exitosamente")
+    except Exception as e:
+        conn.rollback()
+        st.error(f"Error al actualizar preferencias: {e}")
+    finally:
+        conn.close()
