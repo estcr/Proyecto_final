@@ -24,364 +24,6 @@ st.set_page_config(
 # Estilos CSS personalizados actualizados
 st.markdown("""
     <style>
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-    
-    .main {
-        padding: 0rem 1rem;
-    }
-    .stButton>button {
-        width: auto;
-        border-radius: 5px;
-        height: 2.5em;
-        background-color: #FF4B4B;
-        color: white !important;
-        border: none;
-        padding: 0 20px;
-        font-weight: bold;
-    }
-    .stButton>button:active {
-        color: white !important;
-        background-color: #E04141;
-    }
-    .sidebar .sidebar-content {
-        background-image: linear-gradient(#2e7bcf,#2e7bcf);
-        color: white;
-    }
-    h1 {
-        color: #FF4B4B;
-        font-family: 'Helvetica Neue', sans-serif;
-    }
-    h2 {
-        color: #2e7bcf;
-        font-family: 'Helvetica Neue', sans-serif;
-    }
-    .stSuccess {
-        background-color: #28a745;
-    }
-    .destino-card {
-        background-color: #f8f9fa;
-        border-radius: 10px;
-        padding: 20px;
-        margin: 20px 0;
-        border-left: 5px solid #FF4B4B;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        position: relative;
-        color: #000;
-    }
-    
-    .numero-destino {
-        position: absolute;
-        top: -10px;
-        right: -10px;
-        background-color: #FF4B4B;
-        color: white;
-        border-radius: 50%;
-        width: 30px;
-        height: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-    }
-    
-    .destino-titulo {
-        color: #FF4B4B;
-        font-size: 28px !important;
-        margin-bottom: 15px;
-        font-weight: bold;
-        text-transform: uppercase;
-    }
-    
-    .pais-texto {
-        font-size: 18px;
-        color: #666;
-        text-transform: none;
-    }
-    
-    .info-tag {
-        background-color: #2e7bcf;
-        color: white !important;
-        padding: 5px 10px;
-        border-radius: 15px;
-        font-size: 14px;
-        margin-right: 10px;
-        display: inline-block;
-        margin-bottom: 10px;
-    }
-    
-    .porque-texto {
-        margin: 15px 0;
-        padding: 15px;
-        background-color: #FF4B4B;
-        border-radius: 5px;
-        color: white !important;
-        font-weight: 500;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    
-    .destino-card p {
-        color: #000 !important;
-        margin-bottom: 10px;
-        font-size: 16px;
-    }
-    
-    .actividad-link {
-        color: #FF4B4B;
-        text-decoration: none;
-        padding: 8px 15px;
-        border: 2px solid #FF4B4B;
-        border-radius: 20px;
-        display: inline-block;
-        margin-top: 10px;
-        font-weight: bold;
-        transition: all 0.3s ease;
-    }
-    
-    .actividad-link:hover {
-        background-color: #FF4B4B;
-        color: white;
-        transform: translateY(-2px);
-    }
-    
-    .imagen-destino {
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        transition: transform 0.3s ease;
-    }
-    
-    .imagen-destino:hover {
-        transform: scale(1.05);
-    }
-    
-    .separador-titulo {
-        text-align: center;
-        font-size: 24px;
-        font-weight: bold;
-        color: #2e7bcf;
-        margin: 30px 0;
-        padding: 10px;
-        border-bottom: 3px solid #FF4B4B;
-    }
-    
-    .separador {
-        height: 2px;
-        background: linear-gradient(to right, transparent, #e0e0e0, transparent);
-        margin: 40px 0;
-    }
-    
-    .destino-card {
-        background-color: white;
-        border-radius: 15px;
-        padding: 25px;
-        margin: 20px 0;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        position: relative;
-        border-left: 5px solid #FF4B4B;
-    }
-    
-    .ranking-badge {
-        position: absolute;
-        top: -15px;
-        right: -15px;
-        background-color: #FF4B4B;
-        color: white;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        font-size: 18px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    }
-    
-    .destino-header {
-        margin-bottom: 20px;
-        border-bottom: 2px solid #f0f0f0;
-        padding-bottom: 10px;
-    }
-    
-    .destino-titulo {
-        color: #FF4B4B;
-        font-size: 28px;
-        font-weight: bold;
-        text-transform: uppercase;
-    }
-    
-    .destino-subtitulo {
-        color: #666;
-        font-size: 18px;
-        margin-top: 5px;
-    }
-    
-    .destino-content {
-        margin-top: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
-    
-    .destino-card {
-        background-color: white;
-        border-radius: 15px;
-        padding: 25px;
-        margin: 20px 0;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        position: relative;
-        border-left: 5px solid #FF4B4B;
-    }
-    
-    .titulo-seccion {
-        font-size: 2em;
-        font-weight: bold;
-        text-align: center;
-        color: #2e7bcf;
-        margin: 2em 0;
-        padding: 1em;
-        border-bottom: 3px solid #FF4B4B;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-    }
-    
-    .destino-container {
-        position: relative;
-        margin: 3em 0;
-        padding: 1em;
-    }
-    
-    .ranking {
-        position: absolute;
-        top: -20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: #FF4B4B;
-        color: white;
-        padding: 0.5em 1em;
-        border-radius: 20px;
-        font-weight: bold;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        z-index: 2;
-    }
-    
-    .destino-card {
-        background: white;
-        border-radius: 20px;
-        padding: 2em;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        margin-top: 1em;
-    }
-    
-    .destino-header {
-        text-align: center;
-        margin-bottom: 1.5em;
-    }
-    
-    .ciudad {
-        font-size: 2em;
-        font-weight: bold;
-        color: #FF4B4B;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-    
-    .pais {
-        font-size: 1.2em;
-        color: #666;
-        margin-top: 0.3em;
-    }
-    
-    .descripcion {
-        background: #f8f9fa;
-        padding: 20px;
-        border-radius: 12px;
-        margin: 15px 0;
-        line-height: 1.8;
-        color: #333;
-        font-size: 16px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-    
-    .info-tag {
-        display: inline-block;
-        padding: 10px 20px;
-        margin: 8px;
-        border-radius: 25px;
-        font-size: 15px;
-        font-weight: 500;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    
-    .epoca {
-        background: #e3f2fd;
-        color: #1976d2;
-        border: 1px solid #bbdefb;
-    }
-    
-    .duracion {
-        background: #f3e5f5;
-        color: #7b1fa2;
-        border: 1px solid #e1bee7;
-    }
-    
-    .actividad-btn {
-        display: inline-block;
-        background: #FF4B4B;
-        color: white !important;
-        padding: 12px 25px;
-        border-radius: 25px;
-        text-decoration: none;
-        margin-top: 15px;
-        transition: all 0.3s ease;
-        font-weight: 500;
-        font-size: 15px;
-        box-shadow: 0 2px 4px rgba(255,75,75,0.2);
-    }
-    
-    .actividad-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    }
-    
-    .imagen-placeholder {
-        background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
-        height: 300px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 12px;
-        overflow: hidden;
-    }
-    
-    .placeholder-text {
-        font-size: 24px;
-        color: #666;
-        text-align: center;
-        padding: 20px;
-    }
-    
-    .destinos-wrapper {
-        display: flex;
-        flex-direction: column;
-        gap: 2em;
-        padding: 1em;
-    }
-    
-    .separador {
-        height: 2px;
-        background: linear-gradient(to right, transparent, #e0e0e0, transparent);
-        margin: 2em 0;
-    }
-    
-    .destino-content {
-        display: flex;
-        flex-direction: column;
-        gap: 1em;
-        padding: 1em;
-    }
-    
     .titulo-seccion {
         text-align: center;
         font-size: 28px;
@@ -439,13 +81,17 @@ st.markdown("""
         color: #666;
     }
     
+    .destino-content {
+        margin-top: 20px;
+    }
+    
     .descripcion {
         background: #f8f9fa;
         padding: 15px;
         border-radius: 10px;
         margin: 15px 0;
         line-height: 1.6;
-        color: #333;
+        color: black;
     }
     
     .info-tag {
@@ -454,115 +100,24 @@ st.markdown("""
         margin: 5px;
         border-radius: 20px;
         font-size: 14px;
+        color: black;
     }
     
     .epoca {
         background: #e3f2fd;
-        color: #1976d2;
     }
     
     .duracion {
         background: #f3e5f5;
-        color: #7b1fa2;
-    }
-    
-    .actividad-btn {
-        display: inline-block;
-        background: #FF4B4B;
-        color: white !important;
-        padding: 10px 20px;
-        border-radius: 25px;
-        text-decoration: none;
-        margin-top: 15px;
-        transition: all 0.3s ease;
-    }
-    
-    .actividad-btn:hover {
-        background: #ff6b6b;
-        transform: translateY(-2px);
-    }
-    
-    .imagen-placeholder {
-        background: #f8f9fa;
-        height: 200px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 3em;
-        border-radius: 10px;
-    }
-    
-    .destino-content {
-        margin-top: 20px;
     }
     
     .separador {
-        height: 1px;
+        height: 2px;
         background: rgba(255,255,255,0.1);
         margin: 40px 0;
     }
-    
-    .destino-container {
-        background: #1a1a1a;
-        border-radius: 20px;
-        padding: 30px;
-        margin: 40px 0;
-        position: relative;
-    }
-    
-    .destino-card {
-        background: white;
-        border-radius: 15px;
-        padding: 25px;
-        margin-top: 20px;
-    }
-    
-    .info-tag {
-        display: inline-block;
-        padding: 8px 15px;
-        margin: 5px;
-        border-radius: 20px;
-        font-size: 14px;
-        color: black !important;
-        font-weight: 500;
-    }
-    
-    .epoca {
-        background: #e3f2fd;
-    }
-    
-    .duracion {
-        background: #f3e5f5;
-    }
-    
-    .descripcion {
-        background: #f8f9fa;
-        padding: 15px;
-        border-radius: 10px;
-        margin: 15px 0;
-        line-height: 1.6;
-        color: black !important;
-    }
-    
-    .ciudad {
-        font-size: 32px;
-        font-weight: bold;
-        color: #FF4B4B;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        margin-bottom: 5px;
-    }
-    
-    .pais {
-        font-size: 18px;
-        color: #666;
-    }
-    
-    .destino-content {
-        margin-top: 20px;
-    }
     </style>
-    """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 # Función para mostrar el logo
 def mostrar_logo():
@@ -715,6 +270,9 @@ def interfaz_recomendaciones():
             if isinstance(resultado, dict):
                 recomendaciones = [rec.strip() for rec in resultado['recomendaciones_gpt'].split('---') if rec.strip()]
                 
+                st.markdown("""<div class="titulo-seccion">TOP 5 DESTINOS PARA TI</div>""", 
+                          unsafe_allow_html=True)
+                
                 for i, rec in enumerate(recomendaciones, 1):
                     try:
                         lines = [line.strip() for line in rec.split('\n') if line.strip()]
@@ -725,7 +283,6 @@ def interfaz_recomendaciones():
                         destino = destino_line.replace('Destino:', '').strip()
                         ciudad, pais = [part.strip() for part in destino.split(',')] if ',' in destino else (destino, '')
                         
-                        # Crear la tarjeta completa para cada destino
                         st.markdown(f"""
                         <div class="destino-container">
                             <div class="ranking">#{i}</div>
@@ -734,6 +291,7 @@ def interfaz_recomendaciones():
                                     <div class="ciudad">{ciudad}</div>
                                     <div class="pais">{pais}</div>
                                 </div>
+                                <div class="destino-content">
                         """, unsafe_allow_html=True)
                         
                         col1, col2 = st.columns([1, 1.5])
@@ -772,13 +330,12 @@ def interfaz_recomendaciones():
                                         🎯 {nombre}
                                     </a>""", unsafe_allow_html=True)
                         
-                        # Cerrar la tarjeta
                         st.markdown("""
+                                </div>
                             </div>
                         </div>
                         """, unsafe_allow_html=True)
                         
-                        # Agregar separador si no es el último destino
                         if i < len(recomendaciones):
                             st.markdown("<div class='separador'></div>", unsafe_allow_html=True)
                     
