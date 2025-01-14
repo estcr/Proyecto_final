@@ -53,7 +53,11 @@ st.markdown("""
 def mostrar_logo():
     col1, col2, col3 = st.columns([1,2,1])
     with col2:
-        st.image("imagenes/logo.png", width=300)
+        try:
+            st.image("img/t-vectorizada.png", width=300)
+        except:
+            # Fallback a la URL de GitHub si la imagen local no se encuentra
+            st.image("https://raw.githubusercontent.com/estcr/Proyecto_final/main/img/t-vectorizada.png", width=300)
 
 # Función para la página de inicio actualizada
 def pagina_inicio():
