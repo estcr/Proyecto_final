@@ -154,6 +154,68 @@ st.markdown("""
     .imagen-destino:hover {
         transform: scale(1.05);
     }
+    
+    .separador-titulo {
+        text-align: center;
+        font-size: 24px;
+        font-weight: bold;
+        color: #2e7bcf;
+        margin: 30px 0;
+        padding: 10px;
+        border-bottom: 3px solid #FF4B4B;
+    }
+    
+    .separador {
+        height: 2px;
+        background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+        margin: 40px 0;
+    }
+    
+    .destino-card {
+        background-color: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        position: relative;
+        border-left: 5px solid #FF4B4B;
+    }
+    
+    .ranking-badge {
+        position: absolute;
+        top: -15px;
+        right: -15px;
+        background-color: #FF4B4B;
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 18px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .destino-header {
+        margin-bottom: 20px;
+        border-bottom: 2px solid #f0f0f0;
+        padding-bottom: 10px;
+    }
+    
+    .destino-titulo {
+        color: #FF4B4B;
+        font-size: 28px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    
+    .destino-subtitulo {
+        color: #666;
+        font-size: 18px;
+        margin-top: 5px;
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -309,10 +371,18 @@ def interfaz_recomendaciones():
             if isinstance(resultado, dict):
                 recomendaciones = [rec.strip() for rec in resultado['recomendaciones_gpt'].split('---') if rec.strip()]
                 
+                # Crear una barra de progreso visual
+                st.markdown("""<div class="separador-titulo">TOP 5 DESTINOS RECOMENDADOS</div>""", 
+                          unsafe_allow_html=True)
+                
                 for i, rec in enumerate(recomendaciones, 1):
                     try:
-                        lines = [line.strip() for line in rec.split('\n') if line.strip()]
+                        # Agregar separador entre destinos
+                        if i > 1:
+                            st.markdown("<div class='separador'></div>", unsafe_allow_html=True)
                         
+                        # Procesar el destino
+                        lines = [line.strip() for line in rec.split('\n') if line.strip()]
                         destino_line = next((line for line in lines if line.startswith('Destino:')), None)
                         if not destino_line:
                             continue
@@ -320,22 +390,18 @@ def interfaz_recomendaciones():
                         destino = destino_line.replace('Destino:', '').strip()
                         ciudad, pais = [part.strip() for part in destino.split(',')] if ',' in destino else (destino, '')
                         
-                        # Contenedor principal
-                        st.markdown("""<div class="destino-card">""", unsafe_allow_html=True)
-                        
-                        # Número y título
+                        # Crear el contenedor del destino
                         st.markdown(f"""
-                            <div class="numero-destino">#{i}</div>
-                            <div class="destino-titulo">
-                                {ciudad}<br>
-                                <span class="pais-texto">{pais}</span>
+                        <div class="destino-card">
+                            <div class="ranking-badge">#{i}</div>
+                            <div class="destino-header">
+                                <div class="destino-titulo">{ciudad}</div>
+                                <div class="destino-subtitulo">{pais}</div>
                             </div>
                         """, unsafe_allow_html=True)
                         
-                        # Columnas para imagen e información
                         col1, col2 = st.columns([1, 2])
                         
-                        # Columna de imagen
                         with col1:
                             try:
                                 imagen_url = f.obtener_imagen_lugar(f"{ciudad}, {pais}")
@@ -345,7 +411,6 @@ def interfaz_recomendaciones():
                             except:
                                 st.warning("🖼️ Imagen no disponible")
                         
-                        # Columna de información
                         with col2:
                             for line in lines:
                                 if line.startswith('Destino:'):
@@ -368,8 +433,7 @@ def interfaz_recomendaciones():
                                     st.markdown(f"""<a href="{link}" target="_blank" class="actividad-link">
                                         🎯 {nombre}</a>""", unsafe_allow_html=True)
                         
-                        # Cerrar el contenedor principal
-                        st.markdown("""</div>""", unsafe_allow_html=True)
+                        st.markdown("</div>", unsafe_allow_html=True)
                         
                     except Exception as e:
                         st.error(f"Error al procesar destino {i}: {str(e)}")
