@@ -640,7 +640,6 @@ def interfaz_recomendaciones():
         st.warning("Por favor, inicia sesión primero")
         return
     
-    # Obtener el ID del usuario de la sesión
     user_id = st.session_state.id_usuario
     
     st.markdown("""
@@ -656,9 +655,6 @@ def interfaz_recomendaciones():
             if isinstance(resultado, dict):
                 recomendaciones = [rec.strip() for rec in resultado['recomendaciones_gpt'].split('---') if rec.strip()]
                 
-                st.markdown("""<div class="titulo-seccion">TOP 5 DESTINOS PARA TI</div>""", 
-                          unsafe_allow_html=True)
-                
                 for i, rec in enumerate(recomendaciones, 1):
                     try:
                         lines = [line.strip() for line in rec.split('\n') if line.strip()]
@@ -669,9 +665,10 @@ def interfaz_recomendaciones():
                         destino = destino_line.replace('Destino:', '').strip()
                         ciudad, pais = [part.strip() for part in destino.split(',')] if ',' in destino else (destino, '')
                         
+                        # Contenedor principal con número y título
                         st.markdown(f"""
+                        <div class="ranking">#{i}</div>
                         <div class="destino-container">
-                            <div class="ranking">#{i}</div>
                             <div class="destino-card">
                                 <div class="destino-header">
                                     <div class="ciudad">{ciudad}</div>
@@ -721,7 +718,7 @@ def interfaz_recomendaciones():
                         """, unsafe_allow_html=True)
                         
                         if i < len(recomendaciones):
-                            st.markdown("""<div class="separador"></div>""", unsafe_allow_html=True)
+                            st.markdown("<div class='separador'></div>", unsafe_allow_html=True)
                     
                     except Exception as e:
                         st.error(f"Error al procesar destino {i}: {str(e)}")
