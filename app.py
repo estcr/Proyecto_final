@@ -163,54 +163,113 @@ def pagina_inicio():
 
 # Función de login modernizada
 def login():
-    mostrar_logo()
-    st.title("Inicio de Sesión 🔐")
+    mostrar_logo()  # Mostramos el logo al inicio
     
-    with st.form("login_form"):
-        email = st.text_input("Email", placeholder="tucorreo@ejemplo.com")
-        col1, col2, col3 = st.columns([1,2,1])
-        with col2:
-            submitted = st.form_submit_button("Iniciar Sesión", use_container_width=True)
+    st.markdown("""
+        <div style="text-align: center; padding: 20px;">
+            <h1 style="color: #2e7bcf;">¡Bienvenido de Nuevo! 👋</h1>
+            <p style="font-size: 1.2em; color: #666;">
+                Inicia sesión para descubrir destinos increíbles personalizados para ti
+            </p>
+        </div>
+    """, unsafe_allow_html=True)
+    
+    # Crear un contenedor centrado para el formulario
+    col1, col2, col3 = st.columns([1,2,1])
+    with col2:
+        with st.form("login_form", clear_on_submit=True):
+            st.markdown("""
+                <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                """, unsafe_allow_html=True)
+            
+            email = st.text_input("📧 Email", placeholder="tucorreo@ejemplo.com")
+            
+            col1, col2 = st.columns([3,1])
+            with col1:
+                submitted = st.form_submit_button("Iniciar Sesión", 
+                    use_container_width=True,
+                    help="Haz clic para iniciar sesión")
+            
+            st.markdown("""</div>""", unsafe_allow_html=True)
     
     if submitted:
-        user_id = f.obtener_usuario_por_email(email)
-        if user_id:
-            st.session_state.id_usuario = user_id
-            st.success("¡Bienvenido de nuevo! 👋")
-            st.balloons()
-            
-            # Botón para continuar
-            if st.button("¡Comenzar mi aventura! 🚀"):
-                st.session_state.pagina_actual = "🏠 Inicio"
-                st.rerun()
+        if email:
+            user_id = obtener_usuario_por_email(email)
+            if user_id:
+                st.session_state.id_usuario = user_id
+                st.balloons()
+                st.success("¡Bienvenido de nuevo! 🎉")
+                
+                # Botón para continuar
+                col1, col2, col3 = st.columns([1,2,1])
+                with col2:
+                    if st.button("¡Comenzar mi aventura! 🚀", use_container_width=True):
+                        st.session_state.pagina_actual = "🏠 Inicio"
+                        st.rerun()
+            else:
+                st.error("No encontramos tu cuenta 😕")
+                st.info("¿Aún no tienes cuenta? ¡Regístrate ahora!")
         else:
-            st.error("Usuario no encontrado 😕")
+            st.warning("Por favor, ingresa tu email 📧")
 
 # Función de registro modernizada
 def obtener_datos_usuario():
-    mostrar_logo()
-    st.title("Únete a la Aventura ✈️")
+    mostrar_logo()  # Mostramos el logo al inicio
     
-    with st.form("registro_form"):
-        col1, col2 = st.columns(2)
-        with col1:
-            name = st.text_input("Nombre", placeholder="Tu nombre")
-        with col2:
-            email = st.text_input("Email", placeholder="tucorreo@ejemplo.com")
+    st.markdown("""
+        <div style="text-align: center; padding: 20px;">
+            <h1 style="color: #2e7bcf;">¡Únete a la Aventura! ✈️</h1>
+            <p style="font-size: 1.2em; color: #666;">
+                Crea tu cuenta y descubre destinos increíbles personalizados para ti
+            </p>
+        </div>
+    """, unsafe_allow_html=True)
+    
+    # Crear un contenedor centrado para el formulario
+    col1, col2, col3 = st.columns([1,2,1])
+    with col2:
+        with st.form("registro_form", clear_on_submit=True):
+            st.markdown("""
+                <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                """, unsafe_allow_html=True)
             
-        travel_style = st.selectbox("¿Cómo te gusta viajar?", 
-            ["Solo 🚶", "Con amigos 👥", "En pareja 💑", "Por trabajo 💼"])
-        
-        submitted = st.form_submit_button("¡Comenzar mi aventura!")
+            name = st.text_input("👤 Nombre", placeholder="Tu nombre")
+            email = st.text_input("📧 Email", placeholder="tucorreo@ejemplo.com")
+            
+            st.markdown("#### ¿Cómo te gusta viajar? 🌎")
+            travel_style = st.selectbox("", [
+                "Solo aventurero 🚶",
+                "Con amigos 👥",
+                "En pareja 💑",
+                "Por trabajo 💼"
+            ])
+            
+            submitted = st.form_submit_button("¡Crear mi cuenta!", 
+                use_container_width=True,
+                help="Haz clic para registrarte")
+            
+            st.markdown("""</div>""", unsafe_allow_html=True)
     
     if submitted:
         if name and email:
             registration_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            f.insertar_usuario(name, email, travel_style, registration_date)
-            st.success("¡Bienvenido a bordo! 🎉")
-            st.balloons()
+            # Limpiamos el estilo de viaje para guardar solo el texto base
+            travel_style_clean = travel_style.split(" ")[0].lower()
+            
+            if f.insertar_usuario(name, email, travel_style_clean, registration_date):
+                st.balloons()
+                st.success("¡Bienvenido a bordo! 🎉")
+                
+                # Botón para continuar
+                col1, col2, col3 = st.columns([1,2,1])
+                with col2:
+                    if st.button("¡Comenzar mi aventura! 🚀", use_container_width=True):
+                        st.session_state.pagina_actual = "⭐ Preferencias"
+                        st.rerun()
+            else:
+                st.error("Este email ya está registrado 📧")
         else:
-            st.error("Por favor, completa todos los campos 🙏")
+            st.warning("Por favor, completa todos los campos 🙏")
 
 # Función de preferencias modernizada
 def interfaz_preferencias():
