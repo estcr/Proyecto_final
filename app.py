@@ -321,11 +321,15 @@ def interfaz_recomendaciones():
                         ciudad, pais = [part.strip() for part in destino.split(',')] if ',' in destino else (destino, '')
                         
                         # Crear el contenedor principal de la tarjeta
-                        st.markdown("""
+                        st.markdown(f"""
                         <div class="destino-card">
+                            <div class="numero-destino">#{i}</div>
+                            <div class="destino-titulo">
+                                {ciudad}<br>
+                                <span class="pais-texto">{pais}</span>
+                            </div>
                         """, unsafe_allow_html=True)
                         
-                        # Crear las columnas
                         col1, col2 = st.columns([1, 2])
                         
                         # Columna de imagen
@@ -340,16 +344,7 @@ def interfaz_recomendaciones():
                         
                         # Columna de información
                         with col2:
-                            # Número y título del destino
-                            st.markdown(f"""
-                            <div class="numero-destino">#{i}</div>
-                            <div class="destino-titulo">
-                                {ciudad}<br>
-                                <span class="pais-texto">{pais}</span>
-                            </div>
-                            """, unsafe_allow_html=True)
-                            
-                            # Resto de la información
+                            # Procesar el resto de la información
                             for line in lines:
                                 if line.startswith('Destino:'):
                                     continue
@@ -370,10 +365,9 @@ def interfaz_recomendaciones():
                                     link = line.split('|')[1].strip() if '|' in line else '#'
                                     st.markdown(f"<a href='{link}' target='_blank' class='actividad-link'>🎯 {nombre}</a>", 
                                               unsafe_allow_html=True)
-                            
-                            # Cerrar el contenedor de la tarjeta
-                            st.markdown("</div>", unsafe_allow_html=True)
-                            
+                        
+                        st.markdown("</div>", unsafe_allow_html=True)
+                        
                     except Exception as e:
                         st.error(f"Error al procesar destino {i}: {str(e)}")
                         continue
