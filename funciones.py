@@ -182,19 +182,19 @@ def generar_recomendaciones_destinos(user_id):
         para un viajero que viaja {travel_style} y tiene las siguientes preferencias: {', '.join(actividades)}.
         
         IMPORTANTE: 
-        - Cada destino debe ser una ciudad diferente, NO repitas ciudades
+        - Cada destino debe ser una ciudad DIFERENTE, NO repitas ninguna ciudad
+        - Asegúrate de que los 5 destinos sean únicos
         - Sigue EXACTAMENTE el formato especificado
-        - Asegúrate de que cada sección comience con el prefijo correcto (Destino:, ¿Por qué?:, etc.)
         
         Para cada destino, proporciona:
         1. Nombre del destino (ciudad y país)
-        2. Por qué es ideal según las preferencias del viajero
+        2. Por qué es ideal según las preferencias
         3. Mejor época para visitar
         4. Duración recomendada
         5. Una actividad destacada con link
         
         Formato EXACTO para cada recomendación:
-        Destino: [Nombre de la Ciudad], [País]
+        Destino: [Ciudad], [País]
         ¿Por qué?: [explicación]
         Mejor época: [temporada]
         Duración sugerida: [días]
