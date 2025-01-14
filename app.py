@@ -676,7 +676,7 @@ def interfaz_recomendaciones():
                         destino = destino_line.replace('Destino:', '').strip()
                         ciudad, pais = [part.strip() for part in destino.split(',')] if ',' in destino else (destino, '')
                         
-                        # Crear el contenedor del destino
+                        # Contenedor individual para cada destino
                         st.markdown(f"""
                         <div class="destino-container">
                             <div class="ranking">#{i}</div>
@@ -685,15 +685,17 @@ def interfaz_recomendaciones():
                                     <div class="ciudad">{ciudad}</div>
                                     <div class="pais">{pais}</div>
                                 </div>
+                                <div class="destino-content">
                         """, unsafe_allow_html=True)
                         
+                        # Columnas para imagen e información
                         col1, col2 = st.columns([1, 1.5])
                         
                         with col1:
                             try:
                                 imagen_url = f.obtener_imagen_lugar(f"{ciudad}, {pais}")
                                 if imagen_url:
-                                    response = requests.get(imagen_url, timeout=10)
+                                    response = requests.get(imagen_url)
                                     if response.status_code == 200:
                                         img = Image.open(BytesIO(response.content))
                                         st.image(img, use_container_width=True)
@@ -732,6 +734,7 @@ def interfaz_recomendaciones():
                                     </a>""", unsafe_allow_html=True)
                         
                         st.markdown("""
+                                </div>
                             </div>
                         </div>
                         """, unsafe_allow_html=True)
