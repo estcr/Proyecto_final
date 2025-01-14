@@ -163,85 +163,68 @@ def pagina_inicio():
 
 # Función de login modernizada
 def login():
-    # Fondo oscuro y contenedor principal
+    # Estilos para la página de inicio de sesión
     st.markdown("""
         <style>
         .main {
-            background-color: #1a1a1a;
+            background-color: #13151a;
         }
-        .login-container {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            margin: 20px auto;
-            max-width: 500px;
+        .stButton > button {
+            background-color: #1a1c23;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: all 0.3s ease;
         }
-        .login-header {
+        .stButton > button:hover {
+            background-color: #2e3138;
+        }
+        .stTextInput > div > div > input {
+            background-color: #1a1c23;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .login-title {
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
             text-align: center;
             margin-bottom: 30px;
         }
-        .login-input {
-            background: #f8f9fa;
-            border: none;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            width: 100%;
-        }
-        .login-button {
-            background: #FF4B4B;
+        .email-label {
             color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 25px;
-            font-weight: bold;
-            width: 100%;
-            margin-top: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .login-button:hover {
-            background: #ff6b6b;
-            transform: translateY(-2px);
+            font-size: 16px;
+            margin-bottom: 10px;
         }
         </style>
     """, unsafe_allow_html=True)
     
-    # Logo y contenido
+    # Logo y título
     mostrar_logo()
+    st.markdown('<h1 class="login-title">Inicio de Sesión</h1>', unsafe_allow_html=True)
     
-    st.markdown("""
-        <div class="login-container">
-            <div class="login-header">
-                <h1 style="color: #2e7bcf;">¡Bienvenido de Nuevo! 👋</h1>
-                <p style="color: #666; font-size: 1.1em;">
-                    Inicia sesión para descubrir destinos increíbles
-                </p>
-            </div>
-    """, unsafe_allow_html=True)
-    
-    with st.form("login_form"):
-        email = st.text_input("📧 Email", placeholder="tucorreo@ejemplo.com")
-        submitted = st.form_submit_button("Iniciar Sesión", use_container_width=True)
+    # Formulario de inicio de sesión
+    with st.form("login_form", clear_on_submit=True):
+        st.markdown('<p class="email-label">Email</p>', unsafe_allow_html=True)
+        email = st.text_input("", placeholder="tucorreo@ejemplo.com", label_visibility="collapsed")
+        submitted = st.form_submit_button("Iniciar Sesión")
         
         if submitted:
             if email:
                 user_id = obtener_usuario_por_email(email)
                 if user_id:
                     st.session_state.id_usuario = user_id
-                    st.balloons()
-                    st.success("¡Bienvenido de nuevo! 🎉")
-                    if st.button("¡Comenzar mi aventura! 🚀", use_container_width=True):
-                        st.session_state.pagina_actual = "🏠 Inicio"
-                        st.rerun()
+                    st.success("¡Inicio de sesión exitoso!")
+                    st.session_state.pagina_actual = "🏠 Inicio"
+                    st.rerun()
                 else:
-                    st.error("No encontramos tu cuenta 😕")
-                    st.info("¿Aún no tienes cuenta? ¡Regístrate ahora!")
+                    st.error("Usuario no encontrado")
             else:
-                st.warning("Por favor, ingresa tu email 📧")
-
-    st.markdown("</div>", unsafe_allow_html=True)
+                st.warning("Por favor, ingresa tu email")
 
 # Función de registro modernizada
 def obtener_datos_usuario():
