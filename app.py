@@ -306,20 +306,25 @@ def interfaz_recomendaciones():
                 
                 for i, rec in enumerate(recomendaciones, 1):
                     try:
-                        # Limpiar y dividir las líneas, eliminando líneas vacías
                         lines = [line.strip() for line in rec.split('\n') if line.strip()]
                         
                         # Obtener el destino de manera más robusta
-                        destino_line = next((line for line in lines if line.startswith('Destino:')), '')
+                        destino_line = next((line for line in lines if line.startswith('Destino:')), None)
+                        if not destino_line:
+                            continue  # Saltar esta recomendación si no tiene destino
+                            
                         destino = destino_line.replace('Destino:', '').strip()
-                        
-                        # Separar ciudad y país
                         ciudad, pais = [part.strip() for part in destino.split(',')] if ',' in destino else (destino, '')
                         
                         # Crear la tarjeta del destino
                         st.markdown(f"""
                         <div class="destino-card">
-                        <div class="numero-destino">#{i}</div>
+                            <div class="numero-destino">#{i}</div>
+                            <div class="destino-titulo">
+                                {ciudad}<br>
+                                <span style="font-size: 18px; color: #666;">{pais}</span>
+                            </div>
+                        </div>
                         """, unsafe_allow_html=True)
                         
                         col1, col2 = st.columns([1, 2])
@@ -328,54 +333,34 @@ def interfaz_recomendaciones():
                         with col1:
                             try:
                                 imagen_url = f.obtener_imagen_lugar(f"{ciudad}, {pais}")
-                                if imagen_url:
-                                    response = requests.get(imagen_url)
-                                    if response.status_code == 200:
-                                        img = Image.open(BytesIO(response.content))
-                                        st.markdown('<div class="imagen-container">', unsafe_allow_html=True)
-                                        st.image(img, width=200, use_container_width=True)
-                                        st.markdown('</div>', unsafe_allow_html=True)
-                                    else:
-                                        st.warning("🖼️ Imagen no disponible")
-                            except Exception as e:
+                                if imagen_url and requests.get(imagen_url).status_code == 200:
+                                    img = Image.open(BytesIO(requests.get(imagen_url).content))
+                                    st.image(img, width=200, use_container_width=True)
+                            except:
                                 st.warning("🖼️ Imagen no disponible")
                         
                         # Columna de información
                         with col2:
-                            # Mostrar el título del destino de manera consistente
-                            if ciudad and pais:
-                                st.markdown(f"""
-                                <div class="destino-titulo">
-                                    {ciudad}<br>
-                                    <span style="font-size: 18px; color: #666;">{pais}</span>
-                                </div>
-                                """, unsafe_allow_html=True)
-                            else:
-                                st.markdown(f'<div class="destino-titulo">{destino}</div>', 
-                                          unsafe_allow_html=True)
-                            
-                            # Procesar el resto de la información
                             for line in lines:
-                                if not line.startswith('Destino:'):
-                                    if 'Mejor época:' in line:
-                                        epoca = line.replace('Mejor época:', '').strip()
-                                        st.markdown(f'<span class="info-tag">🗓️ {epoca}</span>', 
-                                                  unsafe_allow_html=True)
-                                    elif 'Duración sugerida:' in line:
-                                        duracion = line.replace('Duración sugerida:', '').strip()
-                                        st.markdown(f'<span class="info-tag">⏱️ {duracion}</span>', 
-                                                  unsafe_allow_html=True)
-                                    elif '|' in line and 'http' in line:
-                                        nombre, link = line.split('|', 1)
-                                        link = link.strip()
-                                        st.markdown(f"<a href='{link}' target='_blank' class='actividad-link'>🎯 {nombre.strip()}</a>", 
-                                                  unsafe_allow_html=True)
-                                    elif '¿Por qué?' in line:
-                                        texto = line.replace('¿Por qué?:', '').strip()
-                                        st.markdown(f"<div class='porque-texto'>💡 {texto}</div>", 
-                                                  unsafe_allow_html=True)
-                                    else:
-                                        st.markdown(f"<p>{line}</p>", unsafe_allow_html=True)
+                                if line.startswith('Destino:'):
+                                    continue
+                                elif '¿Por qué?' in line:
+                                    texto = line.replace('¿Por qué?:', '').strip()
+                                    st.markdown(f"<div class='porque-texto'>💡 {texto}</div>", 
+                                              unsafe_allow_html=True)
+                                elif 'Mejor época:' in line:
+                                    epoca = line.replace('Mejor época:', '').strip()
+                                    st.markdown(f'<span class="info-tag">🗓️ {epoca}</span>', 
+                                              unsafe_allow_html=True)
+                                elif 'Duración sugerida:' in line:
+                                    duracion = line.replace('Duración sugerida:', '').strip()
+                                    st.markdown(f'<span class="info-tag">⏱️ {duracion}</span>', 
+                                              unsafe_allow_html=True)
+                                elif '|' in line and 'Actividad destacada:' in line:
+                                    nombre = line.split('|')[0].replace('Actividad destacada:', '').strip()
+                                    link = line.split('|')[1].strip()
+                                    st.markdown(f"<a href='{link}' target='_blank' class='actividad-link'>🎯 {nombre}</a>", 
+                                              unsafe_allow_html=True)
                         
                         st.markdown("</div>", unsafe_allow_html=True)
                         
@@ -510,7 +495,7 @@ def main():
     # Manejo de páginas
     if pagina_actual == "🔑 Inicio de Sesión":
         login()
-    elif pagina_actual == "📝 Registro":
+    elif pagina_actual == "�� Registro":
         obtener_datos_usuario()
     elif pagina_actual == "🏠 Inicio":
         pagina_inicio()

@@ -181,21 +181,24 @@ def generar_recomendaciones_destinos(user_id):
         prompt = f"""Actúa como un experto agente de viajes y recomienda los 5 mejores destinos DIFERENTES del mundo 
         para un viajero que viaja {travel_style} y tiene las siguientes preferencias: {', '.join(actividades)}.
         
-        IMPORTANTE: Cada destino debe ser una ciudad diferente, no repitas ciudades.
+        IMPORTANTE: 
+        - Cada destino debe ser una ciudad diferente, NO repitas ciudades
+        - Sigue EXACTAMENTE el formato especificado
+        - Asegúrate de que cada sección comience con el prefijo correcto (Destino:, ¿Por qué?:, etc.)
         
         Para cada destino, proporciona:
         1. Nombre del destino (ciudad y país)
-        2. Por qué es ideal según las preferencias del viajero y su estilo de viaje ({travel_style})
+        2. Por qué es ideal según las preferencias del viajero
         3. Mejor época para visitar
-        4. Duración recomendada de la visita
-        5. Una actividad destacada con su link de reserva (usa solo URLs reales y completas, incluyendo https://)
+        4. Duración recomendada
+        5. Una actividad destacada con link
         
-        Formato EXACTO para cada recomendación (respeta el formato):
-        Destino: [ciudad], [país]
-        ¿Por qué?: [explicación basada en preferencias y estilo de viaje]
+        Formato EXACTO para cada recomendación:
+        Destino: [Nombre de la Ciudad], [País]
+        ¿Por qué?: [explicación]
         Mejor época: [temporada]
-        Duración sugerida: [días recomendados]
-        Actividad destacada: [nombre] | https://[url_completa]
+        Duración sugerida: [días]
+        Actividad destacada: [nombre] | [link]
         ---"""
 
         response = client.chat.completions.create(
