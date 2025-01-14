@@ -88,15 +88,16 @@ st.markdown("""
     
     .destino-titulo {
         color: #FF4B4B;
-        font-size: 24px !important;
+        font-size: 28px !important;
         margin-bottom: 15px;
         font-weight: bold;
         display: block !important;
+        text-transform: uppercase;
     }
     
     .info-tag {
         background-color: #2e7bcf;
-        color: white;
+        color: white !important;
         padding: 5px 10px;
         border-radius: 15px;
         font-size: 14px;
@@ -105,34 +106,48 @@ st.markdown("""
         margin-bottom: 10px;
     }
     
-    .actividad-link {
-        color: #FF4B4B;
-        text-decoration: none;
-        padding: 5px 10px;
-        border: 1px solid #FF4B4B;
-        border-radius: 5px;
-        display: inline-block;
-        margin-top: 10px;
-    }
-    
-    .actividad-link:hover {
-        background-color: #FF4B4B;
-        color: white;
-    }
-    
     .porque-texto {
         margin: 15px 0;
-        padding: 10px;
-        background-color: rgba(46, 123, 207, 0.1);
+        padding: 15px;
+        background-color: #FF4B4B;
         border-radius: 5px;
-        border-left: 3px solid #2e7bcf;
-        color: #000;
+        color: white !important;
         font-weight: 500;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     
     .destino-card p {
         color: #000 !important;
         margin-bottom: 10px;
+        font-size: 16px;
+    }
+    
+    .actividad-link {
+        color: #FF4B4B;
+        text-decoration: none;
+        padding: 8px 15px;
+        border: 2px solid #FF4B4B;
+        border-radius: 20px;
+        display: inline-block;
+        margin-top: 10px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+    
+    .actividad-link:hover {
+        background-color: #FF4B4B;
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .imagen-destino {
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .imagen-destino:hover {
+        transform: scale(1.05);
     }
     </style>
     """, unsafe_allow_html=True)
@@ -295,6 +310,9 @@ def interfaz_recomendaciones():
                         destino = next((l.replace('Destino:', '').strip() 
                                      for l in lines if 'Destino:' in l), 'Destino no especificado')
                         
+                        # Separar ciudad y país
+                        ciudad, pais = destino.split(',') if ',' in destino else (destino, '')
+                        
                         # Crear la tarjeta del destino
                         st.markdown(f"""
                         <div class="destino-card">
@@ -311,7 +329,9 @@ def interfaz_recomendaciones():
                                     response = requests.get(imagen_url)
                                     if response.status_code == 200:
                                         img = Image.open(BytesIO(response.content))
-                                        st.image(img, width=200)
+                                        st.markdown(f'<div class="imagen-container">', unsafe_allow_html=True)
+                                        st.image(img, width=200, output_format='PNG', use_column_width=True)
+                                        st.markdown('</div>', unsafe_allow_html=True)
                                     else:
                                         st.warning("🖼️ Imagen no disponible")
                             except Exception as e:
@@ -320,8 +340,12 @@ def interfaz_recomendaciones():
                         # Columna de información
                         with col2:
                             # Mostrar el título del destino
-                            st.markdown(f'<h3 class="destino-titulo">{destino}</h3>', 
-                                      unsafe_allow_html=True)
+                            st.markdown(f"""
+                            <div class="destino-titulo">
+                                {ciudad.strip()}<br>
+                                <span style="font-size: 18px; color: #666;">{pais.strip()}</span>
+                            </div>
+                            """, unsafe_allow_html=True)
                             
                             # Procesar el resto de la información
                             for line in lines:

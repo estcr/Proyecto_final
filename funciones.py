@@ -178,19 +178,20 @@ def generar_recomendaciones_destinos(user_id):
         client = OpenAI(api_key=st.secrets["api_keys"]["apigpt_key"])
         
         actividades = [f"{pref[0]} (nivel de interés: {pref[1]})" for pref in preferencias]
-        prompt = f"""Actúa como un experto agente de viajes y recomienda los 5 mejores destinos del mundo 
+        prompt = f"""Actúa como un experto agente de viajes y recomienda los 5 mejores destinos DIFERENTES del mundo 
         para un viajero que viaja {travel_style} y tiene las siguientes preferencias: {', '.join(actividades)}.
         
-        Para cada destino, proporciona:
-        1. Nombre del destino
-        2. País
-        3. Por qué es ideal según las preferencias del viajero y su estilo de viaje ({travel_style})
-        4. Mejor época para visitar
-        5. Duración recomendada de la visita
-        6. Una actividad destacada con su link de reserva (usa solo URLs reales y completas, incluyendo https://)
+        IMPORTANTE: Cada destino debe ser una ciudad diferente, no repitas ciudades.
         
-        Formato para cada recomendación:
-        Destino: [ciudad, país]
+        Para cada destino, proporciona:
+        1. Nombre del destino (ciudad y país)
+        2. Por qué es ideal según las preferencias del viajero y su estilo de viaje ({travel_style})
+        3. Mejor época para visitar
+        4. Duración recomendada de la visita
+        5. Una actividad destacada con su link de reserva (usa solo URLs reales y completas, incluyendo https://)
+        
+        Formato EXACTO para cada recomendación (respeta el formato):
+        Destino: [ciudad], [país]
         ¿Por qué?: [explicación basada en preferencias y estilo de viaje]
         Mejor época: [temporada]
         Duración sugerida: [días recomendados]
