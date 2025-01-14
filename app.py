@@ -33,13 +33,14 @@ st.markdown("""
         border-radius: 5px;
         height: 2.5em;
         background-color: #FF4B4B;
-        color: white;
+        color: white !important;
         border: none;
         padding: 0 20px;
+        font-weight: bold;
     }
-    .stButton>button:hover {
-        background-color: #FF6B6B;
-        color: white;
+    .stButton>button:active {
+        color: white !important;
+        background-color: #E04141;
     }
     .sidebar .sidebar-content {
         background-image: linear-gradient(#2e7bcf,#2e7bcf);
@@ -186,7 +187,6 @@ def interfaz_preferencias():
 def interfaz_recomendaciones():
     st.title("Recomendaciones de Destinos")
     
-    # Verificar si hay un usuario en la sesión
     if "id_usuario" not in st.session_state or st.session_state.id_usuario is None:
         st.warning("Por favor, inicia sesión primero")
         return
@@ -198,18 +198,33 @@ def interfaz_recomendaciones():
             resultado = f.generar_recomendaciones_destinos(user_id)
             
             if isinstance(resultado, dict):
-                # Mostrar recomendaciones de ChatGPT
-                st.subheader("Destinos Recomendados")
-                st.write(resultado['recomendaciones_gpt'])
+                recomendaciones = resultado['recomendaciones_gpt'].split('---')
                 
-                # Mostrar destinos similares de la base de datos
-                st.subheader("Destinos Similares de Nuestra Base de Datos")
-                for i, dest in enumerate(resultado['destinos_similares'], 1):
-                    with st.expander(f"{i}. {dest['Actividad']}"):
-                        st.write(f"**Descripción:** {dest['Descripción']}")
-                        st.write(f"**Relevancia:** {dest['score']:.2f}")
-            else:
-                st.error(resultado)
+                for rec in recomendaciones:
+                    if rec.strip():
+                        # Extraer información
+                        lines = rec.strip().split('\n')
+                        destino = next((l for l in lines if 'Destino:' in l), '').replace('Destino:', '').strip()
+                        imagen_url = next((l for l in lines if 'Imagen:' in l), '').replace('Imagen:', '').strip()
+                        actividad = next((l for l in lines if 'Actividad destacada:' in l), '').replace('Actividad destacada:', '').strip()
+                        
+                        # Crear columnas para layout
+                        col1, col2 = st.columns([1, 2])
+                        
+                        with col1:
+                            if imagen_url:
+                                st.image(imagen_url, caption=destino, width=200)
+                        
+                        with col2:
+                            st.markdown(f"### {destino}")
+                            for line in lines:
+                                if not any(x in line for x in ['Destino:', 'Imagen:']):
+                                    if 'http' in line:
+                                        st.markdown(f"[🔗 {line.split('|')[0].strip()}]({line.split('|')[1].strip()})")
+                                    else:
+                                        st.write(line)
+                        
+                        st.markdown("---")
 
 # Función para generar itinerario
 def mostrar_itinerario():

@@ -120,31 +120,35 @@ def obtener_usuario_actual():
 def generar_recomendaciones_destinos(user_id):
     """Genera recomendaciones de destinos basados en las preferencias del usuario"""
     try:
-        # 1. Obtener preferencias del usuario
+        # Obtener preferencias y estilo de viaje del usuario
         preferencias = obtener_preferencias_usuario(user_id)
+        travel_style = obtener_travel_style(user_id)  # Nueva función
+        
         if not preferencias:
             return "No se encontraron preferencias para el usuario."
 
-        # 2. Generar recomendaciones con ChatGPT
         client = OpenAI(api_key=st.secrets["api_keys"]["apigpt_key"])
         
-        # Crear prompt detallado para recomendar destinos
         actividades = [f"{pref[0]} (nivel de interés: {pref[1]})" for pref in preferencias]
         prompt = f"""Actúa como un experto agente de viajes y recomienda los 5 mejores destinos del mundo 
-        para un viajero con las siguientes preferencias: {', '.join(actividades)}.
+        para un viajero que viaja {travel_style} y tiene las siguientes preferencias: {', '.join(actividades)}.
         
         Para cada destino, proporciona:
         1. Nombre del destino
         2. País
-        3. Por qué es ideal según las preferencias del viajero
+        3. Por qué es ideal según las preferencias del viajero y su estilo de viaje ({travel_style})
         4. Mejor época para visitar
         5. Duración recomendada de la visita
+        6. Una actividad destacada con su link de reserva o sitio web oficial
+        7. Una imagen representativa (URL de una imagen libre de derechos)
         
         Formato para cada recomendación:
         Destino: [ciudad, país]
-        ¿Por qué?: [explicación basada en preferencias]
+        ¿Por qué?: [explicación basada en preferencias y estilo de viaje]
         Mejor época: [temporada]
         Duración sugerida: [días recomendados]
+        Actividad destacada: [nombre] | [link]
+        Imagen: [url_imagen]
         ---"""
 
         response = client.chat.completions.create(
@@ -230,5 +234,20 @@ def insertar_usuario(name, email, travel_style, registration_date):
         conn.rollback()
         st.error(f"Error al registrar usuario: {e}")
         return False
+    finally:
+        conn.close()
+
+def obtener_travel_style(user_id):
+    """Obtiene el estilo de viaje del usuario desde la base de datos"""
+    conn = c.conectar_bd()
+    try:
+        cursor = conn.cursor()
+        query = "SELECT travel_style FROM users WHERE user_id = %s"
+        cursor.execute(query, (user_id,))
+        result = cursor.fetchone()
+        return result[0] if result else "solo"
+    except Exception as e:
+        st.error(f"Error al obtener el estilo de viaje: {e}")
+        return "solo"
     finally:
         conn.close()
