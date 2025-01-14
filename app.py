@@ -226,14 +226,18 @@ def interfaz_recomendaciones():
             resultado = f.generar_recomendaciones_destinos(user_id)
             
             if isinstance(resultado, dict):
-                recomendaciones = resultado['recomendaciones_gpt'].split('---')
+                recomendaciones = [rec.strip() for rec in resultado['recomendaciones_gpt'].split('---') if rec.strip()]
                 
                 for rec in recomendaciones:
-                    if rec.strip():
-                        lines = rec.strip().split('\n')
-                        destino = next((l for l in lines if 'Destino:' in l), '').replace('Destino:', '').strip()
-                        imagen_url = next((l for l in lines if 'Imagen:' in l), '').replace('Imagen:', '').strip()
+                    try:
+                        lines = rec.split('\n')
+                        # Extraer información cuidadosamente
+                        destino = next((l.replace('Destino:', '').strip() 
+                                     for l in lines if 'Destino:' in l), 'Destino no especificado')
+                        imagen_url = next((l.replace('Imagen:', '').strip() 
+                                        for l in lines if 'Imagen:' in l), '')
                         
+                        # Crear la tarjeta del destino
                         st.markdown("""
                         <div class="destino-card">
                         """, unsafe_allow_html=True)
@@ -242,25 +246,39 @@ def interfaz_recomendaciones():
                         
                         with col1:
                             if imagen_url:
-                                mostrar_imagen_segura(imagen_url)
+                                try:
+                                    mostrar_imagen_segura(imagen_url)
+                                except:
+                                    st.warning("🖼️ Imagen no disponible")
                         
                         with col2:
-                            st.markdown(f'<h3 class="destino-titulo">{destino}</h3>', unsafe_allow_html=True)
+                            st.markdown(f'<h3 class="destino-titulo">{destino}</h3>', 
+                                      unsafe_allow_html=True)
                             
                             for line in lines:
-                                if not any(x in line for x in ['Destino:', 'Imagen:']):
+                                line = line.strip()
+                                if line and not line.startswith(('Destino:', 'Imagen:')):
                                     if 'Mejor época:' in line:
                                         epoca = line.replace('Mejor época:', '').strip()
-                                        st.markdown(f'<span class="info-tag">🗓️ {epoca}</span>', unsafe_allow_html=True)
+                                        st.markdown(f'<span class="info-tag">🗓️ {epoca}</span>', 
+                                                  unsafe_allow_html=True)
                                     elif 'Duración sugerida:' in line:
                                         duracion = line.replace('Duración sugerida:', '').strip()
-                                        st.markdown(f'<span class="info-tag">⏱️ {duracion}</span>', unsafe_allow_html=True)
-                                    elif 'http' in line:
-                                        st.markdown(f"[🎯 {line.split('|')[0].strip()}]({line.split('|')[1].strip()})")
-                                    else:
+                                        st.markdown(f'<span class="info-tag">⏱️ {duracion}</span>', 
+                                                  unsafe_allow_html=True)
+                                    elif '|' in line and 'http' in line:
+                                        nombre, link = line.split('|')
+                                        st.markdown(f"[🎯 {nombre.strip()}]({link.strip()})")
+                                    elif line:
                                         st.write(line)
                         
                         st.markdown("</div>", unsafe_allow_html=True)
+                        
+                    except Exception as e:
+                        st.error(f"Error al procesar destino: {str(e)}")
+                        continue
+            else:
+                st.error(resultado)
 
 # Función para generar itinerario
 def mostrar_itinerario():
