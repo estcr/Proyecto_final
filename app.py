@@ -306,12 +306,15 @@ def interfaz_recomendaciones():
                 
                 for i, rec in enumerate(recomendaciones, 1):
                     try:
+                        # Limpiar y dividir las líneas, eliminando líneas vacías
                         lines = [line.strip() for line in rec.split('\n') if line.strip()]
-                        destino = next((l.replace('Destino:', '').strip() 
-                                     for l in lines if 'Destino:' in l), 'Destino no especificado')
+                        
+                        # Obtener el destino de manera más robusta
+                        destino_line = next((line for line in lines if line.startswith('Destino:')), '')
+                        destino = destino_line.replace('Destino:', '').strip()
                         
                         # Separar ciudad y país
-                        ciudad, pais = destino.split(',') if ',' in destino else (destino, '')
+                        ciudad, pais = [part.strip() for part in destino.split(',')] if ',' in destino else (destino, '')
                         
                         # Crear la tarjeta del destino
                         st.markdown(f"""
@@ -324,13 +327,13 @@ def interfaz_recomendaciones():
                         # Columna de imagen
                         with col1:
                             try:
-                                imagen_url = f.obtener_imagen_lugar(destino)
+                                imagen_url = f.obtener_imagen_lugar(f"{ciudad}, {pais}")
                                 if imagen_url:
                                     response = requests.get(imagen_url)
                                     if response.status_code == 200:
                                         img = Image.open(BytesIO(response.content))
-                                        st.markdown(f'<div class="imagen-container">', unsafe_allow_html=True)
-                                        st.image(img, width=200, output_format='PNG', use_column_width=True)
+                                        st.markdown('<div class="imagen-container">', unsafe_allow_html=True)
+                                        st.image(img, width=200, use_container_width=True)
                                         st.markdown('</div>', unsafe_allow_html=True)
                                     else:
                                         st.warning("🖼️ Imagen no disponible")
@@ -339,21 +342,22 @@ def interfaz_recomendaciones():
                         
                         # Columna de información
                         with col2:
-                            # Mostrar el título del destino
-                            st.markdown(f"""
-                            <div class="destino-titulo">
-                                {ciudad.strip()}<br>
-                                <span style="font-size: 18px; color: #666;">{pais.strip()}</span>
-                            </div>
-                            """, unsafe_allow_html=True)
+                            # Mostrar el título del destino de manera consistente
+                            if ciudad and pais:
+                                st.markdown(f"""
+                                <div class="destino-titulo">
+                                    {ciudad}<br>
+                                    <span style="font-size: 18px; color: #666;">{pais}</span>
+                                </div>
+                                """, unsafe_allow_html=True)
+                            else:
+                                st.markdown(f'<div class="destino-titulo">{destino}</div>', 
+                                          unsafe_allow_html=True)
                             
                             # Procesar el resto de la información
                             for line in lines:
-                                line = line.strip()
-                                if line:  # Asegurarnos de que la línea no esté vacía
-                                    if 'Destino:' in line:
-                                        continue  # Saltar la línea del destino ya que ya lo mostramos
-                                    elif 'Mejor época:' in line:
+                                if not line.startswith('Destino:'):
+                                    if 'Mejor época:' in line:
                                         epoca = line.replace('Mejor época:', '').strip()
                                         st.markdown(f'<span class="info-tag">🗓️ {epoca}</span>', 
                                                   unsafe_allow_html=True)
