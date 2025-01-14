@@ -715,9 +715,6 @@ def interfaz_recomendaciones():
             if isinstance(resultado, dict):
                 recomendaciones = [rec.strip() for rec in resultado['recomendaciones_gpt'].split('---') if rec.strip()]
                 
-                # Contenedor principal
-                st.markdown("""<div class="recomendaciones-container">""", unsafe_allow_html=True)
-                
                 for i, rec in enumerate(recomendaciones, 1):
                     try:
                         lines = [line.strip() for line in rec.split('\n') if line.strip()]
@@ -728,7 +725,7 @@ def interfaz_recomendaciones():
                         destino = destino_line.replace('Destino:', '').strip()
                         ciudad, pais = [part.strip() for part in destino.split(',')] if ',' in destino else (destino, '')
                         
-                        # Tarjeta de destino
+                        # Crear la tarjeta completa para cada destino
                         st.markdown(f"""
                         <div class="destino-container">
                             <div class="ranking">#{i}</div>
@@ -737,10 +734,8 @@ def interfaz_recomendaciones():
                                     <div class="ciudad">{ciudad}</div>
                                     <div class="pais">{pais}</div>
                                 </div>
-                                <div class="destino-content">
                         """, unsafe_allow_html=True)
                         
-                        # Contenido
                         col1, col2 = st.columns([1, 1.5])
                         
                         with col1:
@@ -777,22 +772,18 @@ def interfaz_recomendaciones():
                                         🎯 {nombre}
                                     </a>""", unsafe_allow_html=True)
                         
-                        # Cerrar tarjeta
+                        # Cerrar la tarjeta
                         st.markdown("""
-                                </div>
                             </div>
                         </div>
                         """, unsafe_allow_html=True)
                         
-                        # Separador
+                        # Agregar separador si no es el último destino
                         if i < len(recomendaciones):
                             st.markdown("<div class='separador'></div>", unsafe_allow_html=True)
                     
                     except Exception as e:
                         st.error(f"Error al procesar destino {i}: {str(e)}")
-                
-                # Cerrar contenedor principal
-                st.markdown("""</div>""", unsafe_allow_html=True)
 
 # Función para generar itinerario
 def mostrar_itinerario():
