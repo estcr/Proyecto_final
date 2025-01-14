@@ -19,7 +19,7 @@ def obtener_preferencias_usuario(user_id):
         st.error(f"Error al obtener las preferencias del usuario: {e}")
         return None
 
-def generar_recomendaciones_gpt(destino, preferencias):
+def generar_recomendaciones_gpt(destino, preferencias, travel_style):
     """Genera recomendaciones usando ChatGPT"""
     client = OpenAI(api_key=st.secrets["api_keys"]["apigpt_key"])
     
@@ -86,11 +86,13 @@ def generar_recomendaciones_completas(destino, user_id):
     try:
         # 1. Obtener preferencias del usuario
         preferencias = obtener_preferencias_usuario(user_id)
+        travel_style = obtener_travel_style(user_id)
+        
         if not preferencias:
             return "No se encontraron preferencias para el usuario."
 
         # 2. Generar recomendaciones con ChatGPT
-        recomendaciones_gpt = generar_recomendaciones_gpt(destino, preferencias)
+        recomendaciones_gpt = generar_recomendaciones_gpt(destino, preferencias, travel_style)
         if not recomendaciones_gpt:
             return "Error al generar recomendaciones con GPT."
 

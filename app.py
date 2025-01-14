@@ -57,6 +57,29 @@ st.markdown("""
     .stSuccess {
         background-color: #28a745;
     }
+    .destino-card {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 10px 0;
+        border-left: 5px solid #FF4B4B;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .destino-titulo {
+        color: #FF4B4B;
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+    
+    .info-tag {
+        background-color: #2e7bcf;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 14px;
+        margin-right: 10px;
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -119,6 +142,11 @@ def login():
             st.session_state.id_usuario = user_id
             st.success("¡Bienvenido de nuevo! 👋")
             st.balloons()
+            
+            # Botón para continuar
+            if st.button("¡Comenzar mi aventura! 🚀"):
+                st.session_state.pagina_actual = "🏠 Inicio"
+                st.rerun()
         else:
             st.error("Usuario no encontrado 😕")
 
@@ -193,8 +221,8 @@ def interfaz_recomendaciones():
     
     user_id = st.session_state.id_usuario
     
-    if st.button("Obtener Recomendaciones de Destinos"):
-        with st.spinner("Analizando tus preferencias y buscando los mejores destinos..."):
+    if st.button("Descubrir Destinos Perfectos ✨"):
+        with st.spinner("Creando tu lista de destinos soñados... 🌍"):
             resultado = f.generar_recomendaciones_destinos(user_id)
             
             if isinstance(resultado, dict):
@@ -202,29 +230,37 @@ def interfaz_recomendaciones():
                 
                 for rec in recomendaciones:
                     if rec.strip():
-                        # Extraer información
                         lines = rec.strip().split('\n')
                         destino = next((l for l in lines if 'Destino:' in l), '').replace('Destino:', '').strip()
                         imagen_url = next((l for l in lines if 'Imagen:' in l), '').replace('Imagen:', '').strip()
-                        actividad = next((l for l in lines if 'Actividad destacada:' in l), '').replace('Actividad destacada:', '').strip()
                         
-                        # Crear columnas para layout
+                        st.markdown("""
+                        <div class="destino-card">
+                        """, unsafe_allow_html=True)
+                        
                         col1, col2 = st.columns([1, 2])
                         
                         with col1:
                             if imagen_url:
-                                st.image(imagen_url, caption=destino, width=200)
+                                st.image(imagen_url, width=200)
                         
                         with col2:
-                            st.markdown(f"### {destino}")
+                            st.markdown(f'<h3 class="destino-titulo">{destino}</h3>', unsafe_allow_html=True)
+                            
                             for line in lines:
                                 if not any(x in line for x in ['Destino:', 'Imagen:']):
-                                    if 'http' in line:
-                                        st.markdown(f"[🔗 {line.split('|')[0].strip()}]({line.split('|')[1].strip()})")
+                                    if 'Mejor época:' in line:
+                                        epoca = line.replace('Mejor época:', '').strip()
+                                        st.markdown(f'<span class="info-tag">🗓️ {epoca}</span>', unsafe_allow_html=True)
+                                    elif 'Duración sugerida:' in line:
+                                        duracion = line.replace('Duración sugerida:', '').strip()
+                                        st.markdown(f'<span class="info-tag">⏱️ {duracion}</span>', unsafe_allow_html=True)
+                                    elif 'http' in line:
+                                        st.markdown(f"[🎯 {line.split('|')[0].strip()}]({line.split('|')[1].strip()})")
                                     else:
                                         st.write(line)
                         
-                        st.markdown("---")
+                        st.markdown("</div>", unsafe_allow_html=True)
 
 # Función para generar itinerario
 def mostrar_itinerario():
