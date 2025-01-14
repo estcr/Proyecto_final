@@ -196,3 +196,39 @@ def insertar_preferencias_viaje(user_id, preferencias):
         st.error(f"Error al actualizar preferencias: {e}")
     finally:
         conn.close()
+
+def insertar_usuario(name, email, travel_style, registration_date):
+    """Inserta un nuevo usuario en la base de datos"""
+    conn = c.conectar_bd()
+    try:
+        cursor = conn.cursor()
+        
+        # Verificar si el email ya existe
+        check_query = "SELECT user_id FROM users WHERE email = %s"
+        cursor.execute(check_query, (email,))
+        existing_user = cursor.fetchone()
+        
+        if existing_user:
+            st.warning("Este email ya está registrado")
+            return False
+        
+        # Insertar nuevo usuario
+        query = """
+        INSERT INTO users (name, email, travel_style, registration_date) 
+        VALUES (%s, %s, %s, %s)
+        """
+        cursor.execute(query, (name, email, travel_style, registration_date))
+        conn.commit()
+        
+        # Obtener el ID del usuario recién insertado
+        user_id = cursor.lastrowid
+        st.session_state.id_usuario = user_id
+        
+        return True
+        
+    except Exception as e:
+        conn.rollback()
+        st.error(f"Error al registrar usuario: {e}")
+        return False
+    finally:
+        conn.close()

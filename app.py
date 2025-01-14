@@ -5,27 +5,37 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 
-# Configuración de la página
+# Configuración de la página y eliminación del mensaje de Streamlit
 st.set_page_config(
     page_title="TuGuía - Tu Planificador de Viajes",
     page_icon="✈️",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="expanded",
+    menu_items={
+        'Get Help': None,
+        'Report a bug': None,
+        'About': None
+    }
 )
 
-# Estilos CSS personalizados
+# Estilos CSS personalizados actualizados
 st.markdown("""
     <style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    
     .main {
         padding: 0rem 1rem;
     }
     .stButton>button {
-        width: 100%;
+        width: auto;
         border-radius: 5px;
-        height: 3em;
+        height: 2.5em;
         background-color: #FF4B4B;
         color: white;
         border: none;
+        padding: 0 20px;
     }
     .stButton>button:hover {
         background-color: #FF6B6B;
