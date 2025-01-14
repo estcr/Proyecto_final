@@ -8,7 +8,7 @@ from datetime import datetime
 # Configuración de la página y eliminación del mensaje de Streamlit
 st.set_page_config(
     page_title="TuGuía - Tu Planificador de Viajes",
-    page_icon="✈️",
+    page_icon="https://raw.githubusercontent.com/estcr/Proyecto_final/main/img/t-vectorizada.png",
     layout="wide",
     initial_sidebar_state="expanded",
     menu_items={
@@ -242,7 +242,7 @@ def interfaz_recomendaciones():
                         
                         with col1:
                             if imagen_url:
-                                st.image(imagen_url, width=200)
+                                mostrar_imagen_segura(imagen_url)
                         
                         with col2:
                             st.markdown(f'<h3 class="destino-titulo">{destino}</h3>', unsafe_allow_html=True)
@@ -344,6 +344,20 @@ def obtener_usuario_por_email(email):
     except Exception as e:
         st.error(f"Error al obtener el usuario: {e}")
         return None
+
+# Función para mostrar una imagen de forma segura
+def mostrar_imagen_segura(url):
+    """Muestra una imagen de forma segura, con manejo de errores"""
+    try:
+        import requests
+        from PIL import Image
+        from io import BytesIO
+        
+        response = requests.get(url)
+        img = Image.open(BytesIO(response.content))
+        st.image(img, width=200)
+    except Exception as e:
+        st.warning("No se pudo cargar la imagen 🖼️")
 
 # Llamamos a la interfaz principal con la barra lateral
 def main():
