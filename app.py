@@ -4,6 +4,9 @@ import config as c
 import streamlit as st
 import pandas as pd
 from datetime import datetime
+import requests
+from PIL import Image
+from io import BytesIO
 
 # Configuración de la página y eliminación del mensaje de Streamlit
 st.set_page_config(
@@ -87,6 +90,7 @@ st.markdown("""
         font-size: 24px !important;
         margin-bottom: 15px;
         font-weight: bold;
+        display: block !important;
     }
     
     .info-tag {
@@ -118,9 +122,10 @@ st.markdown("""
     .porque-texto {
         margin: 15px 0;
         padding: 10px;
-        background-color: #fff;
+        background-color: rgba(46, 123, 207, 0.1);
         border-radius: 5px;
         border-left: 3px solid #2e7bcf;
+        color: #333;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -279,13 +284,11 @@ def interfaz_recomendaciones():
                 
                 for i, rec in enumerate(recomendaciones, 1):
                     try:
-                        lines = rec.split('\n')
+                        lines = [line.strip() for line in rec.split('\n') if line.strip()]
                         destino = next((l.replace('Destino:', '').strip() 
                                      for l in lines if 'Destino:' in l), 'Destino no especificado')
                         
-                        # Obtener imagen usando Google Places
-                        imagen_url = f.obtener_imagen_lugar(destino)
-                        
+                        # Crear la tarjeta del destino
                         st.markdown(f"""
                         <div class="destino-card">
                         <div class="numero-destino">#{i}</div>
@@ -294,19 +297,22 @@ def interfaz_recomendaciones():
                         col1, col2 = st.columns([1, 2])
                         
                         with col1:
-                            if imagen_url:
-                                try:
-                                    st.image(imagen_url, width=200)
-                                except:
-                                    st.warning("🖼️ Imagen no disponible")
+                            try:
+                                imagen_url = f.obtener_imagen_lugar(destino)
+                                if imagen_url:
+                                    response = requests.get(imagen_url)
+                                    img = Image.open(BytesIO(response.content))
+                                    st.image(img, width=200)
+                            except:
+                                st.warning("🖼️ Imagen no disponible")
                         
                         with col2:
+                            # Evitar duplicación del título
                             st.markdown(f'<h3 class="destino-titulo">{destino}</h3>', 
                                       unsafe_allow_html=True)
                             
                             for line in lines:
-                                line = line.strip()
-                                if line and not line.startswith('Destino:'):
+                                if not line.startswith('Destino:'):  # Evitar mostrar el título de nuevo
                                     if 'Mejor época:' in line:
                                         epoca = line.replace('Mejor época:', '').strip()
                                         st.markdown(f'<span class="info-tag">🗓️ {epoca}</span>', 
@@ -321,9 +327,10 @@ def interfaz_recomendaciones():
                                         st.markdown(f"<a href='{link}' target='_blank' class='actividad-link'>🎯 {nombre.strip()}</a>", 
                                                   unsafe_allow_html=True)
                                     elif '¿Por qué?:' in line:
-                                        st.markdown(f"<div class='porque-texto'>{line}</div>", 
+                                        texto = line.replace('¿Por qué?:', '').strip()
+                                        st.markdown(f"<div class='porque-texto'>💡 {texto}</div>", 
                                                   unsafe_allow_html=True)
-                                    else:
+                                    elif not any(x in line for x in ['Destino:', 'Imagen:']):
                                         st.write(line)
                         
                         st.markdown("</div>", unsafe_allow_html=True)
