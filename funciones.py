@@ -125,23 +125,29 @@ def obtener_imagen_lugar(lugar):
     try:
         api_key = st.secrets["api_keys"]["google_places_key"]
         
+        # Limpiar el nombre del lugar (eliminar información del país si existe)
+        lugar_limpio = lugar.split(',')[0].strip()
+        
         # Primero buscar el lugar
         search_url = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json"
         search_params = {
-            "input": lugar,
+            "input": lugar_limpio,
             "inputtype": "textquery",
             "fields": "photos,place_id",
             "key": api_key
         }
         
         response = requests.get(search_url, params=search_params)
+        if response.status_code != 200:
+            return None
+            
         result = response.json()
         
-        if result["candidates"] and "photos" in result["candidates"][0]:
+        if result.get("candidates") and result["candidates"][0].get("photos"):
             photo_reference = result["candidates"][0]["photos"][0]["photo_reference"]
             
             # Obtener la imagen
-            photo_url = f"https://maps.googleapis.com/maps/api/place/photo"
+            photo_url = "https://maps.googleapis.com/maps/api/place/photo"
             photo_params = {
                 "maxwidth": 400,
                 "photo_reference": photo_reference,
@@ -149,11 +155,15 @@ def obtener_imagen_lugar(lugar):
             }
             
             return photo_url + "?" + "&".join(f"{k}={v}" for k, v in photo_params.items())
+            
     except Exception as e:
         st.error(f"Error al obtener imagen: {e}")
     
-    # Si algo falla, devolver una imagen por defecto de Unsplash
-    return f"https://source.unsplash.com/400x300/?{lugar.replace(' ', '+')}"
+    # Si algo falla, usar Unsplash como respaldo
+    try:
+        return f"https://source.unsplash.com/400x300/?{lugar_limpio.replace(' ', '+')},landmark"
+    except:
+        return None
 
 def generar_recomendaciones_destinos(user_id):
     """Genera recomendaciones de destinos basados en las preferencias del usuario"""

@@ -68,6 +68,7 @@ st.markdown("""
         border-left: 5px solid #FF4B4B;
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         position: relative;
+        color: #000;
     }
     
     .numero-destino {
@@ -125,7 +126,13 @@ st.markdown("""
         background-color: rgba(46, 123, 207, 0.1);
         border-radius: 5px;
         border-left: 3px solid #2e7bcf;
-        color: #333;
+        color: #000;
+        font-weight: 500;
+    }
+    
+    .destino-card p {
+        color: #000 !important;
+        margin-bottom: 10px;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -318,8 +325,11 @@ def interfaz_recomendaciones():
                             
                             # Procesar el resto de la información
                             for line in lines:
-                                if 'Destino:' not in line:  # Evitar mostrar la línea del destino
-                                    if 'Mejor época:' in line:
+                                line = line.strip()
+                                if line:  # Asegurarnos de que la línea no esté vacía
+                                    if 'Destino:' in line:
+                                        continue  # Saltar la línea del destino ya que ya lo mostramos
+                                    elif 'Mejor época:' in line:
                                         epoca = line.replace('Mejor época:', '').strip()
                                         st.markdown(f'<span class="info-tag">🗓️ {epoca}</span>', 
                                                   unsafe_allow_html=True)
@@ -332,12 +342,12 @@ def interfaz_recomendaciones():
                                         link = link.strip()
                                         st.markdown(f"<a href='{link}' target='_blank' class='actividad-link'>🎯 {nombre.strip()}</a>", 
                                                   unsafe_allow_html=True)
-                                    elif '¿Por qué?:' in line:
+                                    elif '¿Por qué?' in line:
                                         texto = line.replace('¿Por qué?:', '').strip()
                                         st.markdown(f"<div class='porque-texto'>💡 {texto}</div>", 
                                                   unsafe_allow_html=True)
-                                    elif line:  # Mostrar otras líneas que no son el título
-                                        st.write(line)
+                                    else:
+                                        st.markdown(f"<p>{line}</p>", unsafe_allow_html=True)
                         
                         st.markdown("</div>", unsafe_allow_html=True)
                         
