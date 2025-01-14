@@ -320,9 +320,11 @@ def interfaz_recomendaciones():
                         destino = destino_line.replace('Destino:', '').strip()
                         ciudad, pais = [part.strip() for part in destino.split(',')] if ',' in destino else (destino, '')
                         
-                        # Crear el contenedor principal de la tarjeta
+                        # Contenedor principal
+                        st.markdown("""<div class="destino-card">""", unsafe_allow_html=True)
+                        
+                        # Número y título
                         st.markdown(f"""
-                        <div class="destino-card">
                             <div class="numero-destino">#{i}</div>
                             <div class="destino-titulo">
                                 {ciudad}<br>
@@ -330,6 +332,7 @@ def interfaz_recomendaciones():
                             </div>
                         """, unsafe_allow_html=True)
                         
+                        # Columnas para imagen e información
                         col1, col2 = st.columns([1, 2])
                         
                         # Columna de imagen
@@ -344,29 +347,29 @@ def interfaz_recomendaciones():
                         
                         # Columna de información
                         with col2:
-                            # Procesar el resto de la información
                             for line in lines:
                                 if line.startswith('Destino:'):
                                     continue
                                 elif '¿Por qué?' in line:
                                     texto = line.replace('¿Por qué?:', '').strip()
-                                    st.markdown(f"<div class='porque-texto'>💡 {texto}</div>", 
+                                    st.markdown(f"""<div class="porque-texto">💡 {texto}</div>""", 
                                               unsafe_allow_html=True)
                                 elif 'Mejor época:' in line:
                                     epoca = line.replace('Mejor época:', '').strip()
-                                    st.markdown(f'<span class="info-tag">🗓️ {epoca}</span>', 
+                                    st.markdown(f"""<span class="info-tag">🗓️ {epoca}</span>""", 
                                               unsafe_allow_html=True)
                                 elif 'Duración sugerida:' in line:
                                     duracion = line.replace('Duración sugerida:', '').strip()
-                                    st.markdown(f'<span class="info-tag">⏱️ {duracion}</span>', 
+                                    st.markdown(f"""<span class="info-tag">⏱️ {duracion}</span>""", 
                                               unsafe_allow_html=True)
                                 elif 'Actividad destacada:' in line:
                                     nombre = line.split('|')[0].replace('Actividad destacada:', '').strip()
                                     link = line.split('|')[1].strip() if '|' in line else '#'
-                                    st.markdown(f"<a href='{link}' target='_blank' class='actividad-link'>🎯 {nombre}</a>", 
-                                              unsafe_allow_html=True)
+                                    st.markdown(f"""<a href="{link}" target="_blank" class="actividad-link">
+                                        🎯 {nombre}</a>""", unsafe_allow_html=True)
                         
-                        st.markdown("</div>", unsafe_allow_html=True)
+                        # Cerrar el contenedor principal
+                        st.markdown("""</div>""", unsafe_allow_html=True)
                         
                     except Exception as e:
                         st.error(f"Error al procesar destino {i}: {str(e)}")
