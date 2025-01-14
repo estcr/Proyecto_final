@@ -21,7 +21,7 @@ def obtener_preferencias_usuario(user_id):
 
 def generar_recomendaciones_gpt(destino, preferencias):
     """Genera recomendaciones usando ChatGPT"""
-    client = OpenAI(api_key=st.secrets["apigpt_key"])
+    client = OpenAI(api_key=st.secrets["api_keys"]["apigpt_key"])
     
     actividades = [f"{pref[0]} (nivel de interés: {pref[1]})" for pref in preferencias]
     prompt = f"""Actúa como un experto guía turístico y genera 5 recomendaciones específicas de actividades para hacer en {destino}.
@@ -44,7 +44,7 @@ def generar_recomendaciones_gpt(destino, preferencias):
 
 def vectorizar_actividades(texto):
     """Genera embeddings para las actividades"""
-    client = OpenAI(api_key=st.secrets["apigpt_key"])
+    client = OpenAI(api_key=st.secrets["api_keys"]["apigpt_key"])
     try:
         response = client.embeddings.create(
             model="text-embedding-ada-002",
@@ -57,7 +57,7 @@ def vectorizar_actividades(texto):
 
 def obtener_actividades_similares(embedding):
     """Obtiene actividades similares desde Pinecone"""
-    pc = pinecone.Pinecone(api_key=st.secrets["apipinecone"])
+    pc = pinecone.Pinecone(api_key=st.secrets["api_keys"]["apipinecone"])
     index = pc.Index('tuguia')
     
     try:
