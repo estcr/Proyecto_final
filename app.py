@@ -676,7 +676,7 @@ def interfaz_recomendaciones():
                         destino = destino_line.replace('Destino:', '').strip()
                         ciudad, pais = [part.strip() for part in destino.split(',')] if ',' in destino else (destino, '')
                         
-                        # Contenedor individual para cada destino
+                        # Crear el contenedor del destino
                         st.markdown(f"""
                         <div class="destino-container">
                             <div class="ranking">#{i}</div>
@@ -685,31 +685,22 @@ def interfaz_recomendaciones():
                                     <div class="ciudad">{ciudad}</div>
                                     <div class="pais">{pais}</div>
                                 </div>
-                                <div class="destino-content">
                         """, unsafe_allow_html=True)
                         
-                        # Columnas para imagen e información
                         col1, col2 = st.columns([1, 1.5])
                         
                         with col1:
                             try:
                                 imagen_url = f.obtener_imagen_lugar(f"{ciudad}, {pais}")
                                 if imagen_url:
-                                    response = requests.get(imagen_url, timeout=10)  # Agregamos timeout
+                                    response = requests.get(imagen_url, timeout=10)
                                     if response.status_code == 200:
-                                        try:
-                                            img = Image.open(BytesIO(response.content))
-                                            st.image(img, use_container_width=True)
-                                        except:
-                                            # Si falla al abrir la imagen, intentamos con Unsplash
-                                            unsplash_url = f"https://source.unsplash.com/800x600/?{ciudad.replace(' ', '+')},{pais.replace(' ', '+')},landmark"
-                                            st.image(unsplash_url, use_container_width=True)
+                                        img = Image.open(BytesIO(response.content))
+                                        st.image(img, use_container_width=True)
                                     else:
-                                        # Si falla la primera URL, intentamos con Unsplash
                                         unsplash_url = f"https://source.unsplash.com/800x600/?{ciudad.replace(' ', '+')},{pais.replace(' ', '+')},landmark"
                                         st.image(unsplash_url, use_container_width=True)
                             except:
-                                # Si todo falla, mostramos un placeholder con estilo
                                 st.markdown(f"""
                                 <div class="imagen-placeholder">
                                     <div class="placeholder-text">🌄 {ciudad}</div>
@@ -740,14 +731,11 @@ def interfaz_recomendaciones():
                                         🎯 {nombre}
                                     </a>""", unsafe_allow_html=True)
                         
-                        # Cerrar los divs de cada destino
                         st.markdown("""
-                                </div>
                             </div>
                         </div>
                         """, unsafe_allow_html=True)
                         
-                        # Agregar separador entre destinos
                         if i < len(recomendaciones):
                             st.markdown("""<div class="separador"></div>""", unsafe_allow_html=True)
                     
