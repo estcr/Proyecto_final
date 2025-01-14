@@ -366,6 +366,126 @@ st.markdown("""
         gap: 1em;
         padding: 1em;
     }
+    
+    .titulo-seccion {
+        text-align: center;
+        font-size: 28px;
+        font-weight: bold;
+        color: #2e7bcf;
+        margin: 40px 0;
+        padding: 15px;
+    }
+    
+    .destino-container {
+        background: #1a1a1a;
+        border-radius: 20px;
+        padding: 30px;
+        margin: 40px 0;
+        position: relative;
+    }
+    
+    .ranking {
+        position: absolute;
+        top: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #FF4B4B;
+        color: white;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 16px;
+        z-index: 2;
+    }
+    
+    .destino-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-top: 20px;
+    }
+    
+    .destino-header {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+    
+    .ciudad {
+        font-size: 32px;
+        font-weight: bold;
+        color: #FF4B4B;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 5px;
+    }
+    
+    .pais {
+        font-size: 18px;
+        color: #666;
+    }
+    
+    .descripcion {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 10px;
+        margin: 15px 0;
+        line-height: 1.6;
+        color: #333;
+    }
+    
+    .info-tag {
+        display: inline-block;
+        padding: 8px 15px;
+        margin: 5px;
+        border-radius: 20px;
+        font-size: 14px;
+    }
+    
+    .epoca {
+        background: #e3f2fd;
+        color: #1976d2;
+    }
+    
+    .duracion {
+        background: #f3e5f5;
+        color: #7b1fa2;
+    }
+    
+    .actividad-btn {
+        display: inline-block;
+        background: #FF4B4B;
+        color: white !important;
+        padding: 10px 20px;
+        border-radius: 25px;
+        text-decoration: none;
+        margin-top: 15px;
+        transition: all 0.3s ease;
+    }
+    
+    .actividad-btn:hover {
+        background: #ff6b6b;
+        transform: translateY(-2px);
+    }
+    
+    .imagen-placeholder {
+        background: #f8f9fa;
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3em;
+        border-radius: 10px;
+    }
+    
+    .destino-content {
+        margin-top: 20px;
+    }
+    
+    .separador {
+        height: 1px;
+        background: rgba(255,255,255,0.1);
+        margin: 40px 0;
+    }
     </style>
     """, unsafe_allow_html=True)
 
