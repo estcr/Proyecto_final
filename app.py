@@ -656,15 +656,8 @@ def interfaz_recomendaciones():
             if isinstance(resultado, dict):
                 recomendaciones = [rec.strip() for rec in resultado['recomendaciones_gpt'].split('---') if rec.strip()]
                 
-                # Título principal
-                st.markdown("""
-                <div class="titulo-seccion">
-                    TOP 5 DESTINOS PARA TI
-                </div>
-                """, unsafe_allow_html=True)
-                
-                # Contenedor para todos los destinos
-                st.markdown("""<div class="destinos-wrapper">""", unsafe_allow_html=True)
+                st.markdown("""<div class="titulo-seccion">TOP 5 DESTINOS PARA TI</div>""", 
+                          unsafe_allow_html=True)
                 
                 for i, rec in enumerate(recomendaciones, 1):
                     try:
@@ -676,7 +669,6 @@ def interfaz_recomendaciones():
                         destino = destino_line.replace('Destino:', '').strip()
                         ciudad, pais = [part.strip() for part in destino.split(',')] if ',' in destino else (destino, '')
                         
-                        # Contenedor individual para cada destino
                         st.markdown(f"""
                         <div class="destino-container">
                             <div class="ranking">#{i}</div>
@@ -685,29 +677,19 @@ def interfaz_recomendaciones():
                                     <div class="ciudad">{ciudad}</div>
                                     <div class="pais">{pais}</div>
                                 </div>
-                                <div class="destino-content">
                         """, unsafe_allow_html=True)
                         
-                        # Columnas para imagen e información
                         col1, col2 = st.columns([1, 1.5])
                         
                         with col1:
                             try:
                                 imagen_url = f.obtener_imagen_lugar(f"{ciudad}, {pais}")
-                                if imagen_url:
-                                    response = requests.get(imagen_url)
-                                    if response.status_code == 200:
-                                        img = Image.open(BytesIO(response.content))
-                                        st.image(img, use_container_width=True)
-                                    else:
-                                        unsplash_url = f"https://source.unsplash.com/800x600/?{ciudad.replace(' ', '+')},{pais.replace(' ', '+')},landmark"
-                                        st.image(unsplash_url, use_container_width=True)
+                                if imagen_url and requests.get(imagen_url).status_code == 200:
+                                    img = Image.open(BytesIO(requests.get(imagen_url).content))
+                                    st.image(img, use_container_width=True)
                             except:
-                                st.markdown(f"""
-                                <div class="imagen-placeholder">
-                                    <div class="placeholder-text">🌄 {ciudad}</div>
-                                </div>
-                                """, unsafe_allow_html=True)
+                                st.markdown("""<div class="imagen-placeholder">🖼️</div>""", 
+                                          unsafe_allow_html=True)
                         
                         with col2:
                             for line in lines:
@@ -734,7 +716,6 @@ def interfaz_recomendaciones():
                                     </a>""", unsafe_allow_html=True)
                         
                         st.markdown("""
-                                </div>
                             </div>
                         </div>
                         """, unsafe_allow_html=True)
@@ -744,11 +725,6 @@ def interfaz_recomendaciones():
                     
                     except Exception as e:
                         st.error(f"Error al procesar destino {i}: {str(e)}")
-                
-                # Cerrar el contenedor principal
-                st.markdown("""</div>""", unsafe_allow_html=True)
-            else:
-                st.error(resultado)
 
 # Función para generar itinerario
 def mostrar_itinerario():
