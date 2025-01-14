@@ -61,15 +61,32 @@ st.markdown("""
         background-color: #f8f9fa;
         border-radius: 10px;
         padding: 20px;
-        margin: 10px 0;
+        margin: 20px 0;
         border-left: 5px solid #FF4B4B;
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        position: relative;
+    }
+    
+    .numero-destino {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        background-color: #FF4B4B;
+        color: white;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
     }
     
     .destino-titulo {
         color: #FF4B4B;
-        font-size: 24px;
+        font-size: 24px !important;
         margin-bottom: 15px;
+        font-weight: bold;
     }
     
     .info-tag {
@@ -79,6 +96,31 @@ st.markdown("""
         border-radius: 15px;
         font-size: 14px;
         margin-right: 10px;
+        display: inline-block;
+        margin-bottom: 10px;
+    }
+    
+    .actividad-link {
+        color: #FF4B4B;
+        text-decoration: none;
+        padding: 5px 10px;
+        border: 1px solid #FF4B4B;
+        border-radius: 5px;
+        display: inline-block;
+        margin-top: 10px;
+    }
+    
+    .actividad-link:hover {
+        background-color: #FF4B4B;
+        color: white;
+    }
+    
+    .porque-texto {
+        margin: 15px 0;
+        padding: 10px;
+        background-color: #fff;
+        border-radius: 5px;
+        border-left: 3px solid #2e7bcf;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -219,6 +261,13 @@ def interfaz_recomendaciones():
         st.warning("Por favor, inicia sesión primero")
         return
     
+    st.markdown("""
+    ### ¿No sabes dónde viajar? 🤔
+    Basándonos en tus preferencias y estilo de viaje, hemos seleccionado estos destinos 
+    increíbles que creemos que te encantarán. Cada recomendación está personalizada 
+    según tus intereses y la forma en que te gusta viajar. ¡Descubre tu próxima aventura! ✨
+    """)
+    
     user_id = st.session_state.id_usuario
     
     if st.button("Descubrir Destinos Perfectos ✨"):
@@ -228,7 +277,7 @@ def interfaz_recomendaciones():
             if isinstance(resultado, dict):
                 recomendaciones = [rec.strip() for rec in resultado['recomendaciones_gpt'].split('---') if rec.strip()]
                 
-                for rec in recomendaciones:
+                for i, rec in enumerate(recomendaciones, 1):
                     try:
                         lines = rec.split('\n')
                         destino = next((l.replace('Destino:', '').strip() 
@@ -237,8 +286,9 @@ def interfaz_recomendaciones():
                         # Obtener imagen usando Google Places
                         imagen_url = f.obtener_imagen_lugar(destino)
                         
-                        st.markdown("""
+                        st.markdown(f"""
                         <div class="destino-card">
+                        <div class="numero-destino">#{i}</div>
                         """, unsafe_allow_html=True)
                         
                         col1, col2 = st.columns([1, 2])
@@ -268,10 +318,11 @@ def interfaz_recomendaciones():
                                     elif '|' in line and 'http' in line:
                                         nombre, link = line.split('|', 1)
                                         link = link.strip()
-                                        st.markdown(f"<a href='{link}' target='_blank'>🎯 {nombre.strip()}</a>", 
+                                        st.markdown(f"<a href='{link}' target='_blank' class='actividad-link'>🎯 {nombre.strip()}</a>", 
                                                   unsafe_allow_html=True)
                                     elif '¿Por qué?:' in line:
-                                        st.markdown(f"**{line}**")
+                                        st.markdown(f"<div class='porque-texto'>{line}</div>", 
+                                                  unsafe_allow_html=True)
                                     else:
                                         st.write(line)
                         
