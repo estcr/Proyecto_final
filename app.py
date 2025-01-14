@@ -267,8 +267,12 @@ def interfaz_recomendaciones():
                                         st.markdown(f'<span class="info-tag">⏱️ {duracion}</span>', 
                                                   unsafe_allow_html=True)
                                     elif '|' in line and 'http' in line:
-                                        nombre, link = line.split('|')
-                                        st.markdown(f"[🎯 {nombre.strip()}]({link.strip()})")
+                                        nombre, link = line.split('|', 1)  # Split solo en el primer |
+                                        link = link.strip()
+                                        if not link.startswith('http'):
+                                            link = 'https://' + link
+                                        st.markdown(f"<a href='{link}' target='_blank'>🎯 {nombre.strip()}</a>", 
+                                                   unsafe_allow_html=True)
                                     elif line:
                                         st.write(line)
                         
