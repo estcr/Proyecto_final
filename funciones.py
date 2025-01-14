@@ -4,6 +4,7 @@ import numpy as np
 import pinecone
 import streamlit as st
 import config as c
+import requests
 
 def obtener_preferencias_usuario(user_id):
     """Obtiene las preferencias del usuario desde la base de datos"""
@@ -119,6 +120,41 @@ def obtener_usuario_actual():
         return st.session_state.id_usuario
     return None
 
+def obtener_imagen_lugar(lugar):
+    """Obtiene la imagen de un lugar usando Google Places API"""
+    try:
+        api_key = st.secrets["api_keys"]["google_places_key"]
+        
+        # Primero buscar el lugar
+        search_url = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json"
+        search_params = {
+            "input": lugar,
+            "inputtype": "textquery",
+            "fields": "photos,place_id",
+            "key": api_key
+        }
+        
+        response = requests.get(search_url, params=search_params)
+        result = response.json()
+        
+        if result["candidates"] and "photos" in result["candidates"][0]:
+            photo_reference = result["candidates"][0]["photos"][0]["photo_reference"]
+            
+            # Obtener la imagen
+            photo_url = f"https://maps.googleapis.com/maps/api/place/photo"
+            photo_params = {
+                "maxwidth": 400,
+                "photo_reference": photo_reference,
+                "key": api_key
+            }
+            
+            return photo_url + "?" + "&".join(f"{k}={v}" for k, v in photo_params.items())
+    except Exception as e:
+        st.error(f"Error al obtener imagen: {e}")
+    
+    # Si algo falla, devolver una imagen por defecto de Unsplash
+    return f"https://source.unsplash.com/400x300/?{lugar.replace(' ', '+')}"
+
 def generar_recomendaciones_destinos(user_id):
     """Genera recomendaciones de destinos basados en las preferencias del usuario"""
     try:
@@ -141,16 +177,14 @@ def generar_recomendaciones_destinos(user_id):
         3. Por qué es ideal según las preferencias del viajero y su estilo de viaje ({travel_style})
         4. Mejor época para visitar
         5. Duración recomendada de la visita
-        6. Una actividad destacada con su link de reserva o sitio web oficial
-        7. Una imagen representativa (URL de una imagen libre de derechos)
+        6. Una actividad destacada con su link de reserva (usa solo URLs reales y completas, incluyendo https://)
         
         Formato para cada recomendación:
         Destino: [ciudad, país]
         ¿Por qué?: [explicación basada en preferencias y estilo de viaje]
         Mejor época: [temporada]
         Duración sugerida: [días recomendados]
-        Actividad destacada: [nombre] | [link]
-        Imagen: [url_imagen]
+        Actividad destacada: [nombre] | https://[url_completa]
         ---"""
 
         response = client.chat.completions.create(

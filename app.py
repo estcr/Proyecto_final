@@ -231,13 +231,12 @@ def interfaz_recomendaciones():
                 for rec in recomendaciones:
                     try:
                         lines = rec.split('\n')
-                        # Extraer información cuidadosamente
                         destino = next((l.replace('Destino:', '').strip() 
                                      for l in lines if 'Destino:' in l), 'Destino no especificado')
-                        imagen_url = next((l.replace('Imagen:', '').strip() 
-                                        for l in lines if 'Imagen:' in l), '')
                         
-                        # Crear la tarjeta del destino
+                        # Obtener imagen usando Google Places
+                        imagen_url = f.obtener_imagen_lugar(destino)
+                        
                         st.markdown("""
                         <div class="destino-card">
                         """, unsafe_allow_html=True)
@@ -247,7 +246,7 @@ def interfaz_recomendaciones():
                         with col1:
                             if imagen_url:
                                 try:
-                                    mostrar_imagen_segura(imagen_url)
+                                    st.image(imagen_url, width=200)
                                 except:
                                     st.warning("🖼️ Imagen no disponible")
                         
@@ -257,7 +256,7 @@ def interfaz_recomendaciones():
                             
                             for line in lines:
                                 line = line.strip()
-                                if line and not line.startswith(('Destino:', 'Imagen:')):
+                                if line and not line.startswith('Destino:'):
                                     if 'Mejor época:' in line:
                                         epoca = line.replace('Mejor época:', '').strip()
                                         st.markdown(f'<span class="info-tag">🗓️ {epoca}</span>', 
@@ -267,13 +266,13 @@ def interfaz_recomendaciones():
                                         st.markdown(f'<span class="info-tag">⏱️ {duracion}</span>', 
                                                   unsafe_allow_html=True)
                                     elif '|' in line and 'http' in line:
-                                        nombre, link = line.split('|', 1)  # Split solo en el primer |
+                                        nombre, link = line.split('|', 1)
                                         link = link.strip()
-                                        if not link.startswith('http'):
-                                            link = 'https://' + link
                                         st.markdown(f"<a href='{link}' target='_blank'>🎯 {nombre.strip()}</a>", 
-                                                   unsafe_allow_html=True)
-                                    elif line:
+                                                  unsafe_allow_html=True)
+                                    elif '¿Por qué?:' in line:
+                                        st.markdown(f"**{line}**")
+                                    else:
                                         st.write(line)
                         
                         st.markdown("</div>", unsafe_allow_html=True)
