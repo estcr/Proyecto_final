@@ -501,6 +501,66 @@ st.markdown("""
         background: rgba(255,255,255,0.1);
         margin: 40px 0;
     }
+    
+    .destino-container {
+        background: #1a1a1a;
+        border-radius: 20px;
+        padding: 30px;
+        margin: 40px 0;
+        position: relative;
+    }
+    
+    .destino-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-top: 20px;
+    }
+    
+    .info-tag {
+        display: inline-block;
+        padding: 8px 15px;
+        margin: 5px;
+        border-radius: 20px;
+        font-size: 14px;
+        color: black !important;
+        font-weight: 500;
+    }
+    
+    .epoca {
+        background: #e3f2fd;
+    }
+    
+    .duracion {
+        background: #f3e5f5;
+    }
+    
+    .descripcion {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 10px;
+        margin: 15px 0;
+        line-height: 1.6;
+        color: black !important;
+    }
+    
+    .ciudad {
+        font-size: 32px;
+        font-weight: bold;
+        color: #FF4B4B;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 5px;
+    }
+    
+    .pais {
+        font-size: 18px;
+        color: #666;
+    }
+    
+    .destino-content {
+        margin-top: 20px;
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -667,13 +727,14 @@ def interfaz_recomendaciones():
                         
                         # Contenedor principal con número y título
                         st.markdown(f"""
-                        <div class="ranking">#{i}</div>
                         <div class="destino-container">
+                            <div class="ranking">#{i}</div>
                             <div class="destino-card">
                                 <div class="destino-header">
                                     <div class="ciudad">{ciudad}</div>
                                     <div class="pais">{pais}</div>
                                 </div>
+                                <div class="destino-content">
                         """, unsafe_allow_html=True)
                         
                         col1, col2 = st.columns([1, 1.5])
@@ -714,7 +775,7 @@ def interfaz_recomendaciones():
                         
                         st.markdown("""
                             </div>
-                        </div>
+                            </div>
                         """, unsafe_allow_html=True)
                         
                         if i < len(recomendaciones):
