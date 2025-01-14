@@ -72,9 +72,32 @@ def interfaz_preferencias():
 
 # Función para mostrar recomendaciones personalizadas
 def interfaz_recomendaciones():
-    st.title("Recomendaciones Personalizadas")
-    st.write("Aquí se mostrarán lugares recomendados basados en tus preferencias.")
-    # Aquí iría la lógica para mostrar las recomendaciones según las preferencias del usuario.
+    st.title("Recomendaciones de Destinos")
+    
+    # Verificar si hay un usuario en la sesión
+    if "id_usuario" not in st.session_state or st.session_state.id_usuario is None:
+        st.warning("Por favor, inicia sesión primero")
+        return
+    
+    user_id = st.session_state.id_usuario
+    
+    if st.button("Obtener Recomendaciones de Destinos"):
+        with st.spinner("Analizando tus preferencias y buscando los mejores destinos..."):
+            resultado = f.generar_recomendaciones_destinos(user_id)
+            
+            if isinstance(resultado, dict):
+                # Mostrar recomendaciones de ChatGPT
+                st.subheader("Destinos Recomendados")
+                st.write(resultado['recomendaciones_gpt'])
+                
+                # Mostrar destinos similares de la base de datos
+                st.subheader("Destinos Similares de Nuestra Base de Datos")
+                for i, dest in enumerate(resultado['destinos_similares'], 1):
+                    with st.expander(f"{i}. {dest['Actividad']}"):
+                        st.write(f"**Descripción:** {dest['Descripción']}")
+                        st.write(f"**Relevancia:** {dest['score']:.2f}")
+            else:
+                st.error(resultado)
 
 # Función para generar itinerario
 def mostrar_itinerario():

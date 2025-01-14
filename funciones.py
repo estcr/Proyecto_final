@@ -116,3 +116,57 @@ def obtener_usuario_actual():
     if "id_usuario" in st.session_state and st.session_state.id_usuario is not None:
         return st.session_state.id_usuario
     return None
+
+def generar_recomendaciones_destinos(user_id):
+    """Genera recomendaciones de destinos basados en las preferencias del usuario"""
+    try:
+        # 1. Obtener preferencias del usuario
+        preferencias = obtener_preferencias_usuario(user_id)
+        if not preferencias:
+            return "No se encontraron preferencias para el usuario."
+
+        # 2. Generar recomendaciones con ChatGPT
+        client = OpenAI(api_key=st.secrets["api_keys"]["apigpt_key"])
+        
+        # Crear prompt detallado para recomendar destinos
+        actividades = [f"{pref[0]} (nivel de interés: {pref[1]})" for pref in preferencias]
+        prompt = f"""Actúa como un experto agente de viajes y recomienda los 5 mejores destinos del mundo 
+        para un viajero con las siguientes preferencias: {', '.join(actividades)}.
+        
+        Para cada destino, proporciona:
+        1. Nombre del destino
+        2. País
+        3. Por qué es ideal según las preferencias del viajero
+        4. Mejor época para visitar
+        5. Duración recomendada de la visita
+        
+        Formato para cada recomendación:
+        Destino: [ciudad, país]
+        ¿Por qué?: [explicación basada en preferencias]
+        Mejor época: [temporada]
+        Duración sugerida: [días recomendados]
+        ---"""
+
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": prompt}]
+        )
+        
+        recomendaciones_destinos = response.choices[0].message.content
+
+        # 3. Generar embedding para las recomendaciones
+        embedding = vectorizar_actividades(recomendaciones_destinos)
+        if embedding is None:
+            return "Error al generar el embedding."
+
+        # 4. Obtener destinos similares de la tabla vectorial
+        destinos_similares = obtener_actividades_similares(embedding)
+
+        return {
+            'recomendaciones_gpt': recomendaciones_destinos,
+            'destinos_similares': destinos_similares
+        }
+
+    except Exception as e:
+        st.error(f"Error al generar recomendaciones de destinos: {e}")
+        return f"Error: {str(e)}"
