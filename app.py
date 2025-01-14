@@ -296,23 +296,29 @@ def interfaz_recomendaciones():
                         
                         col1, col2 = st.columns([1, 2])
                         
+                        # Columna de imagen
                         with col1:
                             try:
                                 imagen_url = f.obtener_imagen_lugar(destino)
                                 if imagen_url:
                                     response = requests.get(imagen_url)
-                                    img = Image.open(BytesIO(response.content))
-                                    st.image(img, width=200)
-                            except:
+                                    if response.status_code == 200:
+                                        img = Image.open(BytesIO(response.content))
+                                        st.image(img, width=200)
+                                    else:
+                                        st.warning("🖼️ Imagen no disponible")
+                            except Exception as e:
                                 st.warning("🖼️ Imagen no disponible")
                         
+                        # Columna de información
                         with col2:
-                            # Evitar duplicación del título
+                            # Mostrar el título del destino
                             st.markdown(f'<h3 class="destino-titulo">{destino}</h3>', 
                                       unsafe_allow_html=True)
                             
+                            # Procesar el resto de la información
                             for line in lines:
-                                if not line.startswith('Destino:'):  # Evitar mostrar el título de nuevo
+                                if 'Destino:' not in line:  # Evitar mostrar la línea del destino
                                     if 'Mejor época:' in line:
                                         epoca = line.replace('Mejor época:', '').strip()
                                         st.markdown(f'<span class="info-tag">🗓️ {epoca}</span>', 
@@ -330,13 +336,13 @@ def interfaz_recomendaciones():
                                         texto = line.replace('¿Por qué?:', '').strip()
                                         st.markdown(f"<div class='porque-texto'>💡 {texto}</div>", 
                                                   unsafe_allow_html=True)
-                                    elif not any(x in line for x in ['Destino:', 'Imagen:']):
+                                    elif line:  # Mostrar otras líneas que no son el título
                                         st.write(line)
                         
                         st.markdown("</div>", unsafe_allow_html=True)
                         
                     except Exception as e:
-                        st.error(f"Error al procesar destino: {str(e)}")
+                        st.error(f"Error al procesar destino {i}: {str(e)}")
                         continue
             else:
                 st.error(resultado)
