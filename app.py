@@ -396,15 +396,17 @@ def interfaz_recomendaciones():
                         destino = destino_line.replace('Destino:', '').strip()
                         ciudad, pais = [part.strip() for part in destino.split(',')] if ',' in destino else (destino, '')
                         
-                        # Primero, creamos el contenedor blanco con el título
+                        # Contenedor blanco para el título
                         st.markdown(f"""
-                        <div style="background: white; border-radius: 15px; padding: 20px; margin-bottom: 20px; text-align: center;">
-                            <div style="color: #FF4B4B; font-size: 32px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px;">{ciudad}</div>
-                            <div style="color: #666; font-size: 18px;">{pais}</div>
+                        <div style="background: white; border-radius: 10px; margin-bottom: -20px; z-index: 1000; position: relative;">
+                            <div style="text-align: center; padding: 20px;">
+                                <div style="color: #FF4B4B; font-size: 32px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px;">{ciudad}</div>
+                                <div style="color: #666; font-size: 18px;">{pais}</div>
+                            </div>
                         </div>
                         """, unsafe_allow_html=True)
                         
-                        # Luego, el contenedor principal con el contenido
+                        # Contenedor principal con el contenido
                         st.markdown(f"""
                         <div class="destino-container">
                             <div class="ranking">#{i}</div>
