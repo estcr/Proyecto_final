@@ -649,6 +649,12 @@ def main():
             )
             st.session_state.pagina_actual = pagina_actual
         else:
+            # Mostrar solo Inicio en el sidebar cuando no hay sesión
+            st.radio(
+                "Navegación",
+                ["🏠 Inicio"],
+                key="nav_no_session"  # Agregamos una key única para este radio
+            )
             st.session_state.pagina_actual = "🏠 Inicio"
 
     # Mostrar la página correspondiente
