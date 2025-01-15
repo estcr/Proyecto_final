@@ -386,9 +386,10 @@ def interfaz_recomendaciones():
             resultado = f.generar_recomendaciones_destinos(user_id)
             
             if isinstance(resultado, dict):
+                # Dividir y limpiar las recomendaciones
                 destinos = [d for d in resultado['recomendaciones_gpt'].split('Destino:') if d.strip()]
                 
-                for i, destino in enumerate(destinos, 1):
+                for destino in destinos:
                     lineas = [l.strip() for l in destino.split('\n') if l.strip()]
                     if not lineas:
                         continue
@@ -398,23 +399,13 @@ def interfaz_recomendaciones():
                     ciudad = ciudad_pais[0].strip()
                     pais = ciudad_pais[1].strip() if len(ciudad_pais) > 1 else ""
                     
-                    # Contenedor principal para cada destino con ajustes en el espaciado
+                    # Contenedor principal para cada destino
                     st.markdown(f"""
                     <div style="background: #1E1E1E; border-radius: 20px; margin: 40px 0; overflow: hidden;">
-                        <div style="background: white; padding: 45px 20px 20px 20px; position: relative; text-align: center;">
-                            <div style="position: absolute; top: -12px; left: 50%; transform: translate(-50%, 0);
-                                background: #FF4B4B; color: white; padding: 8px 30px; border-radius: 25px;
-                                font-weight: bold; font-size: 16px; box-shadow: 0 4px 15px rgba(255,75,75,0.3);
-                                white-space: nowrap;">
-                                TOP {i}
-                            </div>
+                        <div style="background: white; padding: 20px; text-align: center;">
                             <div style="color: #FF4B4B; font-size: 32px; font-weight: bold; text-transform: uppercase;
-                                letter-spacing: 2px; margin: 0 0 5px 0; line-height: 1.3; word-wrap: break-word;">
-                                {ciudad}
-                            </div>
-                            <div style="color: #666; font-size: 18px; line-height: 1.2;">
-                                {pais}
-                            </div>
+                                letter-spacing: 2px; margin-bottom: 5px;">{ciudad}</div>
+                            <div style="color: #666; font-size: 18px;">{pais}</div>
                         </div>
                     """, unsafe_allow_html=True)
                     
@@ -468,8 +459,7 @@ def interfaz_recomendaciones():
                                 st.markdown(f"""
                                 <a href="{link}" target="_blank" style="text-decoration: none;">
                                     <div style="background: #FF4B4B; color: white; padding: 12px 20px;
-                                        border-radius: 12px; margin-top: 15px; display: inline-block;
-                                        transition: transform 0.2s;">
+                                        border-radius: 12px; margin-top: 15px; display: inline-block;">
                                         🎯 {nombre}
                                     </div>
                                 </a>
