@@ -384,34 +384,28 @@ def interfaz_recomendaciones():
             resultado = f.generar_recomendaciones_destinos(user_id)
             
             if isinstance(resultado, dict):
-                # Dividir las recomendaciones y limpiarlas
-                texto_recomendaciones = resultado['recomendaciones_gpt']
-                recomendaciones = [rec for rec in texto_recomendaciones.split('---') if rec.strip()]
+                # Dividir el texto en destinos individuales
+                texto_completo = resultado['recomendaciones_gpt']
+                destinos = [dest.strip() for dest in texto_completo.split('---') if dest.strip()]
                 
-                # Procesar cada recomendación
-                for i, recomendacion in enumerate(recomendaciones, 1):
-                    # Contenedor principal para cada destino
-                    st.markdown("""<div style="margin-bottom: 50px;">""", unsafe_allow_html=True)
-                    
-                    # Procesar las líneas de la recomendación
-                    lines = [line.strip() for line in recomendacion.split('\n') if line.strip()]
-                    
-                    # Obtener el destino
-                    destino_line = next((line for line in lines if line.startswith('Destino:')), None)
-                    if destino_line:
-                        destino = destino_line.replace('Destino:', '').strip()
-                        ciudad, pais = [part.strip() for part in destino.split(',')] if ',' in destino else (destino, '')
+                # Procesar cada destino
+                for i, destino_texto in enumerate(destinos, 1):
+                    with st.container():
+                        # Extraer información del destino
+                        lineas = destino_texto.split('\n')
+                        destino_info = next((line for line in lineas if line.startswith('Destino:')), '')
+                        ciudad, pais = [x.strip() for x in destino_info.replace('Destino:', '').split(',', 1)] if ',' in destino_info else (destino_info.replace('Destino:', '').strip(), '')
                         
-                        # Título del destino
+                        # Contenedor del título
                         st.markdown(f"""
-                        <div style="background: white; border-radius: 10px; margin-bottom: 20px;">
-                            <div style="text-align: center; padding: 20px;">
-                                <div style="color: #FF4B4B; font-size: 32px; font-weight: bold; text-transform: uppercase;">
-                                    {ciudad}
-                                </div>
-                                <div style="color: #666; font-size: 18px;">
-                                    {pais}
-                                </div>
+                        <div style="background: white; border-radius: 10px; margin: 30px 0 20px 0; position: relative;">
+                            <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
+                                background: #FF4B4B; color: white; padding: 5px 15px; border-radius: 20px;
+                                font-weight: bold; font-size: 16px;">#{i}</div>
+                            <div style="text-align: center; padding: 25px 20px 20px 20px;">
+                                <div style="color: #FF4B4B; font-size: 32px; font-weight: bold; 
+                                    text-transform: uppercase; letter-spacing: 2px;">{ciudad}</div>
+                                <div style="color: #666; font-size: 18px; margin-top: 5px;">{pais}</div>
                             </div>
                         </div>
                         """, unsafe_allow_html=True)
@@ -419,6 +413,7 @@ def interfaz_recomendaciones():
                         # Contenedor para imagen y descripción
                         col1, col2 = st.columns([1, 1.5])
                         
+                        # Columna de la imagen
                         with col1:
                             try:
                                 imagen_url = f.obtener_imagen_lugar(f"{ciudad}, {pais}")
@@ -426,39 +421,52 @@ def interfaz_recomendaciones():
                                     img = Image.open(BytesIO(requests.get(imagen_url).content))
                                     st.image(img, use_container_width=True)
                             except:
-                                st.markdown("""<div style="text-align: center;">🖼️</div>""", 
-                                          unsafe_allow_html=True)
+                                st.markdown("""
+                                <div style="background: #2E2E2E; border-radius: 10px; padding: 20px; 
+                                    text-align: center; color: #666;">🖼️</div>
+                                """, unsafe_allow_html=True)
                         
+                        # Columna de la información
                         with col2:
-                            for line in lines:
-                                if line.startswith('Destino:'):
-                                    continue
-                                elif '¿Por qué?' in line:
-                                    texto = line.replace('¿Por qué?:', '').strip()
-                                    st.markdown(f"""<div class="descripcion">💫 {texto}</div>""", 
-                                              unsafe_allow_html=True)
-                                elif 'Mejor época:' in line:
-                                    epoca = line.replace('Mejor época:', '').strip()
-                                    st.markdown(f"""<div class="info-tag epoca">🗓️ {epoca}</div>""", 
-                                              unsafe_allow_html=True)
-                                elif 'Duración sugerida:' in line:
-                                    duracion = line.replace('Duración sugerida:', '').strip()
-                                    st.markdown(f"""<div class="info-tag duracion">⏱️ {duracion}</div>""", 
-                                              unsafe_allow_html=True)
-                                elif 'Actividad destacada:' in line:
-                                    nombre = line.split('|')[0].replace('Actividad destacada:', '').strip()
-                                    link = line.split('|')[1].strip() if '|' in line else '#'
+                            for linea in lineas:
+                                if '¿Por qué?' in linea:
+                                    texto = linea.replace('¿Por qué?:', '').strip()
                                     st.markdown(f"""
-                                    <a href="{link}" target="_blank" class="actividad-btn">
-                                        🎯 {nombre}
-                                    </a>""", unsafe_allow_html=True)
-                    
-                    # Cerrar el contenedor del destino
-                    st.markdown("""</div>""", unsafe_allow_html=True)
-                    
-                    # Agregar separador entre destinos
-                    if i < len(recomendaciones):
-                        st.markdown("<hr style='margin: 40px 0; opacity: 0.2;'>", unsafe_allow_html=True)
+                                    <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; 
+                                        margin: 10px 0; color: #333;">💫 {texto}</div>
+                                    """, unsafe_allow_html=True)
+                                elif 'Mejor época:' in linea:
+                                    epoca = linea.replace('Mejor época:', '').strip()
+                                    st.markdown(f"""
+                                    <div style="background: #e3f2fd; padding: 8px 15px; border-radius: 20px; 
+                                        display: inline-block; margin: 5px; color: #333;">
+                                        🗓️ {epoca}
+                                    </div>
+                                    """, unsafe_allow_html=True)
+                                elif 'Duración sugerida:' in linea:
+                                    duracion = linea.replace('Duración sugerida:', '').strip()
+                                    st.markdown(f"""
+                                    <div style="background: #f3e5f5; padding: 8px 15px; border-radius: 20px; 
+                                        display: inline-block; margin: 5px; color: #333;">
+                                        ⏱️ {duracion}
+                                    </div>
+                                    """, unsafe_allow_html=True)
+                                elif 'Actividad destacada:' in linea:
+                                    partes = linea.split('|')
+                                    nombre = partes[0].replace('Actividad destacada:', '').strip()
+                                    link = partes[1].strip() if len(partes) > 1 else '#'
+                                    st.markdown(f"""
+                                    <a href="{link}" target="_blank" style="text-decoration: none;">
+                                        <div style="background: #FF4B4B; color: white; border-radius: 10px; 
+                                            padding: 10px 20px; margin-top: 15px; display: inline-block;">
+                                            🎯 {nombre}
+                                        </div>
+                                    </a>
+                                    """, unsafe_allow_html=True)
+                        
+                        # Separador entre destinos
+                        if i < len(destinos):
+                            st.markdown("<hr style='margin: 40px 0; border: none; height: 1px; background: rgba(255,255,255,0.1);'>", unsafe_allow_html=True)
 
 # Función para generar itinerario
 def mostrar_itinerario():
