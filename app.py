@@ -172,12 +172,67 @@ def pagina_inicio():
         col_btn1, col_btn2 = st.columns(2)
         with col_btn1:
             if st.button("🔑 Iniciar Sesión", use_container_width=True):
-                st.session_state.pagina_actual = "🔑 Inicio de Sesión"
-                st.rerun()
+                st.session_state.mostrar_login = True
+                st.session_state.mostrar_registro = False
         with col_btn2:
             if st.button("📝 Registrarse", use_container_width=True):
-                st.session_state.pagina_actual = "📝 Registro"
-                st.rerun()
+                st.session_state.mostrar_registro = True
+                st.session_state.mostrar_login = False
+
+        # Mostrar formulario de login si se presionó el botón
+        if st.session_state.get('mostrar_login', False):
+            with st.container():
+                st.markdown("""
+                <div style="background: #1E1E1E; padding: 2rem; border-radius: 20px; 
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin: 2rem 0;">
+                    <h3 style="color: #FF4B4B; text-align: center;">Iniciar Sesión</h3>
+                </div>
+                """, unsafe_allow_html=True)
+                email = st.text_input("📧 Email", placeholder="tucorreo@ejemplo.com")
+                if st.button("🚀 Acceder", use_container_width=True):
+                    if email:
+                        user_id = obtener_usuario_por_email(email)
+                        if user_id:
+                            st.session_state.id_usuario = user_id
+                            st.success("¡Inicio de sesión exitoso! 🎉")
+                            st.session_state.mostrar_login = False
+                            st.rerun()
+                        else:
+                            st.error("Usuario no encontrado 😕")
+                    else:
+                        st.warning("Por favor, ingresa tu email 📧")
+
+        # Mostrar formulario de registro si se presionó el botón
+        if st.session_state.get('mostrar_registro', False):
+            with st.container():
+                st.markdown("""
+                <div style="background: #1E1E1E; padding: 2rem; border-radius: 20px; 
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin: 2rem 0;">
+                    <h3 style="color: #FF4B4B; text-align: center;">Registro de Usuario</h3>
+                </div>
+                """, unsafe_allow_html=True)
+                name = st.text_input("👤 Nombre", placeholder="Tu nombre")
+                email = st.text_input("📧 Email", placeholder="tucorreo@ejemplo.com")
+                travel_style = st.selectbox("🎒 Estilo de viaje", 
+                    ["solo", "amigos", "pareja", "trabajo"],
+                    format_func=lambda x: {
+                        "solo": "Viajero solitario 🚶",
+                        "amigos": "Con amigos 👥",
+                        "pareja": "En pareja 💑",
+                        "trabajo": "Viaje de trabajo 💼"
+                    }[x]
+                )
+                
+                if st.button("🚀 Registrarme", use_container_width=True):
+                    if name and email:
+                        registration_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                        if f.insertar_usuario(name, email, travel_style, registration_date):
+                            st.success("¡Registro exitoso! 🎉")
+                            st.balloons()
+                            st.session_state.mostrar_registro = False
+                            st.rerun()
+                    else:
+                        st.warning("Por favor, completa todos los campos 📝")
 
 # Función para obtener datos del usuario y guardarlos en la base de datos
 def obtener_datos_usuario():
@@ -566,13 +621,17 @@ def mostrar_imagen_segura(url):
 
 # Llamamos a la interfaz principal con la barra lateral
 def main():
-    # Aseguramos que las variables de sesión estén inicializadas
+    # Inicializar variables de sesión
     if "id_usuario" not in st.session_state:
         st.session_state.id_usuario = None
     if "pagina_actual" not in st.session_state:
         st.session_state.pagina_actual = "🏠 Inicio"
+    if "mostrar_login" not in st.session_state:
+        st.session_state.mostrar_login = False
+    if "mostrar_registro" not in st.session_state:
+        st.session_state.mostrar_registro = False
 
-    # Barra lateral modernizada
+    # Barra lateral
     with st.sidebar:
         st.markdown("### 🌍 TuGuía")
         if st.session_state.id_usuario:
@@ -580,25 +639,20 @@ def main():
             if st.button("Cerrar Sesión 👋"):
                 st.session_state.id_usuario = None
                 st.session_state.pagina_actual = "🏠 Inicio"
+                st.session_state.mostrar_login = False
+                st.session_state.mostrar_registro = False
                 st.rerun()
             
-            st.session_state.pagina_actual = st.radio(
+            pagina_actual = st.radio(
                 "Navegación",
                 ["🏠 Inicio", "⭐ Preferencias", "🎯 Lugares Recomendados", "📍 Planifica tus Actividades"]
             )
+            st.session_state.pagina_actual = pagina_actual
         else:
-            # Si no hay sesión iniciada, mostramos solo el botón de inicio
-            st.session_state.pagina_actual = st.radio(
-                "Navegación",
-                ["🏠 Inicio"]
-            )
+            st.session_state.pagina_actual = "🏠 Inicio"
 
-    # Manejo de páginas
-    if st.session_state.pagina_actual == "🔑 Inicio de Sesión":
-        login()
-    elif st.session_state.pagina_actual == "📝 Registro":
-        obtener_datos_usuario()
-    elif st.session_state.pagina_actual == "🏠 Inicio":
+    # Mostrar la página correspondiente
+    if st.session_state.pagina_actual == "🏠 Inicio":
         pagina_inicio()
     elif st.session_state.pagina_actual == "⭐ Preferencias":
         interfaz_preferencias()
