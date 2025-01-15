@@ -505,7 +505,7 @@ def mostrar_itinerario():
             
             if isinstance(resultado, dict):
                 # Contenedor para el itinerario
-                st.markdown("""
+                st.markdown(f"""
                 <div style="background: #1E1E1E; border-radius: 20px; margin: 40px 0; overflow: hidden;">
                     <div style="background: white; padding: 20px; text-align: center;">
                         <div style="color: #FF4B4B; font-size: 32px; font-weight: bold; text-transform: uppercase;
@@ -521,46 +521,39 @@ def mostrar_itinerario():
                 </div>
                 """, unsafe_allow_html=True)
                 
-                # Actividades recomendadas con nuevo diseño
+                # Actividades recomendadas
                 if resultado['actividades_similares']:
                     st.markdown("""
                     <div style="background: #1E1E1E; border-radius: 20px; margin: 40px 0; overflow: hidden;">
                         <div style="background: white; padding: 20px; text-align: center;">
                             <div style="color: #FF4B4B; font-size: 32px; font-weight: bold; text-transform: uppercase;
-                                letter-spacing: 2px; margin-bottom: 5px;">Actividades Imperdibles</div>
-                            <div style="color: #666; font-size: 18px;">Las mejores experiencias seleccionadas para ti</div>
+                                letter-spacing: 2px; margin-bottom: 5px;">Actividades Sugeridas</div>
+                            <div style="color: #666; font-size: 18px;">Experiencias que no te puedes perder</div>
                         </div>
                         <div style="padding: 20px;">
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
                     """, unsafe_allow_html=True)
                     
                     for act in resultado['actividades_similares']:
                         st.markdown(f"""
                         <div style="background: #2E2E2E; padding: 20px; border-radius: 15px; 
-                            transition: transform 0.2s; position: relative; overflow: hidden;">
-                            <div style="position: absolute; top: 0; right: 0; background: #FF4B4B; 
-                                padding: 5px 15px; border-bottom-left-radius: 15px; color: white; 
-                                font-size: 14px;">
-                                Score: {act['score']:.2f}
+                            box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                            <div style="color: #FF4B4B; font-size: 20px; font-weight: bold; 
+                                margin-bottom: 15px; display: flex; align-items: center;">
+                                <span style="margin-right: 10px;">✨</span>
+                                {act['Actividad']}
                             </div>
-                            <div style="margin-top: 25px;">
-                                <div style="color: #FF4B4B; font-size: 22px; font-weight: bold; 
-                                    margin-bottom: 15px; display: flex; align-items: center;">
-                                    <span style="margin-right: 10px;">✨</span>
-                                    {act['Actividad']}
+                            <div style="color: #E0E0E0; line-height: 1.6; margin-bottom: 15px;">
+                                {act['Descripción']}
+                            </div>
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <div style="background: #3D3D3D; color: white; padding: 5px 15px; 
+                                    border-radius: 20px; font-size: 14px;">
+                                    🎯 Destacado
                                 </div>
-                                <div style="color: #E0E0E0; line-height: 1.6; margin-bottom: 15px;">
-                                    {act['Descripción']}
-                                </div>
-                                <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px;">
-                                    <div style="background: #3D3D3D; color: white; padding: 5px 15px; 
-                                        border-radius: 20px; font-size: 14px;">
-                                        🎯 Actividad destacada
-                                    </div>
-                                    <div style="background: #3D3D3D; color: white; padding: 5px 15px; 
-                                        border-radius: 20px; font-size: 14px;">
-                                        ⭐ Recomendado
-                                    </div>
+                                <div style="background: #FF4B4B; color: white; padding: 5px 15px; 
+                                    border-radius: 20px; font-size: 14px;">
+                                    Score: {act['score']:.2f}
                                 </div>
                             </div>
                         </div>
