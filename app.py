@@ -385,9 +385,10 @@ def interfaz_recomendaciones():
         with st.spinner("Creando tu lista de destinos soñados... 🌍"):
             resultado = f.generar_recomendaciones_destinos(user_id)
             
-            if isinstance(resultado, dict):
+            if isinstance(resultado, dict) and 'recomendaciones_gpt' in resultado:
                 # Dividir y limpiar las recomendaciones
-                destinos = [d for d in resultado['recomendaciones_gpt'].split('---') if d.strip()]
+                texto_completo = resultado['recomendaciones_gpt'].strip()
+                destinos = [d.strip() for d in texto_completo.split('---') if d.strip()]
                 
                 for i, destino in enumerate(destinos, 1):
                     lineas = [l.strip() for l in destino.split('\n') if l.strip()]
@@ -474,7 +475,7 @@ def interfaz_recomendaciones():
                         </div>
                         """, unsafe_allow_html=True)
             else:
-                st.error(resultado)
+                st.error("No se pudieron generar las recomendaciones. Por favor, intenta de nuevo.")
 
 # Función para generar itinerario
 def mostrar_itinerario():
@@ -527,7 +528,7 @@ def mostrar_itinerario():
                         <div style="background: linear-gradient(45deg, #FF4B4B, #FF6B6B); padding: 15px 25px; 
                             color: white; font-weight: bold; font-size: 20px;">
                             <span style="background: rgba(255,255,255,0.2); padding: 5px 15px; 
-                                border-radius: 20px; margin-right: 10px;">Día {i}</span>
+                                border-radius: 20px; margin-right: 10px;">Actividad {i}</span>
                             {act['nombre']}
                         </div>
                         <div style="padding: 25px;">

@@ -302,13 +302,13 @@ def generar_recomendaciones_destinos(user_id):
         prompt = f"""Como experto en viajes, recomienda 5 destinos basados en estas preferencias:
         {preferencias}
         
-        Para cada destino, proporciona la siguiente información en este formato exacto:
+        Proporciona la información en este formato exacto, empezando cada destino con '---':
+        ---
         Destino: [Ciudad], [País]
         ¿Por qué?: [Explicación breve de por qué este destino]
         Mejor época: [Mejor temporada para visitar]
         Duración sugerida: [Tiempo recomendado de estadía]
         Actividad destacada: [Nombre de la actividad] | [URL de la actividad]
-        ---
         """
 
         # Obtener respuesta del GPT
@@ -318,7 +318,7 @@ def generar_recomendaciones_destinos(user_id):
         )
 
         return {
-            'recomendaciones_gpt': response.choices[0].message.content
+            'recomendaciones_gpt': response.choices[0].message.content.strip()
         }
 
     except Exception as e:
