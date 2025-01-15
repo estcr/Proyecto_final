@@ -159,8 +159,8 @@ def pagina_inicio():
         4. ¡Planifica tu aventura!
         """)
 
-# Función de login modernizada
-def login():
+# Función para obtener datos del usuario y guardarlos en la base de datos
+def obtener_datos_usuario():
     # Contenedor principal con fondo oscuro
     st.markdown("""
     <style>
@@ -188,10 +188,16 @@ def login():
         padding: 1rem;
         border-radius: 10px;
     }
+    .stSelectbox > div > div {
+        background-color: #1E1E1E;
+        color: white;
+        border: 1px solid #333;
+        padding: 0.5rem;
+        border-radius: 10px;
+    }
     </style>
     """, unsafe_allow_html=True)
 
-    # Layout con columnas
     col1, col2, col3 = st.columns([1,2,1])
     
     with col2:
@@ -205,73 +211,17 @@ def login():
             box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin: 2rem 0;">
             <div style="text-align: center; margin-bottom: 2rem;">
                 <h1 style="color: #FF4B4B; font-size: 2rem; margin-bottom: 0.5rem;">
-                    ¡Bienvenido de nuevo! 👋
+                    ¡Únete a la aventura! 🌎
                 </h1>
                 <p style="color: #888; font-size: 1rem;">
-                    Inicia sesión para continuar tu aventura
+                    Crea tu cuenta y descubre destinos increíbles
                 </p>
             </div>
         """, unsafe_allow_html=True)
-        
-        # Campo de email con icono
-        st.markdown("""
-        <div style="margin-bottom: 1.5rem;">
-            <label style="color: #888; display: block; margin-bottom: 0.5rem;">
-                📧 Email
-            </label>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        email = st.text_input("", placeholder="tucorreo@ejemplo.com", 
-                             label_visibility="collapsed")
-        
-        # Botón de inicio de sesión
-        if st.button("🚀 Iniciar Sesión"):
-            if email:
-                user_id = obtener_usuario_por_email(email)
-                if user_id:
-                    st.session_state.id_usuario = user_id
-                    st.success("¡Inicio de sesión exitoso! 🎉")
-                    st.session_state.pagina_actual = "🏠 Inicio"
-                    st.rerun()
-                else:
-                    st.error("Usuario no encontrado 😕")
-            else:
-                st.warning("Por favor, ingresa tu email 📧")
-        
-        # Enlace para registro
-        st.markdown("""
-        <div style="text-align: center; margin-top: 2rem;">
-            <p style="color: #888;">¿No tienes una cuenta?</p>
-            <a href="#" style="color: #FF4B4B; text-decoration: none; font-weight: bold;">
-                ¡Regístrate y comienza tu aventura! ✨
-            </a>
-        </div>
-        </div>
-        """, unsafe_allow_html=True)
 
-# Función de registro modernizada
-def obtener_datos_usuario():
-    col1, col2, col3 = st.columns([1,3,1])
-    
-    with col2:
-        # Logo centrado
-        st.image("https://raw.githubusercontent.com/estcr/Proyecto_final/main/img/t-vectorizada.png", width=200)
+        name = st.text_input("👤 Nombre", placeholder="Tu nombre", label_visibility="collapsed")
+        email = st.text_input("📧 Email", placeholder="tucorreo@ejemplo.com", label_visibility="collapsed")
         
-        st.markdown("""
-        <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="color: #FF4B4B; font-size: 2.5em;">¡Únete a la aventura! 🌎</h1>
-            <p style="color: #666; font-size: 1.2em;">Crea tu cuenta y descubre destinos increíbles</p>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        # Contenedor para el formulario
-        st.markdown("""
-        <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-        """, unsafe_allow_html=True)
-        
-        name = st.text_input("👤 Nombre", placeholder="Tu nombre")
-        email = st.text_input("📧 Email", placeholder="tucorreo@ejemplo.com")
         travel_style = st.selectbox("🎒 Estilo de viaje", 
             ["solo", "amigos", "pareja", "trabajo"],
             format_func=lambda x: {
@@ -279,12 +229,13 @@ def obtener_datos_usuario():
                 "amigos": "Con amigos 👥",
                 "pareja": "En pareja 💑",
                 "trabajo": "Viaje de trabajo 💼"
-            }[x]
+            }[x],
+            label_visibility="collapsed"
         )
         
         registration_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         
-        if st.button("🚀 Registrarme", use_container_width=True):
+        if st.button("🚀 ¡Comenzar mi aventura!"):
             if name and email:
                 if f.insertar_usuario(name, email, travel_style, registration_date):
                     st.success("¡Registro exitoso! 🎉")
@@ -292,13 +243,13 @@ def obtener_datos_usuario():
             else:
                 st.warning("Por favor, completa todos los campos 📝")
         
-        st.markdown("</div>", unsafe_allow_html=True)
-        
-        # Mensaje para login
         st.markdown("""
-        <div style="text-align: center; margin-top: 20px;">
-            <p style="color: #666;">¿Ya tienes una cuenta?</p>
-            <p style="color: #FF4B4B; font-weight: bold;">¡Inicia sesión y continúa tu aventura!</p>
+        <div style="text-align: center; margin-top: 2rem;">
+            <p style="color: #888;">¿Ya tienes una cuenta?</p>
+            <a href="#" style="color: #FF4B4B; text-decoration: none; font-weight: bold;">
+                ¡Inicia sesión aquí! ✨
+            </a>
+        </div>
         </div>
         """, unsafe_allow_html=True)
 
