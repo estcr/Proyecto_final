@@ -365,7 +365,7 @@ def interfaz_preferencias():
 
 # Función para mostrar recomendaciones personalizadas
 def interfaz_recomendaciones():
-    st.title("✨ Descubre Tu Próximo Destino")
+    st.title("✨ Descubre Lugares Increíbles")
     
     if "id_usuario" not in st.session_state or st.session_state.id_usuario is None:
         st.warning("Por favor, inicia sesión primero")
@@ -461,7 +461,7 @@ def interfaz_recomendaciones():
 
 # Función para generar itinerario
 def mostrar_itinerario():
-    st.title("✨ Planifica Tu Aventura")
+    st.title("✨ Planifica tus Actividades")
     
     if "id_usuario" not in st.session_state or st.session_state.id_usuario is None:
         st.warning("Por favor, inicia sesión primero")
@@ -636,7 +636,7 @@ def main():
             
             pagina_actual = st.radio(
                 "Navegación",
-                ["🏠 Inicio", "⭐ Preferencias", "🎯 Recomendaciones", "📍 Itinerario"]
+                ["🏠 Inicio", "⭐ Preferencias", "🎯 Lugares Recomendados", "📍 Planifica tus Actividades"]
             )
         else:
             pagina_actual = st.radio(
@@ -653,9 +653,9 @@ def main():
         pagina_inicio()
     elif pagina_actual == "⭐ Preferencias":
         interfaz_preferencias()
-    elif pagina_actual == "🎯 Recomendaciones":
+    elif pagina_actual == "🎯 Lugares Recomendados":
         interfaz_recomendaciones()
-    elif pagina_actual == "📍 Itinerario":
+    elif pagina_actual == "📍 Planifica tus Actividades":
         mostrar_itinerario()
 
 # Ejecutamos la aplicación
