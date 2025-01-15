@@ -390,12 +390,22 @@ def interfaz_recomendaciones():
                 texto_completo = resultado['recomendaciones_gpt'].strip()
                 destinos = [d.strip() for d in texto_completo.split('---') if d.strip()]
                 
+                # Contenedor principal para todos los destinos
+                st.markdown("""
+                <div style="background: #1E1E1E; border-radius: 20px; margin: 40px 0; overflow: hidden;">
+                    <div style="background: white; padding: 20px; text-align: center;">
+                        <div style="color: #FF4B4B; font-size: 32px; font-weight: bold; text-transform: uppercase;
+                            letter-spacing: 2px; margin-bottom: 5px;">Destinos Recomendados</div>
+                        <div style="color: #666; font-size: 18px;">Basados en tus preferencias</div>
+                    </div>
+                    <div style="padding: 25px;">
+                """, unsafe_allow_html=True)
+                
                 for i, destino in enumerate(destinos, 1):
                     lineas = [l.strip() for l in destino.split('\n') if l.strip()]
                     if not lineas:
                         continue
                     
-                    # Extraer información
                     info_destino = {
                         'ciudad': '',
                         'pais': '',
@@ -424,11 +434,9 @@ def interfaz_recomendaciones():
                             if len(partes) > 1:
                                 info_destino['link'] = partes[1].strip()
                     
-                    if info_destino['ciudad']:  # Solo mostrar si tenemos al menos la ciudad
-                        # Obtener imagen del destino
+                    if info_destino['ciudad']:
                         imagen_url = f.obtener_imagen_lugar(f"{info_destino['ciudad']}, {info_destino['pais']}")
                         
-                        # Mostrar el destino en un contenedor bonito
                         st.markdown(f"""
                         <div style="background: white; border-radius: 15px; margin-bottom: 25px; 
                             box-shadow: 0 4px 15px rgba(0,0,0,0.2); overflow: hidden;">
@@ -474,6 +482,11 @@ def interfaz_recomendaciones():
                             </div>
                         </div>
                         """, unsafe_allow_html=True)
+                
+                st.markdown("""
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
             else:
                 st.error("No se pudieron generar las recomendaciones. Por favor, intenta de nuevo.")
 
