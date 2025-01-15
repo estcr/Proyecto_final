@@ -386,48 +386,6 @@ def interfaz_recomendaciones():
             if isinstance(resultado, dict):
                 recomendaciones = [rec.strip() for rec in resultado['recomendaciones_gpt'].split('---') if rec.strip()]
                 
-                # Estilos actualizados
-                st.markdown("""
-                    <style>
-                    .destino-header {
-                        background: white;
-                        border-radius: 10px;
-                        padding: 20px;
-                        margin-bottom: 20px;
-                        position: relative;
-                        text-align: center;
-                    }
-                    
-                    .numero-ranking {
-                        position: absolute;
-                        top: -15px;
-                        left: 50%;
-                        transform: translateX(-50%);
-                        background: #FF4B4B;
-                        color: white;
-                        padding: 5px 15px;
-                        border-radius: 20px;
-                        font-weight: bold;
-                        font-size: 16px;
-                        z-index: 2;
-                    }
-                    
-                    .nombre-ciudad {
-                        color: #FF4B4B;
-                        font-size: 32px;
-                        font-weight: bold;
-                        text-transform: uppercase;
-                        letter-spacing: 2px;
-                        margin: 10px 0 5px 0;
-                    }
-                    
-                    .nombre-pais {
-                        color: #666;
-                        font-size: 18px;
-                    }
-                    </style>
-                """, unsafe_allow_html=True)
-                
                 for i, rec in enumerate(recomendaciones, 1):
                     try:
                         lines = [line.strip() for line in rec.split('\n') if line.strip()]
@@ -438,22 +396,19 @@ def interfaz_recomendaciones():
                         destino = destino_line.replace('Destino:', '').strip()
                         ciudad, pais = [part.strip() for part in destino.split(',')] if ',' in destino else (destino, '')
                         
-                        # Título del destino
+                        # Contenedor blanco con el título
                         st.markdown(f"""
-                        <div class="destino-header">
-                            <div class="numero-ranking">#{i}</div>
-                            <div class="nombre-ciudad">{ciudad}</div>
-                            <div class="nombre-pais">{pais}</div>
+                        <div style="background: white; border-radius: 10px; padding: 20px; margin-bottom: 20px; text-align: center; position: relative;">
+                            <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); 
+                                background: #FF4B4B; color: white; padding: 5px 15px; border-radius: 20px; 
+                                font-weight: bold; font-size: 16px;">#{i}</div>
+                            <div style="color: #FF4B4B; font-size: 32px; font-weight: bold; text-transform: uppercase; 
+                                letter-spacing: 2px; margin-top: 10px;">{ciudad}</div>
+                            <div style="color: #666; font-size: 18px;">{pais}</div>
                         </div>
                         """, unsafe_allow_html=True)
                         
-                        # Contenedor del contenido
-                        st.markdown(f"""
-                        <div class="destino-container">
-                            <div class="destino-card">
-                                <div class="destino-content">
-                        """, unsafe_allow_html=True)
-                        
+                        # Contenedor oscuro con imagen e información
                         col1, col2 = st.columns([1, 1.5])
                         
                         with col1:
@@ -490,14 +445,6 @@ def interfaz_recomendaciones():
                                         🎯 {nombre}
                                     </a>""", unsafe_allow_html=True)
                         
-                        # Cerrar los divs del contenedor
-                        st.markdown("""
-                                </div>
-                            </div>
-                        </div>
-                        """, unsafe_allow_html=True)
-                        
-                        # Agregar separador si no es el último destino
                         if i < len(recomendaciones):
                             st.markdown("<div class='separador'></div>", unsafe_allow_html=True)
                     
