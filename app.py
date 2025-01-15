@@ -398,6 +398,9 @@ def interfaz_recomendaciones():
                     ciudad = ciudad_pais[0].strip()
                     pais = ciudad_pais[1].strip() if len(ciudad_pais) > 1 else ""
                     
+                    # Obtener imagen del destino
+                    imagen_url = f.obtener_imagen_lugar(f"{ciudad}, {pais}")
+                    
                     st.markdown(f"""
                     <div style="background: #1E1E1E; border-radius: 20px; margin: 40px 0; overflow: hidden;">
                         <div style="background: white; padding: 20px; text-align: center;">
@@ -406,6 +409,11 @@ def interfaz_recomendaciones():
                             <div style="color: #666; font-size: 18px;">{pais}</div>
                         </div>
                         <div style="padding: 20px;">
+                            <div style="margin-bottom: 20px;">
+                                <img src="{imagen_url}" 
+                                    style="width: 100%; height: 300px; object-fit: cover; border-radius: 12px;"
+                                    onerror="this.onerror=null; this.src='https://via.placeholder.com/800x400?text=Imagen+no+disponible';">
+                            </div>
                     """, unsafe_allow_html=True)
                     
                     # Procesar cada línea del destino

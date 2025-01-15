@@ -170,8 +170,8 @@ def obtener_imagen_lugar(lugar):
     try:
         api_key = st.secrets["api_keys"]["google_places_key"]
         
-        # Limpiar el nombre del lugar (eliminar información del país si existe)
-        lugar_limpio = lugar.split(',')[0].strip()
+        # Limpiar el nombre del lugar
+        lugar_limpio = lugar.strip()
         
         # Primero buscar el lugar
         search_url = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json"
@@ -184,7 +184,7 @@ def obtener_imagen_lugar(lugar):
         
         response = requests.get(search_url, params=search_params)
         if response.status_code != 200:
-            return None
+            return f"https://source.unsplash.com/800x400/?{lugar_limpio.replace(' ', '+')},city"
             
         result = response.json()
         
@@ -194,7 +194,7 @@ def obtener_imagen_lugar(lugar):
             # Obtener la imagen
             photo_url = "https://maps.googleapis.com/maps/api/place/photo"
             photo_params = {
-                "maxwidth": 400,
+                "maxwidth": 800,
                 "photo_reference": photo_reference,
                 "key": api_key
             }
@@ -205,10 +205,7 @@ def obtener_imagen_lugar(lugar):
         st.error(f"Error al obtener imagen: {e}")
     
     # Si algo falla, usar Unsplash como respaldo
-    try:
-        return f"https://source.unsplash.com/400x300/?{lugar_limpio.replace(' ', '+')},landmark"
-    except:
-        return None
+    return f"https://source.unsplash.com/800x400/?{lugar_limpio.replace(' ', '+')},city"
 
 def insertar_preferencias_viaje(user_id, preferencias):
     """Actualiza o inserta las preferencias del usuario"""
