@@ -158,6 +158,26 @@ def pagina_inicio():
         3. Obtén recomendaciones personalizadas
         4. ¡Planifica tu aventura!
         """)
+    
+    # Botones de acción centrados
+    st.markdown("<br>", unsafe_allow_html=True)
+    col1, col2, col3 = st.columns([1,2,1])
+    with col2:
+        st.markdown("""
+        <div style="text-align: center; padding: 20px;">
+            <h2 style="color: #FF4B4B;">¿Listo para empezar? 🚀</h2>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        col_btn1, col_btn2 = st.columns(2)
+        with col_btn1:
+            if st.button("🔑 Iniciar Sesión", use_container_width=True):
+                st.session_state.pagina_actual = "🔑 Inicio de Sesión"
+                st.rerun()
+        with col_btn2:
+            if st.button("📝 Registrarse", use_container_width=True):
+                st.session_state.pagina_actual = "📝 Registro"
+                st.rerun()
 
 # Función para obtener datos del usuario y guardarlos en la base de datos
 def obtener_datos_usuario():
@@ -549,6 +569,8 @@ def main():
     # Aseguramos que las variables de sesión estén inicializadas
     if "id_usuario" not in st.session_state:
         st.session_state.id_usuario = None
+    if "pagina_actual" not in st.session_state:
+        st.session_state.pagina_actual = "🏠 Inicio"
 
     # Barra lateral modernizada
     with st.sidebar:
@@ -557,30 +579,32 @@ def main():
             st.success("Sesión iniciada ✅")
             if st.button("Cerrar Sesión 👋"):
                 st.session_state.id_usuario = None
+                st.session_state.pagina_actual = "🏠 Inicio"
                 st.rerun()
             
-            pagina_actual = st.radio(
+            st.session_state.pagina_actual = st.radio(
                 "Navegación",
                 ["🏠 Inicio", "⭐ Preferencias", "🎯 Lugares Recomendados", "📍 Planifica tus Actividades"]
             )
         else:
-            pagina_actual = st.radio(
+            # Si no hay sesión iniciada, mostramos solo el botón de inicio
+            st.session_state.pagina_actual = st.radio(
                 "Navegación",
-                ["🔑 Inicio de Sesión", "📝 Registro"]
+                ["🏠 Inicio"]
             )
 
     # Manejo de páginas
-    if pagina_actual == "🔑 Inicio de Sesión":
+    if st.session_state.pagina_actual == "🔑 Inicio de Sesión":
         login()
-    elif pagina_actual == "📝 Registro":
+    elif st.session_state.pagina_actual == "📝 Registro":
         obtener_datos_usuario()
-    elif pagina_actual == "🏠 Inicio":
+    elif st.session_state.pagina_actual == "🏠 Inicio":
         pagina_inicio()
-    elif pagina_actual == "⭐ Preferencias":
+    elif st.session_state.pagina_actual == "⭐ Preferencias":
         interfaz_preferencias()
-    elif pagina_actual == "🎯 Lugares Recomendados":
+    elif st.session_state.pagina_actual == "🎯 Lugares Recomendados":
         interfaz_recomendaciones()
-    elif pagina_actual == "📍 Planifica tus Actividades":
+    elif st.session_state.pagina_actual == "📍 Planifica tus Actividades":
         mostrar_itinerario()
 
 # Ejecutamos la aplicación
