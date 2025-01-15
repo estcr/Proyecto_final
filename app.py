@@ -161,27 +161,72 @@ def pagina_inicio():
 
 # Función de login modernizada
 def login():
-    col1, col2, col3 = st.columns([1,3,1])
+    # Contenedor principal con fondo oscuro
+    st.markdown("""
+    <style>
+    .main {
+        background-color: #13151a;
+    }
+    .stButton > button {
+        width: 100%;
+        background-color: #FF4B4B !important;
+        color: white !important;
+        font-weight: bold;
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+        border: none;
+        transition: all 0.3s ease;
+    }
+    .stButton > button:hover {
+        background-color: #ff6b6b !important;
+        transform: translateY(-2px);
+    }
+    .stTextInput > div > div > input {
+        background-color: #1E1E1E;
+        color: white;
+        border: 1px solid #333;
+        padding: 1rem;
+        border-radius: 10px;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    # Layout con columnas
+    col1, col2, col3 = st.columns([1,2,1])
     
     with col2:
-        # Logo centrado
-        st.image("https://raw.githubusercontent.com/estcr/Proyecto_final/main/img/t-vectorizada.png", width=200)
+        # Logo y título
+        st.image("https://raw.githubusercontent.com/estcr/Proyecto_final/main/img/t-vectorizada.png", 
+                width=150)
         
+        # Contenedor del formulario
         st.markdown("""
-        <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="color: #FF4B4B; font-size: 2.5em;">¡Bienvenido de nuevo! 👋</h1>
-            <p style="color: #666; font-size: 1.2em;">Inicia sesión para continuar tu aventura</p>
+        <div style="background: #1E1E1E; padding: 2rem; border-radius: 20px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin: 2rem 0;">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h1 style="color: #FF4B4B; font-size: 2rem; margin-bottom: 0.5rem;">
+                    ¡Bienvenido de nuevo! 👋
+                </h1>
+                <p style="color: #888; font-size: 1rem;">
+                    Inicia sesión para continuar tu aventura
+                </p>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        # Campo de email con icono
+        st.markdown("""
+        <div style="margin-bottom: 1.5rem;">
+            <label style="color: #888; display: block; margin-bottom: 0.5rem;">
+                📧 Email
+            </label>
         </div>
         """, unsafe_allow_html=True)
         
-        # Contenedor para el formulario
-        st.markdown("""
-        <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-        """, unsafe_allow_html=True)
+        email = st.text_input("", placeholder="tucorreo@ejemplo.com", 
+                             label_visibility="collapsed")
         
-        email = st.text_input("📧 Email", placeholder="tucorreo@ejemplo.com")
-        
-        if st.button("🚀 Iniciar Sesión", use_container_width=True):
+        # Botón de inicio de sesión
+        if st.button("🚀 Iniciar Sesión"):
             if email:
                 user_id = obtener_usuario_por_email(email)
                 if user_id:
@@ -194,13 +239,14 @@ def login():
             else:
                 st.warning("Por favor, ingresa tu email 📧")
         
-        st.markdown("</div>", unsafe_allow_html=True)
-        
-        # Mensaje para registro
+        # Enlace para registro
         st.markdown("""
-        <div style="text-align: center; margin-top: 20px;">
-            <p style="color: #666;">¿Aún no tienes una cuenta?</p>
-            <p style="color: #FF4B4B; font-weight: bold;">¡Regístrate y comienza tu aventura!</p>
+        <div style="text-align: center; margin-top: 2rem;">
+            <p style="color: #888;">¿No tienes una cuenta?</p>
+            <a href="#" style="color: #FF4B4B; text-decoration: none; font-weight: bold;">
+                ¡Regístrate y comienza tu aventura! ✨
+            </a>
+        </div>
         </div>
         """, unsafe_allow_html=True)
 
