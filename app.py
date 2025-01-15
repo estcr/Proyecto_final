@@ -384,9 +384,16 @@ def interfaz_recomendaciones():
             resultado = f.generar_recomendaciones_destinos(user_id)
             
             if isinstance(resultado, dict):
-                # Dividir el texto en destinos individuales
+                st.write("Texto completo de recomendaciones:")
+                st.code(resultado['recomendaciones_gpt'])
+                
                 texto_completo = resultado['recomendaciones_gpt']
                 destinos = [dest.strip() for dest in texto_completo.split('---') if dest.strip()]
+                
+                st.write("Número de destinos encontrados:", len(destinos))
+                for i, dest in enumerate(destinos, 1):
+                    st.write(f"Destino {i}:")
+                    st.code(dest)
                 
                 # Procesar cada destino
                 for i, destino_texto in enumerate(destinos, 1):
@@ -467,6 +474,8 @@ def interfaz_recomendaciones():
                         # Separador entre destinos
                         if i < len(destinos):
                             st.markdown("<hr style='margin: 40px 0; border: none; height: 1px; background: rgba(255,255,255,0.1);'>", unsafe_allow_html=True)
+            else:
+                st.error(resultado)
 
 # Función para generar itinerario
 def mostrar_itinerario():
