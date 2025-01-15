@@ -384,24 +384,22 @@ def interfaz_recomendaciones():
             resultado = f.generar_recomendaciones_destinos(user_id)
             
             if isinstance(resultado, dict):
-                recomendaciones = resultado['recomendaciones_gpt'].split('---')
+                recomendaciones = [rec.strip() for rec in resultado['recomendaciones_gpt'].split('---') if rec.strip()]
                 
                 for i, rec in enumerate(recomendaciones, 1):
-                    if not rec.strip():
-                        continue
-                        
-                    lines = [line.strip() for line in rec.split('\n') if line.strip()]
-                    destino_line = next((line for line in lines if line.startswith('Destino:')), None)
-                    
-                    if destino_line:
+                    try:
+                        lines = [line.strip() for line in rec.split('\n') if line.strip()]
+                        destino_line = next((line for line in lines if line.startswith('Destino:')), None)
+                        if not destino_line:
+                            continue
+                            
                         destino = destino_line.replace('Destino:', '').strip()
                         ciudad, pais = [part.strip() for part in destino.split(',')] if ',' in destino else (destino, '')
                         
-                        # Título en contenedor blanco
-                        st.write("")  # Espacio antes del título
+                        # Título del destino
                         st.markdown(f"""
-                        <div style="background: white; border-radius: 10px; position: relative; margin-bottom: 20px;">
-                            <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); 
+                        <div style="background: white; border-radius: 10px; margin-bottom: 20px;">
+                            <div style="position: absolute; margin-top: -15px; left: 50%; transform: translateX(-50%); 
                                 background: #FF4B4B; color: white; padding: 5px 15px; border-radius: 20px; z-index: 2;">
                                 #{i}
                             </div>
@@ -416,7 +414,11 @@ def interfaz_recomendaciones():
                         </div>
                         """, unsafe_allow_html=True)
                         
-                        # Contenedor para la imagen y la información
+                        # Contenedor para el contenido
+                        st.markdown("""
+                        <div style="background: #1a1a1a; border-radius: 20px; padding: 30px; margin-bottom: 40px;">
+                        """, unsafe_allow_html=True)
+                        
                         col1, col2 = st.columns([1, 1.5])
                         
                         with col1:
@@ -453,10 +455,13 @@ def interfaz_recomendaciones():
                                         🎯 {nombre}
                                     </a>""", unsafe_allow_html=True)
                         
-                        # Separador entre destinos
+                        st.markdown("""</div>""", unsafe_allow_html=True)
+                        
                         if i < len(recomendaciones):
-                            st.markdown("<hr style='margin: 40px 0; border: none; height: 1px; background: rgba(255,255,255,0.1);'>", 
-                                      unsafe_allow_html=True)
+                            st.markdown("<div style='height: 40px;'></div>", unsafe_allow_html=True)
+                    
+                    except Exception as e:
+                        st.error(f"Error al procesar destino {i}: {str(e)}")
 
 # Función para generar itinerario
 def mostrar_itinerario():
