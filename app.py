@@ -402,15 +402,15 @@ def interfaz_recomendaciones():
                     # Contenedor principal para cada destino
                     st.markdown(f"""
                     <div style="background: #1E1E1E; border-radius: 20px; margin: 40px 0; overflow: hidden;">
-                        <div style="background: white; padding: 30px 20px 20px 20px; position: relative; text-align: center;">
-                            <div style="position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%);
-                                background: #FF4B4B; color: white; padding: 8px 25px; border-radius: 25px;
-                                font-weight: bold; font-size: 18px; box-shadow: 0 4px 15px rgba(255,75,75,0.3);">
+                        <div style="background: white; padding: 40px 20px 20px 20px; position: relative; text-align: center; margin-top: 20px;">
+                            <div style="position: absolute; top: -15px; left: 50%; transform: translate(-50%, -50%);
+                                background: #FF4B4B; color: white; padding: 8px 30px; border-radius: 25px;
+                                font-weight: bold; font-size: 16px; box-shadow: 0 4px 15px rgba(255,75,75,0.3);">
                                 TOP {i}
                             </div>
-                            <div style="color: #FF4B4B; font-size: 36px; font-weight: bold; text-transform: uppercase;
-                                letter-spacing: 2px; margin-bottom: 5px;">{ciudad}</div>
-                            <div style="color: #666; font-size: 20px;">{pais}</div>
+                            <div style="color: #FF4B4B; font-size: 32px; font-weight: bold; text-transform: uppercase;
+                                letter-spacing: 2px; margin: 10px 0 5px 0; line-height: 1.2;">{ciudad}</div>
+                            <div style="color: #666; font-size: 18px;">{pais}</div>
                         </div>
                     """, unsafe_allow_html=True)
                     
