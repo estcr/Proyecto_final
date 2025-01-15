@@ -89,6 +89,9 @@ def generar_recomendaciones_completas(destino, user_id):
         if not preferencias:
             return "No se encontraron preferencias para el usuario"
 
+        # Crear cliente OpenAI
+        client = OpenAI(api_key=st.secrets["api_keys"]["apigpt_key"])
+
         # Prompt para el GPT
         prompt = f"""Genera 10 actividades turísticas para {destino} basadas en estas preferencias:
         {preferencias}
@@ -104,18 +107,20 @@ def generar_recomendaciones_completas(destino, user_id):
         """
 
         # Obtener respuesta del GPT
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": prompt}]
         )
 
         # Procesar la respuesta
         texto_completo = response.choices[0].message.content
+        # Eliminar el primer separador si existe
+        texto_completo = texto_completo.lstrip('---').strip()
         actividades_raw = [act.strip() for act in texto_completo.split('---') if act.strip()]
         
         actividades_procesadas = []
         for actividad_texto in actividades_raw:
-            lineas = actividad_texto.split('\n')
+            lineas = [l.strip() for l in actividad_texto.split('\n') if l.strip()]
             actividad = {}
             
             for linea in lineas:
@@ -136,7 +141,7 @@ def generar_recomendaciones_completas(destino, user_id):
                 # Generar URL de imagen para la actividad
                 actividad['imagen_url'] = obtener_imagen_lugar(f"{actividad['nombre']} {destino}")
                 # Calcular score basado en las preferencias
-                actividad['score'] = calcular_score_actividad(actividad, preferencias)
+                actividad['score'] = 0.95  # Valor temporal
                 actividades_procesadas.append(actividad)
 
         return {
@@ -145,6 +150,7 @@ def generar_recomendaciones_completas(destino, user_id):
         }
 
     except Exception as e:
+        st.error(f"Error al generar recomendaciones: {str(e)}")
         return f"Error al generar recomendaciones: {str(e)}"
 
 def obtener_usuario_actual():

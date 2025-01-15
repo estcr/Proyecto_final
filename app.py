@@ -523,6 +523,16 @@ def mostrar_itinerario():
                 
                 # Actividades recomendadas
                 if resultado['actividades']:
+                    st.markdown("""
+                    <div style="background: #1E1E1E; border-radius: 20px; margin: 40px 0; overflow: hidden;">
+                        <div style="background: white; padding: 20px; text-align: center;">
+                            <div style="color: #FF4B4B; font-size: 32px; font-weight: bold; text-transform: uppercase;
+                                letter-spacing: 2px; margin-bottom: 5px;">Actividades Recomendadas</div>
+                            <div style="color: #666; font-size: 18px;">Las mejores experiencias para tu viaje</div>
+                        </div>
+                        <div style="padding: 25px;">
+                    """, unsafe_allow_html=True)
+                    
                     for i, act in enumerate(resultado['actividades'], 1):
                         st.markdown(f"""
                         <div style="background: white; border-radius: 15px; margin-bottom: 25px; 
@@ -572,6 +582,11 @@ def mostrar_itinerario():
                             </div>
                         </div>
                         """, unsafe_allow_html=True)
+                    
+                    st.markdown("""
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
             else:
                 st.error(resultado)
 
