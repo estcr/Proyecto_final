@@ -387,12 +387,10 @@ def interfaz_recomendaciones():
                 recomendaciones = [rec.strip() for rec in resultado['recomendaciones_gpt'].split('---') if rec.strip()]
                 
                 for i, rec in enumerate(recomendaciones, 1):
-                    try:
-                        lines = [line.strip() for line in rec.split('\n') if line.strip()]
-                        destino_line = next((line for line in lines if line.startswith('Destino:')), None)
-                        if not destino_line:
-                            continue
-                            
+                    lines = [line.strip() for line in rec.split('\n') if line.strip()]
+                    destino_line = next((line for line in lines if line.startswith('Destino:')), None)
+                    
+                    if destino_line:
                         destino = destino_line.replace('Destino:', '').strip()
                         ciudad, pais = [part.strip() for part in destino.split(',')] if ',' in destino else (destino, '')
                         
@@ -447,9 +445,6 @@ def interfaz_recomendaciones():
                         
                         if i < len(recomendaciones):
                             st.markdown("<div style='height: 40px;'></div>", unsafe_allow_html=True)
-                    
-                    except Exception as e:
-                        st.error(f"Error al procesar destino {i}: {str(e)}")
 
 # Función para generar itinerario
 def mostrar_itinerario():
