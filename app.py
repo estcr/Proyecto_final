@@ -472,37 +472,93 @@ def interfaz_recomendaciones():
 
 # Función para generar itinerario
 def mostrar_itinerario():
-    st.title("Generar Itinerario de Viaje")
+    st.title("✨ Planifica Tu Aventura")
     
-    # Verificar si hay un usuario en la sesión
     if "id_usuario" not in st.session_state or st.session_state.id_usuario is None:
         st.warning("Por favor, inicia sesión primero")
         return
     
     user_id = st.session_state.id_usuario
     
-    # Input para el destino
-    destino = st.text_input("¿A dónde quieres viajar?")
+    st.markdown("""
+    <div style="text-align: center; padding: 20px; background: linear-gradient(45deg, #FF4B4B, #FF8F8F); 
+        border-radius: 15px; margin: 20px 0; color: white;">
+        <h3 style="margin: 0;">¿A dónde te gustaría ir? 🌎</h3>
+        <p style="margin: 10px 0 0 0;">Generaremos un itinerario personalizado para tu próxima aventura</p>
+    </div>
+    """, unsafe_allow_html=True)
     
-    if st.button("Generar Recomendaciones"):
+    # Input para el destino con estilo mejorado
+    st.markdown("""
+    <style>
+    .stTextInput > div > div > input {
+        background-color: #1E1E1E;
+        color: white;
+        border: none;
+        padding: 15px;
+        border-radius: 10px;
+        font-size: 16px;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    destino = st.text_input("", placeholder="Escribe tu destino aquí...", 
+                           help="Por ejemplo: 'Tokio', 'Barcelona', 'Nueva York'")
+    
+    if st.button("🗺️ Generar Itinerario", use_container_width=True):
         if not destino:
             st.warning("Por favor, ingresa un destino")
             return
             
-        with st.spinner("Generando recomendaciones personalizadas..."):
+        with st.spinner("Creando tu itinerario personalizado... 🌍"):
             resultado = f.generar_recomendaciones_completas(destino, user_id)
             
             if isinstance(resultado, dict):
-                # Mostrar recomendaciones de ChatGPT
-                st.subheader("Recomendaciones Personalizadas")
-                st.write(resultado['recomendaciones_gpt'])
+                # Recomendaciones de ChatGPT
+                st.markdown("""
+                <div style="background: #1E1E1E; border-radius: 20px; margin: 40px 0; overflow: hidden;">
+                    <div style="background: white; padding: 20px; text-align: center;">
+                        <div style="color: #FF4B4B; font-size: 32px; font-weight: bold; text-transform: uppercase;
+                            letter-spacing: 2px; margin-bottom: 5px;">Itinerario Recomendado</div>
+                        <div style="color: #666; font-size: 18px;">Personalizado para ti</div>
+                    </div>
+                    <div style="padding: 20px;">
+                        <div style="background: #2E2E2E; padding: 20px; border-radius: 12px; 
+                            margin: 10px 0; color: white; white-space: pre-line;">
+                            {resultado['recomendaciones_gpt']}
+                        </div>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
                 
-                # Mostrar actividades similares
-                st.subheader("Actividades Similares de Nuestra Base de Datos")
+                # Actividades Similares
+                st.markdown("""
+                <div style="background: #1E1E1E; border-radius: 20px; margin: 40px 0; overflow: hidden;">
+                    <div style="background: white; padding: 20px; text-align: center;">
+                        <div style="color: #FF4B4B; font-size: 32px; font-weight: bold; text-transform: uppercase;
+                            letter-spacing: 2px; margin-bottom: 5px;">Actividades Recomendadas</div>
+                        <div style="color: #666; font-size: 18px;">Basadas en tus preferencias</div>
+                    </div>
+                    <div style="padding: 20px;">
+                """, unsafe_allow_html=True)
+                
                 for i, act in enumerate(resultado['actividades_similares'], 1):
-                    with st.expander(f"{i}. {act['Actividad']}"):
-                        st.write(f"**Descripción:** {act['Descripción']}")
-                        st.write(f"**Relevancia:** {act['score']:.2f}")
+                    st.markdown(f"""
+                    <div style="background: #2E2E2E; padding: 20px; border-radius: 12px; margin: 10px 0;">
+                        <div style="color: #FF4B4B; font-size: 20px; font-weight: bold; margin-bottom: 10px;">
+                            ✨ {act['Actividad']}
+                        </div>
+                        <div style="color: white; margin-bottom: 10px;">
+                            {act['Descripción']}
+                        </div>
+                        <div style="display: inline-block; background: #FF4B4B; color: white;
+                            padding: 5px 15px; border-radius: 20px; font-size: 14px;">
+                            Relevancia: {act['score']:.2f}
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                
+                st.markdown("</div></div>", unsafe_allow_html=True)
             else:
                 st.error(resultado)
 
