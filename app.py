@@ -522,18 +522,8 @@ def mostrar_itinerario():
                 """, unsafe_allow_html=True)
                 
                 # Actividades recomendadas
-                if resultado['actividades_similares']:
-                    st.markdown("""
-                    <div style="background: #1E1E1E; border-radius: 20px; margin: 40px 0; overflow: hidden;">
-                        <div style="background: white; padding: 20px; text-align: center;">
-                            <div style="color: #FF4B4B; font-size: 32px; font-weight: bold; text-transform: uppercase;
-                                letter-spacing: 2px; margin-bottom: 5px;">Actividades Recomendadas</div>
-                            <div style="color: #666; font-size: 18px;">Las mejores experiencias para tu viaje</div>
-                        </div>
-                        <div style="padding: 25px;">
-                    """, unsafe_allow_html=True)
-                    
-                    for i, act in enumerate(resultado['actividades_similares'][:10], 1):
+                if resultado['actividades']:
+                    for i, act in enumerate(resultado['actividades'], 1):
                         st.markdown(f"""
                         <div style="background: white; border-radius: 15px; margin-bottom: 25px; 
                             box-shadow: 0 4px 15px rgba(0,0,0,0.2); overflow: hidden;">
@@ -541,33 +531,37 @@ def mostrar_itinerario():
                                 color: white; font-weight: bold; font-size: 20px;">
                                 <span style="background: rgba(255,255,255,0.2); padding: 5px 15px; 
                                     border-radius: 20px; margin-right: 10px;">#{i}</span>
-                                {act['Actividad']}
+                                {act['nombre']}
                             </div>
                             
                             <div style="padding: 25px;">
                                 <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 20px;">
                                     <div>
-                                        <img src="https://source.unsplash.com/400x300/?{act['Actividad']}"
+                                        <img src="{act['imagen_url']}"
                                             style="width: 100%; height: 250px; object-fit: cover; border-radius: 10px;">
                                     </div>
                                     <div>
                                         <div style="color: #333; line-height: 1.6; font-size: 16px; 
                                             background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-                                            {act['Descripción']}
+                                            {act['descripcion']}
                                         </div>
                                         
                                         <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
                                             <div style="background: #FFE5E5; color: #FF4B4B; padding: 8px 15px; 
                                                 border-radius: 20px; font-size: 14px;">
-                                                ⭐ Score: {act['score']:.2f}
+                                                ⏱️ {act['duracion']}
                                             </div>
                                             <div style="background: #f0f0f0; color: #333; padding: 8px 15px; 
                                                 border-radius: 20px; font-size: 14px;">
-                                                ✨ Actividad Destacada
+                                                🗓️ {act['mejor_epoca']}
+                                            </div>
+                                            <div style="background: #FFE5E5; color: #FF4B4B; padding: 8px 15px; 
+                                                border-radius: 20px; font-size: 14px;">
+                                                ⭐ Score: {act['score']:.2f}
                                             </div>
                                         </div>
                                         
-                                        <a href="#" target="_blank" style="text-decoration: none;">
+                                        <a href="{act['link']}" target="_blank" style="text-decoration: none;">
                                             <div style="background: #FF4B4B; color: white; padding: 12px 20px;
                                                 border-radius: 10px; display: inline-block; transition: all 0.3s ease;">
                                                 🔗 Ver más detalles
@@ -578,11 +572,6 @@ def mostrar_itinerario():
                             </div>
                         </div>
                         """, unsafe_allow_html=True)
-                    
-                    st.markdown("""
-                        </div>
-                    </div>
-                    """, unsafe_allow_html=True)
             else:
                 st.error(resultado)
 

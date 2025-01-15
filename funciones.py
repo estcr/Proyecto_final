@@ -83,36 +83,69 @@ def obtener_actividades_similares(embedding):
         return []
 
 def generar_recomendaciones_completas(destino, user_id):
-    """Función principal para generar todas las recomendaciones"""
     try:
-        # 1. Obtener preferencias del usuario
+        # Obtener preferencias del usuario
         preferencias = obtener_preferencias_usuario(user_id)
-        travel_style = obtener_travel_style(user_id)
-        
         if not preferencias:
-            return "No se encontraron preferencias para el usuario."
+            return "No se encontraron preferencias para el usuario"
 
-        # 2. Generar recomendaciones con ChatGPT
-        recomendaciones_gpt = generar_recomendaciones_gpt(destino, preferencias, travel_style)
-        if not recomendaciones_gpt:
-            return "Error al generar recomendaciones con GPT."
+        # Prompt para el GPT
+        prompt = f"""Genera 10 actividades turísticas para {destino} basadas en estas preferencias:
+        {preferencias}
+        
+        Para cada actividad, proporciona la siguiente información en este formato exacto:
+        ACTIVIDAD: [nombre de la actividad]
+        DESCRIPCION: [descripción detallada]
+        TIPO: [tipo de actividad: cultural/aventura/gastronomía/etc]
+        DURACION: [duración estimada]
+        MEJOR_EPOCA: [mejor época para realizar la actividad]
+        LINK: [URL relevante de la actividad]
+        ---
+        """
 
-        # 3. Generar embedding para las recomendaciones
-        embedding = vectorizar_actividades(recomendaciones_gpt)
-        if embedding is None:
-            return "Error al generar el embedding."
+        # Obtener respuesta del GPT
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": prompt}]
+        )
 
-        # 4. Obtener actividades similares de la tabla vectorial
-        actividades_similares = obtener_actividades_similares(embedding)
+        # Procesar la respuesta
+        texto_completo = response.choices[0].message.content
+        actividades_raw = [act.strip() for act in texto_completo.split('---') if act.strip()]
+        
+        actividades_procesadas = []
+        for actividad_texto in actividades_raw:
+            lineas = actividad_texto.split('\n')
+            actividad = {}
+            
+            for linea in lineas:
+                if linea.startswith('ACTIVIDAD:'):
+                    actividad['nombre'] = linea.replace('ACTIVIDAD:', '').strip()
+                elif linea.startswith('DESCRIPCION:'):
+                    actividad['descripcion'] = linea.replace('DESCRIPCION:', '').strip()
+                elif linea.startswith('TIPO:'):
+                    actividad['tipo'] = linea.replace('TIPO:', '').strip()
+                elif linea.startswith('DURACION:'):
+                    actividad['duracion'] = linea.replace('DURACION:', '').strip()
+                elif linea.startswith('MEJOR_EPOCA:'):
+                    actividad['mejor_epoca'] = linea.replace('MEJOR_EPOCA:', '').strip()
+                elif linea.startswith('LINK:'):
+                    actividad['link'] = linea.replace('LINK:', '').strip()
+            
+            if actividad:
+                # Generar URL de imagen para la actividad
+                actividad['imagen_url'] = obtener_imagen_lugar(f"{actividad['nombre']} {destino}")
+                # Calcular score basado en las preferencias
+                actividad['score'] = calcular_score_actividad(actividad, preferencias)
+                actividades_procesadas.append(actividad)
 
         return {
-            'recomendaciones_gpt': recomendaciones_gpt,
-            'actividades_similares': actividades_similares
+            'destino': destino,
+            'actividades': actividades_procesadas[:10]  # Asegurar que solo devolvemos 10 actividades
         }
 
     except Exception as e:
-        st.error(f"Error en generar_recomendaciones_completas: {e}")
-        return f"Error: {str(e)}"
+        return f"Error al generar recomendaciones: {str(e)}"
 
 def obtener_usuario_actual():
     """Obtiene el ID del usuario actual desde la sesión de Streamlit"""
