@@ -384,9 +384,16 @@ def interfaz_recomendaciones():
             resultado = f.generar_recomendaciones_destinos(user_id)
             
             if isinstance(resultado, dict):
-                recomendaciones = [rec.strip() for rec in resultado['recomendaciones_gpt'].split('---') if rec.strip()]
+                # Dividir las recomendaciones y filtrar líneas vacías
+                recomendaciones = [rec for rec in resultado['recomendaciones_gpt'].split('---') if rec.strip()]
                 
+                # Procesar cada recomendación
                 for i, rec in enumerate(recomendaciones, 1):
+                    # Contenedor principal para cada destino
+                    st.markdown("""
+                    <div style="background: #1E1E1E; border-radius: 15px; margin: 30px 0; padding: 20px;">
+                    """, unsafe_allow_html=True)
+                    
                     lines = [line.strip() for line in rec.split('\n') if line.strip()]
                     destino_line = next((line for line in lines if line.startswith('Destino:')), None)
                     
@@ -394,19 +401,21 @@ def interfaz_recomendaciones():
                         destino = destino_line.replace('Destino:', '').strip()
                         ciudad, pais = [part.strip() for part in destino.split(',')] if ',' in destino else (destino, '')
                         
-                        # Título del destino
+                        # Título y número del destino
                         st.markdown(f"""
-                        <div style="text-align: center; padding: 20px;">
-                            <div style="color: rgb(255, 75, 75); font-size: 32px; font-weight: bold; text-transform: uppercase;">
-                                {ciudad}
-                            </div>
-                            <div style="color: rgb(102, 102, 102); font-size: 18px;">
-                                {pais}
+                        <div style="background: white; border-radius: 10px; position: relative; margin-bottom: 30px;">
+                            <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
+                                background: #FF4B4B; color: white; padding: 5px 15px; border-radius: 20px;
+                                font-weight: bold; font-size: 16px;">#{i}</div>
+                            <div style="text-align: center; padding: 25px 20px 20px 20px;">
+                                <div style="color: #FF4B4B; font-size: 32px; font-weight: bold; 
+                                    text-transform: uppercase; letter-spacing: 2px;">{ciudad}</div>
+                                <div style="color: #666; font-size: 18px; margin-top: 5px;">{pais}</div>
                             </div>
                         </div>
                         """, unsafe_allow_html=True)
                         
-                        # Contenido (imagen y descripción)
+                        # Contenido: Imagen y descripción
                         col1, col2 = st.columns([1, 1.5])
                         
                         with col1:
@@ -416,8 +425,12 @@ def interfaz_recomendaciones():
                                     img = Image.open(BytesIO(requests.get(imagen_url).content))
                                     st.image(img, use_container_width=True)
                             except:
-                                st.markdown("""<div class="imagen-placeholder">🖼️</div>""", 
-                                          unsafe_allow_html=True)
+                                st.markdown("""
+                                <div style="background: #2E2E2E; border-radius: 10px; padding: 20px; 
+                                    text-align: center; color: #666;">
+                                    🖼️ Imagen no disponible
+                                </div>
+                                """, unsafe_allow_html=True)
                         
                         with col2:
                             for line in lines:
@@ -425,26 +438,42 @@ def interfaz_recomendaciones():
                                     continue
                                 elif '¿Por qué?' in line:
                                     texto = line.replace('¿Por qué?:', '').strip()
-                                    st.markdown(f"""<div class="descripcion">💫 {texto}</div>""", 
-                                              unsafe_allow_html=True)
+                                    st.markdown(f"""
+                                    <div style="background: white; border-radius: 10px; padding: 15px; margin-bottom: 15px;">
+                                        <div style="color: #333;">💫 {texto}</div>
+                                    </div>
+                                    """, unsafe_allow_html=True)
                                 elif 'Mejor época:' in line:
                                     epoca = line.replace('Mejor época:', '').strip()
-                                    st.markdown(f"""<div class="info-tag epoca">🗓️ {epoca}</div>""", 
-                                              unsafe_allow_html=True)
+                                    st.markdown(f"""
+                                    <div style="background: #E3F2FD; border-radius: 20px; padding: 8px 15px; 
+                                        display: inline-block; margin: 5px; color: #333;">
+                                        🗓️ {epoca}
+                                    </div>
+                                    """, unsafe_allow_html=True)
                                 elif 'Duración sugerida:' in line:
                                     duracion = line.replace('Duración sugerida:', '').strip()
-                                    st.markdown(f"""<div class="info-tag duracion">⏱️ {duracion}</div>""", 
-                                              unsafe_allow_html=True)
+                                    st.markdown(f"""
+                                    <div style="background: #F3E5F5; border-radius: 20px; padding: 8px 15px; 
+                                        display: inline-block; margin: 5px; color: #333;">
+                                        ⏱️ {duracion}
+                                    </div>
+                                    """, unsafe_allow_html=True)
                                 elif 'Actividad destacada:' in line:
                                     nombre = line.split('|')[0].replace('Actividad destacada:', '').strip()
                                     link = line.split('|')[1].strip() if '|' in line else '#'
                                     st.markdown(f"""
-                                    <a href="{link}" target="_blank" class="actividad-btn">
-                                        🎯 {nombre}
-                                    </a>""", unsafe_allow_html=True)
-                        
-                        if i < len(recomendaciones):
-                            st.markdown("<div style='height: 40px;'></div>", unsafe_allow_html=True)
+                                    <a href="{link}" target="_blank" style="text-decoration: none;">
+                                        <div style="background: #FF4B4B; color: white; border-radius: 10px; 
+                                            padding: 10px 20px; margin-top: 15px; display: inline-block; 
+                                            transition: all 0.3s ease;">
+                                            🎯 {nombre}
+                                        </div>
+                                    </a>
+                                    """, unsafe_allow_html=True)
+                    
+                    # Cerrar el contenedor principal
+                    st.markdown("</div>", unsafe_allow_html=True)
 
 # Función para generar itinerario
 def mostrar_itinerario():
