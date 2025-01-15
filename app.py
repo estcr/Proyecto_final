@@ -70,7 +70,6 @@ st.markdown("""
     .ciudad {
         font-size: 32px;
         font-weight: bold;
-        color: #FF4B4B;
         text-transform: uppercase;
         letter-spacing: 2px;
         margin-bottom: 5px;
@@ -78,7 +77,6 @@ st.markdown("""
     
     .pais {
         font-size: 18px;
-        color: #666;
     }
     
     .destino-content {
@@ -388,9 +386,6 @@ def interfaz_recomendaciones():
             if isinstance(resultado, dict):
                 recomendaciones = [rec.strip() for rec in resultado['recomendaciones_gpt'].split('---') if rec.strip()]
                 
-                st.markdown("""<div class="titulo-seccion">TOP 5 DESTINOS PARA TI</div>""", 
-                          unsafe_allow_html=True)
-                
                 for i, rec in enumerate(recomendaciones, 1):
                     try:
                         lines = [line.strip() for line in rec.split('\n') if line.strip()]
@@ -406,8 +401,8 @@ def interfaz_recomendaciones():
                             <div class="ranking">#{i}</div>
                             <div class="destino-card">
                                 <div class="destino-header">
-                                    <div class="ciudad">{ciudad}</div>
-                                    <div class="pais">{pais}</div>
+                                    <div class="ciudad" style="color: #FF4B4B;">{ciudad}</div>
+                                    <div class="pais" style="color: #666;">{pais}</div>
                                 </div>
                                 <div class="destino-content">
                         """, unsafe_allow_html=True)
@@ -448,12 +443,14 @@ def interfaz_recomendaciones():
                                         🎯 {nombre}
                                     </a>""", unsafe_allow_html=True)
                         
+                        # Cerrar los divs del contenedor
                         st.markdown("""
                                 </div>
                             </div>
                         </div>
                         """, unsafe_allow_html=True)
                         
+                        # Agregar separador si no es el último destino
                         if i < len(recomendaciones):
                             st.markdown("<div class='separador'></div>", unsafe_allow_html=True)
                     
