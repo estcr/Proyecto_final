@@ -396,20 +396,25 @@ def interfaz_recomendaciones():
                         destino = destino_line.replace('Destino:', '').strip()
                         ciudad, pais = [part.strip() for part in destino.split(',')] if ',' in destino else (destino, '')
                         
-                        # Contenedor blanco para el título
+                        # Número y título del destino
                         st.markdown(f"""
-                        <div style="background: white; border-radius: 10px; margin-bottom: -20px; z-index: 1000; position: relative;">
-                            <div style="text-align: center; padding: 20px;">
-                                <div style="color: #FF4B4B; font-size: 32px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px;">{ciudad}</div>
+                        <div style="position: relative;">
+                            <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); 
+                                background: #FF4B4B; color: white; padding: 5px 15px; border-radius: 20px; 
+                                font-weight: bold; font-size: 16px; z-index: 2;">
+                                #{i}
+                            </div>
+                            <div style="background: white; border-radius: 10px; padding: 20px; text-align: center;">
+                                <div style="color: #FF4B4B; font-size: 32px; font-weight: bold; text-transform: uppercase; 
+                                    letter-spacing: 2px;">{ciudad}</div>
                                 <div style="color: #666; font-size: 18px;">{pais}</div>
                             </div>
                         </div>
                         """, unsafe_allow_html=True)
                         
-                        # Contenedor principal con el contenido
+                        # Contenedor del contenido
                         st.markdown(f"""
                         <div class="destino-container">
-                            <div class="ranking">#{i}</div>
                             <div class="destino-card">
                                 <div class="destino-content">
                         """, unsafe_allow_html=True)
