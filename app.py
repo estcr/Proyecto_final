@@ -395,72 +395,84 @@ def interfaz_recomendaciones():
                         continue
                     
                     # Extraer información
-                    info_destino = {}
+                    info_destino = {
+                        'ciudad': '',
+                        'pais': '',
+                        'descripcion': '',
+                        'epoca': '',
+                        'duracion': '',
+                        'actividad': '',
+                        'link': '#'
+                    }
+                    
                     for linea in lineas:
-                        if linea.startswith('Destino:'):
-                            ciudad_pais = linea.replace('Destino:', '').strip().split(',')
-                            info_destino['ciudad'] = ciudad_pais[0].strip()
-                            info_destino['pais'] = ciudad_pais[1].strip() if len(ciudad_pais) > 1 else ""
-                        elif linea.startswith('¿Por qué?:'):
+                        if 'Destino:' in linea:
+                            partes = linea.replace('Destino:', '').strip().split(',')
+                            info_destino['ciudad'] = partes[0].strip()
+                            if len(partes) > 1:
+                                info_destino['pais'] = partes[1].strip()
+                        elif '¿Por qué?:' in linea:
                             info_destino['descripcion'] = linea.replace('¿Por qué?:', '').strip()
-                        elif linea.startswith('Mejor época:'):
+                        elif 'Mejor época:' in linea:
                             info_destino['epoca'] = linea.replace('Mejor época:', '').strip()
-                        elif linea.startswith('Duración sugerida:'):
+                        elif 'Duración sugerida:' in linea:
                             info_destino['duracion'] = linea.replace('Duración sugerida:', '').strip()
-                        elif linea.startswith('Actividad destacada:'):
-                            actividad_info = linea.replace('Actividad destacada:', '').split('|')
-                            info_destino['actividad'] = actividad_info[0].strip()
-                            info_destino['link'] = actividad_info[1].strip() if len(actividad_info) > 1 else "#"
+                        elif 'Actividad destacada:' in linea:
+                            partes = linea.replace('Actividad destacada:', '').split('|')
+                            info_destino['actividad'] = partes[0].strip()
+                            if len(partes) > 1:
+                                info_destino['link'] = partes[1].strip()
                     
-                    # Obtener imagen del destino
-                    imagen_url = f.obtener_imagen_lugar(f"{info_destino['ciudad']}, {info_destino['pais']}")
-                    
-                    # Mostrar el destino en un contenedor bonito
-                    st.markdown(f"""
-                    <div style="background: white; border-radius: 15px; margin-bottom: 25px; 
-                        box-shadow: 0 4px 15px rgba(0,0,0,0.2); overflow: hidden;">
-                        <div style="background: linear-gradient(45deg, #FF4B4B, #FF6B6B); padding: 15px 25px; 
-                            color: white; font-weight: bold; font-size: 20px;">
-                            <span style="background: rgba(255,255,255,0.2); padding: 5px 15px; 
-                                border-radius: 20px; margin-right: 10px;">#{i}</span>
-                            {info_destino['ciudad']}, {info_destino['pais']}
-                        </div>
+                    if info_destino['ciudad']:  # Solo mostrar si tenemos al menos la ciudad
+                        # Obtener imagen del destino
+                        imagen_url = f.obtener_imagen_lugar(f"{info_destino['ciudad']}, {info_destino['pais']}")
                         
-                        <div style="padding: 25px;">
-                            <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 20px;">
-                                <div>
-                                    <img src="{imagen_url}" 
-                                        style="width: 100%; height: 250px; object-fit: cover; border-radius: 10px;"
-                                        onerror="this.onerror=null; this.src='https://via.placeholder.com/400x300?text=Imagen+no+disponible';">
-                                </div>
-                                <div>
-                                    <div style="color: #333; line-height: 1.6; font-size: 16px; 
-                                        background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-                                        {info_destino['descripcion']}
+                        # Mostrar el destino en un contenedor bonito
+                        st.markdown(f"""
+                        <div style="background: white; border-radius: 15px; margin-bottom: 25px; 
+                            box-shadow: 0 4px 15px rgba(0,0,0,0.2); overflow: hidden;">
+                            <div style="background: linear-gradient(45deg, #FF4B4B, #FF6B6B); padding: 15px 25px; 
+                                color: white; font-weight: bold; font-size: 20px;">
+                                <span style="background: rgba(255,255,255,0.2); padding: 5px 15px; 
+                                    border-radius: 20px; margin-right: 10px;">#{i}</span>
+                                {info_destino['ciudad']}{', ' + info_destino['pais'] if info_destino['pais'] else ''}
+                            </div>
+                            
+                            <div style="padding: 25px;">
+                                <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 20px;">
+                                    <div>
+                                        <img src="{imagen_url}" 
+                                            style="width: 100%; height: 250px; object-fit: cover; border-radius: 10px;"
+                                            onerror="this.onerror=null; this.src='https://via.placeholder.com/400x300?text=Imagen+no+disponible';">
                                     </div>
-                                    
-                                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
-                                        <div style="background: #FFE5E5; color: #FF4B4B; padding: 8px 15px; 
-                                            border-radius: 20px; font-size: 14px;">
-                                            🗓️ {info_destino['epoca']}
+                                    <div>
+                                        <div style="color: #333; line-height: 1.6; font-size: 16px; 
+                                            background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                                            {info_destino['descripcion']}
                                         </div>
-                                        <div style="background: #f0f0f0; color: #333; padding: 8px 15px; 
-                                            border-radius: 20px; font-size: 14px;">
-                                            ⏱️ {info_destino['duracion']}
+                                        
+                                        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
+                                            <div style="background: #FFE5E5; color: #FF4B4B; padding: 8px 15px; 
+                                                border-radius: 20px; font-size: 14px;">
+                                                🗓️ {info_destino['epoca']}
+                                            </div>
+                                            <div style="background: #f0f0f0; color: #333; padding: 8px 15px; 
+                                                border-radius: 20px; font-size: 14px;">
+                                                ⏱️ {info_destino['duracion']}
+                                            </div>
                                         </div>
+                                        
+                                        <a href="{info_destino['link']}" target="_blank" style="text-decoration: none;">
+                                            <div style="background: #FF4B4B; color: white; padding: 12px 20px;
+                                                border-radius: 10px; display: inline-block; transition: all 0.3s ease;">
+                                                🎯 {info_destino['actividad']}
+                                            </div>
+                                        </a>
                                     </div>
-                                    
-                                    <a href="{info_destino['link']}" target="_blank" style="text-decoration: none;">
-                                        <div style="background: #FF4B4B; color: white; padding: 12px 20px;
-                                            border-radius: 10px; display: inline-block; transition: all 0.3s ease;">
-                                            🎯 {info_destino['actividad']}
-                                        </div>
-                                    </a>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    """, unsafe_allow_html=True)
+                        """, unsafe_allow_html=True)
             else:
                 st.error(resultado)
 
