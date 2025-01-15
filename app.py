@@ -385,97 +385,71 @@ def interfaz_recomendaciones():
         with st.spinner("Creando tu lista de destinos soñados... 🌍"):
             resultado = f.generar_recomendaciones_destinos(user_id)
             
-            if isinstance(resultado, dict) and 'recomendaciones_gpt' in resultado:
+            if isinstance(resultado, dict):
                 # Dividir y limpiar las recomendaciones
-                texto_completo = resultado['recomendaciones_gpt'].strip()
-                destinos = [d.strip() for d in texto_completo.split('---') if d.strip()]
+                destinos = [d for d in resultado['recomendaciones_gpt'].split('---') if d.strip()]
                 
-                # Contenedor principal
-                st.markdown("""
-                <div style="padding: 20px;">
-                    <div style="background: white; border-radius: 15px; padding: 20px; text-align: center; margin-bottom: 30px;">
-                        <div style="color: #FF4B4B; font-size: 32px; font-weight: bold; text-transform: uppercase;
-                            letter-spacing: 2px; margin-bottom: 5px;">Destinos Recomendados</div>
-                        <div style="color: #666; font-size: 18px;">Basados en tus preferencias</div>
-                    </div>
-                """, unsafe_allow_html=True)
-                
-                # Procesar cada destino
                 for i, destino in enumerate(destinos, 1):
                     lineas = [l.strip() for l in destino.split('\n') if l.strip()]
                     if not lineas:
                         continue
-                    
-                    # Extraer información
-                    info = {}
-                    for linea in lineas:
-                        if 'Destino:' in linea:
-                            ciudad_pais = linea.replace('Destino:', '').strip().split(',')
-                            info['ciudad'] = ciudad_pais[0].strip()
-                            info['pais'] = ciudad_pais[1].strip() if len(ciudad_pais) > 1 else ""
-                        elif '¿Por qué?:' in linea:
-                            info['descripcion'] = linea.replace('¿Por qué?:', '').strip()
-                        elif 'Mejor época:' in linea:
-                            info['epoca'] = linea.replace('Mejor época:', '').strip()
-                        elif 'Duración sugerida:' in linea:
-                            info['duracion'] = linea.replace('Duración sugerida:', '').strip()
-                        elif 'Actividad destacada:' in linea:
-                            partes = linea.replace('Actividad destacada:', '').split('|')
-                            info['actividad'] = partes[0].strip()
-                            info['link'] = partes[1].strip() if len(partes) > 1 else "#"
-                    
-                    # Obtener imagen
-                    imagen_url = f.obtener_imagen_lugar(f"{info['ciudad']}, {info['pais']}")
-                    
-                    # Mostrar destino
-                    st.markdown(f"""
-                    <div style="background: white; border-radius: 15px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
-                        <div style="background: linear-gradient(45deg, #FF4B4B, #FF6B6B); padding: 15px 25px; 
-                            color: white; font-weight: bold; font-size: 20px;">
-                            <span style="background: rgba(255,255,255,0.2); padding: 5px 15px; 
-                                border-radius: 20px; margin-right: 10px;">#{i}</span>
-                            {info['ciudad']}, {info['pais']}
-                        </div>
                         
-                        <div style="padding: 25px;">
-                            <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 20px;">
-                                <div>
-                                    <img src="{imagen_url}" 
-                                        style="width: 100%; height: 250px; object-fit: cover; border-radius: 10px;"
-                                        onerror="this.onerror=null; this.src='https://via.placeholder.com/400x300?text=Imagen+no+disponible';">
-                                </div>
-                                <div>
-                                    <div style="color: #333; line-height: 1.6; font-size: 16px; 
-                                        background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-                                        {info['descripcion']}
-                                    </div>
-                                    
-                                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
-                                        <div style="background: #FFE5E5; color: #FF4B4B; padding: 8px 15px; 
-                                            border-radius: 20px; font-size: 14px;">
-                                            🗓️ {info['epoca']}
-                                        </div>
-                                        <div style="background: #f0f0f0; color: #333; padding: 8px 15px; 
-                                            border-radius: 20px; font-size: 14px;">
-                                            ⏱️ {info['duracion']}
-                                        </div>
-                                    </div>
-                                    
-                                    <a href="{info['link']}" target="_blank" style="text-decoration: none;">
-                                        <div style="background: #FF4B4B; color: white; padding: 12px 20px;
-                                            border-radius: 10px; display: inline-block; transition: all 0.3s ease;">
-                                            🎯 {info['actividad']}
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
+                    ciudad_pais = lineas[0].replace('Destino:', '').strip().split(',')
+                    ciudad = ciudad_pais[0].strip()
+                    pais = ciudad_pais[1].strip() if len(ciudad_pais) > 1 else ""
+                    
+                    st.markdown(f"""
+                    <div style="background: #1E1E1E; border-radius: 20px; margin: 40px 0; overflow: hidden;">
+                        <div style="background: white; padding: 20px; text-align: center;">
+                            <div style="color: #FF4B4B; font-size: 32px; font-weight: bold; text-transform: uppercase;
+                                letter-spacing: 2px; margin-bottom: 5px;">{ciudad}</div>
+                            <div style="color: #666; font-size: 18px;">{pais}</div>
                         </div>
-                    </div>
+                        <div style="padding: 20px;">
                     """, unsafe_allow_html=True)
-                
-                st.markdown("</div>", unsafe_allow_html=True)
+                    
+                    # Procesar cada línea del destino
+                    for linea in lineas[1:]:  # Saltamos la primera línea que ya procesamos
+                        if '¿Por qué?:' in linea:
+                            descripcion = linea.replace('¿Por qué?:', '').strip()
+                            st.markdown(f"""
+                            <div style="background: #2E2E2E; padding: 20px; border-radius: 12px; 
+                                margin: 10px 0; color: white;">
+                                {descripcion}
+                            </div>
+                            """, unsafe_allow_html=True)
+                        elif 'Mejor época:' in linea:
+                            epoca = linea.replace('Mejor época:', '').strip()
+                            st.markdown(f"""
+                            <div style="display: inline-block; background: #2E2E2E; color: white;
+                                padding: 8px 15px; border-radius: 20px; margin: 5px;">
+                                🗓️ {epoca}
+                            </div>
+                            """, unsafe_allow_html=True)
+                        elif 'Duración sugerida:' in linea:
+                            duracion = linea.replace('Duración sugerida:', '').strip()
+                            st.markdown(f"""
+                            <div style="display: inline-block; background: #2E2E2E; color: white;
+                                padding: 8px 15px; border-radius: 20px; margin: 5px;">
+                                ⏱️ {duracion}
+                            </div>
+                            """, unsafe_allow_html=True)
+                        elif 'Actividad destacada:' in linea:
+                            nombre, link = linea.split('|')
+                            nombre = nombre.replace('Actividad destacada:', '').strip()
+                            link = link.strip()
+                            st.markdown(f"""
+                            <a href="{link}" target="_blank" style="text-decoration: none;">
+                                <div style="background: #FF4B4B; color: white; padding: 12px 20px;
+                                    border-radius: 12px; margin-top: 15px; display: inline-block;">
+                                    🎯 {nombre}
+                                </div>
+                            </a>
+                            """, unsafe_allow_html=True)
+                    
+                    st.markdown("</div></div>", unsafe_allow_html=True)
             else:
-                st.error("No se pudieron generar las recomendaciones. Por favor, intenta de nuevo.")
+                st.error(resultado)
 
 # Función para generar itinerario
 def mostrar_itinerario():
