@@ -384,20 +384,25 @@ def interfaz_recomendaciones():
             resultado = f.generar_recomendaciones_destinos(user_id)
             
             if isinstance(resultado, dict):
-                recomendaciones = resultado['recomendaciones_gpt'].split('---')
+                # Dividir las recomendaciones y limpiarlas
+                texto_recomendaciones = resultado['recomendaciones_gpt']
+                recomendaciones = [rec for rec in texto_recomendaciones.split('---') if rec.strip()]
                 
-                for i, rec in enumerate(recomendaciones, 1):
-                    if not rec.strip():
-                        continue
-                        
-                    lines = [line.strip() for line in rec.split('\n') if line.strip()]
-                    destino_line = next((line for line in lines if line.startswith('Destino:')), None)
+                # Procesar cada recomendación
+                for i, recomendacion in enumerate(recomendaciones, 1):
+                    # Contenedor principal para cada destino
+                    st.markdown("""<div style="margin-bottom: 50px;">""", unsafe_allow_html=True)
                     
+                    # Procesar las líneas de la recomendación
+                    lines = [line.strip() for line in recomendacion.split('\n') if line.strip()]
+                    
+                    # Obtener el destino
+                    destino_line = next((line for line in lines if line.startswith('Destino:')), None)
                     if destino_line:
                         destino = destino_line.replace('Destino:', '').strip()
                         ciudad, pais = [part.strip() for part in destino.split(',')] if ',' in destino else (destino, '')
                         
-                        # Título del destino en contenedor blanco
+                        # Título del destino
                         st.markdown(f"""
                         <div style="background: white; border-radius: 10px; margin-bottom: 20px;">
                             <div style="text-align: center; padding: 20px;">
@@ -447,9 +452,13 @@ def interfaz_recomendaciones():
                                     <a href="{link}" target="_blank" class="actividad-btn">
                                         🎯 {nombre}
                                     </a>""", unsafe_allow_html=True)
-                        
-                        if i < len(recomendaciones):
-                            st.markdown("<div style='height: 40px;'></div>", unsafe_allow_html=True)
+                    
+                    # Cerrar el contenedor del destino
+                    st.markdown("""</div>""", unsafe_allow_html=True)
+                    
+                    # Agregar separador entre destinos
+                    if i < len(recomendaciones):
+                        st.markdown("<hr style='margin: 40px 0; opacity: 0.2;'>", unsafe_allow_html=True)
 
 # Función para generar itinerario
 def mostrar_itinerario():
