@@ -398,27 +398,17 @@ def interfaz_recomendaciones():
                         
                         # Título del destino
                         st.markdown(f"""
-                        <div style="background: white; border-radius: 10px; margin-bottom: 20px;">
-                            <div style="position: absolute; margin-top: -15px; left: 50%; transform: translateX(-50%); 
-                                background: #FF4B4B; color: white; padding: 5px 15px; border-radius: 20px; z-index: 2;">
-                                #{i}
+                        <div style="text-align: center; padding: 20px;">
+                            <div style="color: rgb(255, 75, 75); font-size: 32px; font-weight: bold; text-transform: uppercase;">
+                                {ciudad}
                             </div>
-                            <div style="text-align: center; padding: 20px;">
-                                <div style="color: #FF4B4B; font-size: 32px; font-weight: bold; text-transform: uppercase;">
-                                    {ciudad}
-                                </div>
-                                <div style="color: #666; font-size: 18px;">
-                                    {pais}
-                                </div>
+                            <div style="color: rgb(102, 102, 102); font-size: 18px;">
+                                {pais}
                             </div>
                         </div>
                         """, unsafe_allow_html=True)
                         
-                        # Contenedor para el contenido
-                        st.markdown("""
-                        <div style="background: #1a1a1a; border-radius: 20px; padding: 30px; margin-bottom: 40px;">
-                        """, unsafe_allow_html=True)
-                        
+                        # Contenido (imagen y descripción)
                         col1, col2 = st.columns([1, 1.5])
                         
                         with col1:
@@ -454,8 +444,6 @@ def interfaz_recomendaciones():
                                     <a href="{link}" target="_blank" class="actividad-btn">
                                         🎯 {nombre}
                                     </a>""", unsafe_allow_html=True)
-                        
-                        st.markdown("""</div>""", unsafe_allow_html=True)
                         
                         if i < len(recomendaciones):
                             st.markdown("<div style='height: 40px;'></div>", unsafe_allow_html=True)
