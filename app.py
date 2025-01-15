@@ -513,8 +513,8 @@ def mostrar_itinerario():
                         <div style="color: #666; font-size: 18px;">Tu guía día a día</div>
                     </div>
                     <div style="padding: 25px;">
-                        <div style="background: #2E2E2E; padding: 25px; border-radius: 15px; 
-                            color: white; white-space: pre-line; line-height: 1.8; font-size: 16px;">
+                        <div style="background: white; padding: 25px; border-radius: 15px; 
+                            color: #333; line-height: 1.8; font-size: 16px;">
                             {resultado['recomendaciones_gpt']}
                         </div>
                     </div>
@@ -527,18 +527,18 @@ def mostrar_itinerario():
                     <div style="background: #1E1E1E; border-radius: 20px; margin: 40px 0; overflow: hidden;">
                         <div style="background: white; padding: 20px; text-align: center;">
                             <div style="color: #FF4B4B; font-size: 32px; font-weight: bold; text-transform: uppercase;
-                                letter-spacing: 2px; margin-bottom: 5px;">Experiencias Destacadas</div>
-                            <div style="color: #666; font-size: 18px;">Actividades que no te puedes perder</div>
+                                letter-spacing: 2px; margin-bottom: 5px;">Actividades Recomendadas</div>
+                            <div style="color: #666; font-size: 18px;">Las mejores experiencias para tu viaje</div>
                         </div>
                         <div style="padding: 25px;">
                     """, unsafe_allow_html=True)
                     
                     for i, act in enumerate(resultado['actividades_similares'][:10], 1):
                         st.markdown(f"""
-                        <div style="background: white; border-radius: 15px; margin-bottom: 25px; overflow: hidden;
-                            box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
-                            <div style="background: linear-gradient(45deg, #FF4B4B, #FF6B6B); padding: 12px 25px; 
-                                color: white; font-weight: bold; font-size: 18px;">
+                        <div style="background: white; border-radius: 15px; margin-bottom: 25px; 
+                            box-shadow: 0 4px 15px rgba(0,0,0,0.2); overflow: hidden;">
+                            <div style="background: linear-gradient(45deg, #FF4B4B, #FF6B6B); padding: 15px 25px; 
+                                color: white; font-weight: bold; font-size: 20px;">
                                 <span style="background: rgba(255,255,255,0.2); padding: 5px 15px; 
                                     border-radius: 20px; margin-right: 10px;">#{i}</span>
                                 {act['Actividad']}
@@ -548,28 +548,29 @@ def mostrar_itinerario():
                                 <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 20px;">
                                     <div>
                                         <img src="https://source.unsplash.com/400x300/?{act['Actividad']}"
-                                            style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;">
+                                            style="width: 100%; height: 250px; object-fit: cover; border-radius: 10px;">
                                     </div>
                                     <div>
-                                        <div style="color: #333; line-height: 1.6; font-size: 16px; margin-bottom: 20px;">
+                                        <div style="color: #333; line-height: 1.6; font-size: 16px; 
+                                            background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
                                             {act['Descripción']}
                                         </div>
                                         
                                         <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
-                                            <div style="background: #f0f0f0; color: #333; padding: 8px 15px; 
-                                                border-radius: 20px; font-size: 14px; display: flex; align-items: center;">
-                                                <span style="margin-right: 8px;">✨</span> Destacado
-                                            </div>
                                             <div style="background: #FFE5E5; color: #FF4B4B; padding: 8px 15px; 
                                                 border-radius: 20px; font-size: 14px;">
-                                                Score: {act['score']:.2f}
+                                                ⭐ Score: {act['score']:.2f}
+                                            </div>
+                                            <div style="background: #f0f0f0; color: #333; padding: 8px 15px; 
+                                                border-radius: 20px; font-size: 14px;">
+                                                ✨ Actividad Destacada
                                             </div>
                                         </div>
                                         
                                         <a href="#" target="_blank" style="text-decoration: none;">
                                             <div style="background: #FF4B4B; color: white; padding: 12px 20px;
                                                 border-radius: 10px; display: inline-block; transition: all 0.3s ease;">
-                                                🔗 Más información
+                                                🔗 Ver más detalles
                                             </div>
                                         </a>
                                     </div>
@@ -674,7 +675,7 @@ def main():
     # Manejo de páginas
     if pagina_actual == "🔑 Inicio de Sesión":
         login()
-    elif pagina_actual == "�� Registro":
+    elif pagina_actual == "📝 Registro":
         obtener_datos_usuario()
     elif pagina_actual == "🏠 Inicio":
         pagina_inicio()
@@ -688,3 +689,4 @@ def main():
 # Ejecutamos la aplicación
 if __name__ == "__main__":
     main()
+
