@@ -527,40 +527,52 @@ def mostrar_itinerario():
                     <div style="background: #1E1E1E; border-radius: 20px; margin: 40px 0; overflow: hidden;">
                         <div style="background: white; padding: 20px; text-align: center;">
                             <div style="color: #FF4B4B; font-size: 32px; font-weight: bold; text-transform: uppercase;
-                                letter-spacing: 2px; margin-bottom: 5px;">Actividades Sugeridas</div>
-                            <div style="color: #666; font-size: 18px;">Experiencias que no te puedes perder</div>
+                                letter-spacing: 2px; margin-bottom: 5px;">Actividades Imperdibles</div>
+                            <div style="color: #666; font-size: 18px;">10 experiencias únicas para tu viaje</div>
                         </div>
                         <div style="padding: 20px;">
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
                     """, unsafe_allow_html=True)
                     
-                    for act in resultado['actividades_similares']:
+                    for i, act in enumerate(resultado['actividades_similares'], 1):
                         st.markdown(f"""
-                        <div style="background: #2E2E2E; padding: 20px; border-radius: 15px; 
-                            box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
-                            <div style="color: #FF4B4B; font-size: 20px; font-weight: bold; 
-                                margin-bottom: 15px; display: flex; align-items: center;">
-                                <span style="margin-right: 10px;">✨</span>
-                                {act['Actividad']}
+                        <div style="background: #2E2E2E; border-radius: 15px; margin-bottom: 20px; overflow: hidden;">
+                            <div style="background: #FF4B4B; padding: 10px 20px; color: white; font-weight: bold;">
+                                Actividad {i}
                             </div>
-                            <div style="color: #E0E0E0; line-height: 1.6; margin-bottom: 15px;">
-                                {act['Descripción']}
-                            </div>
-                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                                <div style="background: #3D3D3D; color: white; padding: 5px 15px; 
-                                    border-radius: 20px; font-size: 14px;">
-                                    🎯 Destacado
+                            <div style="padding: 20px;">
+                                <div style="color: white; font-size: 22px; font-weight: bold; margin-bottom: 15px; 
+                                    display: flex; align-items: center;">
+                                    <span style="background: #3D3D3D; border-radius: 50%; width: 40px; height: 40px; 
+                                        display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                                        ✨
+                                    </span>
+                                    {act['Actividad']}
                                 </div>
-                                <div style="background: #FF4B4B; color: white; padding: 5px 15px; 
-                                    border-radius: 20px; font-size: 14px;">
-                                    Score: {act['score']:.2f}
+                                
+                                <div style="color: #E0E0E0; line-height: 1.6; margin: 15px 0; padding: 15px; 
+                                    background: rgba(0,0,0,0.2); border-radius: 10px;">
+                                    {act['Descripción']}
+                                </div>
+                                
+                                <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px;">
+                                    <div style="background: #3D3D3D; color: white; padding: 8px 15px; 
+                                        border-radius: 20px; font-size: 14px;">
+                                        🎯 Actividad Destacada
+                                    </div>
+                                    <div style="background: #FF4B4B; color: white; padding: 8px 15px; 
+                                        border-radius: 20px; font-size: 14px;">
+                                        ⭐ Score: {act['score']:.2f}
+                                    </div>
+                                    <div style="background: #3D3D3D; color: white; padding: 8px 15px; 
+                                        border-radius: 20px; font-size: 14px;">
+                                        🌟 Recomendado
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         """, unsafe_allow_html=True)
                     
                     st.markdown("""
-                            </div>
                         </div>
                     </div>
                     """, unsafe_allow_html=True)
