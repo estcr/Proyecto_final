@@ -396,19 +396,27 @@ def interfaz_recomendaciones():
                         destino = destino_line.replace('Destino:', '').strip()
                         ciudad, pais = [part.strip() for part in destino.split(',')] if ',' in destino else (destino, '')
                         
-                        # Contenedor blanco con el título
+                        # Título del destino en contenedor blanco
                         st.markdown(f"""
-                        <div style="background: white; border-radius: 10px; padding: 20px; margin-bottom: 20px; text-align: center; position: relative;">
-                            <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); 
-                                background: #FF4B4B; color: white; padding: 5px 15px; border-radius: 20px; 
-                                font-weight: bold; font-size: 16px;">#{i}</div>
-                            <div style="color: #FF4B4B; font-size: 32px; font-weight: bold; text-transform: uppercase; 
-                                letter-spacing: 2px; margin-top: 10px;">{ciudad}</div>
-                            <div style="color: #666; font-size: 18px;">{pais}</div>
+                        <div style="background: white; border-radius: 10px; margin-bottom: 20px;">
+                            <div style="position: relative;">
+                                <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); 
+                                    background: #FF4B4B; color: white; padding: 5px 15px; border-radius: 20px; 
+                                    font-weight: bold; font-size: 16px; z-index: 2;">#{i}</div>
+                            </div>
+                            <div style="text-align: center; padding: 20px;">
+                                <div style="color: #FF4B4B; font-size: 32px; font-weight: bold; text-transform: uppercase; 
+                                    letter-spacing: 2px;">{ciudad}</div>
+                                <div style="color: #666; font-size: 18px;">{pais}</div>
+                            </div>
                         </div>
                         """, unsafe_allow_html=True)
                         
-                        # Contenedor oscuro con imagen e información
+                        # Contenedor para imagen y descripción
+                        st.markdown("""
+                        <div style="background: #1a1a1a; border-radius: 20px; padding: 30px; margin-bottom: 40px;">
+                        """, unsafe_allow_html=True)
+                        
                         col1, col2 = st.columns([1, 1.5])
                         
                         with col1:
@@ -444,6 +452,8 @@ def interfaz_recomendaciones():
                                     <a href="{link}" target="_blank" class="actividad-btn">
                                         🎯 {nombre}
                                     </a>""", unsafe_allow_html=True)
+                        
+                        st.markdown("""</div>""", unsafe_allow_html=True)
                         
                         if i < len(recomendaciones):
                             st.markdown("<div class='separador'></div>", unsafe_allow_html=True)
