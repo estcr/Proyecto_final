@@ -365,7 +365,7 @@ def interfaz_preferencias():
 
 # Función para mostrar recomendaciones personalizadas
 def interfaz_recomendaciones():
-    st.title("Recomendaciones de Destinos")
+    st.title("✨ Descubre Tu Próximo Destino")
     
     if "id_usuario" not in st.session_state or st.session_state.id_usuario is None:
         st.warning("Por favor, inicia sesión primero")
@@ -374,106 +374,105 @@ def interfaz_recomendaciones():
     user_id = st.session_state.id_usuario
     
     st.markdown("""
-    ### ¿No sabes dónde viajar? 🤔
-    Basándonos en tus preferencias y estilo de viaje, hemos seleccionado estos destinos 
-    increíbles que creemos que te encantarán. ¡Descubre tu próxima aventura! ✨
-    """)
+    <div style="text-align: center; padding: 20px; background: linear-gradient(45deg, #FF4B4B, #FF8F8F); 
+        border-radius: 15px; margin: 20px 0; color: white;">
+        <h3 style="margin: 0;">¿Listo para tu próxima aventura? 🌎</h3>
+        <p style="margin: 10px 0 0 0;">Hemos seleccionado estos destinos increíbles basados en tus preferencias</p>
+    </div>
+    """, unsafe_allow_html=True)
     
-    if st.button("Descubrir Destinos Perfectos ✨"):
+    if st.button("🎯 Descubrir Destinos", use_container_width=True):
         with st.spinner("Creando tu lista de destinos soñados... 🌍"):
             resultado = f.generar_recomendaciones_destinos(user_id)
             
             if isinstance(resultado, dict):
-                st.write("Texto completo de recomendaciones:")
-                st.code(resultado['recomendaciones_gpt'])
+                destinos = resultado['recomendaciones_gpt'].split('Destino:')
+                destinos = [d.strip() for d in destinos if d.strip()]
                 
-                texto_completo = resultado['recomendaciones_gpt']
-                destinos = [dest.strip() for dest in texto_completo.split('---') if dest.strip()]
-                
-                st.write("Número de destinos encontrados:", len(destinos))
-                for i, dest in enumerate(destinos, 1):
-                    st.write(f"Destino {i}:")
-                    st.code(dest)
-                
-                # Procesar cada destino
-                for i, destino_texto in enumerate(destinos, 1):
-                    with st.container():
-                        # Extraer información del destino
-                        lineas = destino_texto.split('\n')
-                        destino_info = next((line for line in lineas if line.startswith('Destino:')), '')
-                        ciudad, pais = [x.strip() for x in destino_info.replace('Destino:', '').split(',', 1)] if ',' in destino_info else (destino_info.replace('Destino:', '').strip(), '')
+                for i, destino in enumerate(destinos, 1):
+                    lineas = [l.strip() for l in destino.split('\n') if l.strip()]
+                    if not lineas:
+                        continue
                         
-                        # Contenedor del título
-                        st.markdown(f"""
-                        <div style="background: white; border-radius: 10px; margin: 30px 0 20px 0; position: relative;">
-                            <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
-                                background: #FF4B4B; color: white; padding: 5px 15px; border-radius: 20px;
-                                font-weight: bold; font-size: 16px;">#{i}</div>
-                            <div style="text-align: center; padding: 25px 20px 20px 20px;">
-                                <div style="color: #FF4B4B; font-size: 32px; font-weight: bold; 
-                                    text-transform: uppercase; letter-spacing: 2px;">{ciudad}</div>
-                                <div style="color: #666; font-size: 18px; margin-top: 5px;">{pais}</div>
+                    # Extraer información
+                    ciudad_pais = lineas[0].split(',', 1)
+                    ciudad = ciudad_pais[0].strip()
+                    pais = ciudad_pais[1].strip() if len(ciudad_pais) > 1 else ""
+                    
+                    # Contenedor principal para cada destino
+                    st.markdown(f"""
+                    <div style="background: #1E1E1E; border-radius: 20px; margin: 40px 0; overflow: hidden;">
+                        <div style="background: white; padding: 30px 20px 20px 20px; position: relative; text-align: center;">
+                            <div style="position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%);
+                                background: #FF4B4B; color: white; padding: 8px 25px; border-radius: 25px;
+                                font-weight: bold; font-size: 18px; box-shadow: 0 4px 15px rgba(255,75,75,0.3);">
+                                TOP {i}
                             </div>
+                            <div style="color: #FF4B4B; font-size: 36px; font-weight: bold; text-transform: uppercase;
+                                letter-spacing: 2px; margin-bottom: 5px;">{ciudad}</div>
+                            <div style="color: #666; font-size: 20px;">{pais}</div>
                         </div>
-                        """, unsafe_allow_html=True)
-                        
-                        # Contenedor para imagen y descripción
-                        col1, col2 = st.columns([1, 1.5])
-                        
-                        # Columna de la imagen
-                        with col1:
-                            try:
-                                imagen_url = f.obtener_imagen_lugar(f"{ciudad}, {pais}")
-                                if imagen_url and requests.get(imagen_url).status_code == 200:
-                                    img = Image.open(BytesIO(requests.get(imagen_url).content))
-                                    st.image(img, use_container_width=True)
-                            except:
-                                st.markdown("""
-                                <div style="background: #2E2E2E; border-radius: 10px; padding: 20px; 
-                                    text-align: center; color: #666;">🖼️</div>
+                    """, unsafe_allow_html=True)
+                    
+                    # Contenido
+                    col1, col2 = st.columns([1, 1.5])
+                    
+                    with col1:
+                        try:
+                            imagen_url = f.obtener_imagen_lugar(f"{ciudad}, {pais}")
+                            if imagen_url and requests.get(imagen_url).status_code == 200:
+                                img = Image.open(BytesIO(requests.get(imagen_url).content))
+                                st.image(img, use_container_width=True)
+                        except:
+                            st.markdown("""
+                            <div style="background: #2E2E2E; border-radius: 15px; padding: 40px; 
+                                text-align: center; color: #666; font-size: 24px;">
+                                🖼️
+                            </div>
+                            """, unsafe_allow_html=True)
+                    
+                    with col2:
+                        for linea in lineas[1:]:
+                            if '¿Por qué?' in linea:
+                                texto = linea.replace('¿Por qué?:', '').strip()
+                                st.markdown(f"""
+                                <div style="background: #2E2E2E; padding: 15px; border-radius: 12px; 
+                                    margin: 10px 0; color: white;">
+                                    ✨ {texto}
+                                </div>
                                 """, unsafe_allow_html=True)
-                        
-                        # Columna de la información
-                        with col2:
-                            for linea in lineas:
-                                if '¿Por qué?' in linea:
-                                    texto = linea.replace('¿Por qué?:', '').strip()
-                                    st.markdown(f"""
-                                    <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; 
-                                        margin: 10px 0; color: #333;">💫 {texto}</div>
-                                    """, unsafe_allow_html=True)
-                                elif 'Mejor época:' in linea:
-                                    epoca = linea.replace('Mejor época:', '').strip()
-                                    st.markdown(f"""
-                                    <div style="background: #e3f2fd; padding: 8px 15px; border-radius: 20px; 
-                                        display: inline-block; margin: 5px; color: #333;">
-                                        🗓️ {epoca}
+                            elif 'Mejor época:' in linea:
+                                epoca = linea.replace('Mejor época:', '').strip()
+                                st.markdown(f"""
+                                <div style="display: inline-block; background: #2E2E2E; color: white;
+                                    padding: 8px 15px; border-radius: 20px; margin: 5px;">
+                                    🗓️ {epoca}
+                                </div>
+                                """, unsafe_allow_html=True)
+                            elif 'Duración sugerida:' in linea:
+                                duracion = linea.replace('Duración sugerida:', '').strip()
+                                st.markdown(f"""
+                                <div style="display: inline-block; background: #2E2E2E; color: white;
+                                    padding: 8px 15px; border-radius: 20px; margin: 5px;">
+                                    ⏱️ {duracion}
+                                </div>
+                                """, unsafe_allow_html=True)
+                            elif 'Actividad destacada:' in linea:
+                                nombre, link = linea.split('|')
+                                nombre = nombre.replace('Actividad destacada:', '').strip()
+                                link = link.strip()
+                                st.markdown(f"""
+                                <a href="{link}" target="_blank" style="text-decoration: none;">
+                                    <div style="background: #FF4B4B; color: white; padding: 12px 20px;
+                                        border-radius: 12px; margin-top: 15px; display: inline-block;
+                                        transition: transform 0.2s;">
+                                        🎯 {nombre}
                                     </div>
-                                    """, unsafe_allow_html=True)
-                                elif 'Duración sugerida:' in linea:
-                                    duracion = linea.replace('Duración sugerida:', '').strip()
-                                    st.markdown(f"""
-                                    <div style="background: #f3e5f5; padding: 8px 15px; border-radius: 20px; 
-                                        display: inline-block; margin: 5px; color: #333;">
-                                        ⏱️ {duracion}
-                                    </div>
-                                    """, unsafe_allow_html=True)
-                                elif 'Actividad destacada:' in linea:
-                                    partes = linea.split('|')
-                                    nombre = partes[0].replace('Actividad destacada:', '').strip()
-                                    link = partes[1].strip() if len(partes) > 1 else '#'
-                                    st.markdown(f"""
-                                    <a href="{link}" target="_blank" style="text-decoration: none;">
-                                        <div style="background: #FF4B4B; color: white; border-radius: 10px; 
-                                            padding: 10px 20px; margin-top: 15px; display: inline-block;">
-                                            🎯 {nombre}
-                                        </div>
-                                    </a>
-                                    """, unsafe_allow_html=True)
-                        
-                        # Separador entre destinos
-                        if i < len(destinos):
-                            st.markdown("<hr style='margin: 40px 0; border: none; height: 1px; background: rgba(255,255,255,0.1);'>", unsafe_allow_html=True)
+                                </a>
+                                """, unsafe_allow_html=True)
+                    
+                    # Cerrar el contenedor principal
+                    st.markdown("</div>", unsafe_allow_html=True)
             else:
                 st.error(resultado)
 
