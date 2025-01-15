@@ -20,28 +20,105 @@ def obtener_preferencias_usuario(user_id):
         st.error(f"Error al obtener las preferencias del usuario: {e}")
         return None
 
-def generar_recomendaciones_gpt(destino, preferencias, travel_style):
-    """Genera recomendaciones usando ChatGPT"""
-    client = OpenAI(api_key=st.secrets["api_keys"]["apigpt_key"])
-    
-    actividades = [f"{pref[0]} (nivel de interés: {pref[1]})" for pref in preferencias]
-    prompt = f"""Actúa como un experto guía turístico y genera 5 recomendaciones específicas de actividades para hacer en {destino}.
-    El viajero tiene las siguientes preferencias: {', '.join(actividades)}.
-    Para cada actividad, proporciona:
-    1. Nombre de la actividad
-    2. Breve descripción
-    3. Por qué se ajusta a las preferencias del viajero
-    Formato: Actividad: [nombre] | Descripción: [descripción] | Relevancia: [explicación]"""
-
+def generar_itinerario(destino, user_id):
+    """Genera un itinerario detallado para un destino específico"""
     try:
+        # Obtener preferencias del usuario
+        preferencias = obtener_preferencias_usuario(user_id)
+        if not preferencias:
+            return "No se encontraron preferencias para el usuario"
+
+        # Crear cliente OpenAI
+        client = OpenAI(api_key=st.secrets["api_keys"]["apigpt_key"])
+
+        # Prompt para el GPT
+        prompt = f"""Como experto guía turístico, genera un itinerario detallado de 10 días para {destino}.
+        El viajero tiene las siguientes preferencias: {preferencias}
+        
+        Para cada día, proporciona la siguiente información en este formato exacto:
+        ACTIVIDAD: [nombre de la actividad principal del día]
+        DESCRIPCION: [descripción detallada incluyendo lugares específicos, consejos y recomendaciones]
+        TIPO: [tipo de actividad: cultural/aventura/gastronomía/etc]
+        DURACION: [duración estimada de la actividad]
+        MEJOR_EPOCA: [mejor momento del día o temporada para esta actividad]
+        LINK: [URL de la atracción principal o lugar recomendado]
+        ---
+        """
+
+        # Obtener respuesta del GPT
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": prompt}]
         )
-        return response.choices[0].message.content
+
+        # Procesar la respuesta
+        texto_completo = response.choices[0].message.content
+        texto_completo = texto_completo.lstrip('---').strip()
+        actividades_raw = [act.strip() for act in texto_completo.split('---') if act.strip()]
+        
+        actividades_procesadas = []
+        for actividad_texto in actividades_raw:
+            lineas = [l.strip() for l in actividad_texto.split('\n') if l.strip()]
+            actividad = {}
+            
+            for linea in lineas:
+                if linea.startswith('ACTIVIDAD:'):
+                    actividad['nombre'] = linea.replace('ACTIVIDAD:', '').strip()
+                elif linea.startswith('DESCRIPCION:'):
+                    actividad['descripcion'] = linea.replace('DESCRIPCION:', '').strip()
+                elif linea.startswith('TIPO:'):
+                    actividad['tipo'] = linea.replace('TIPO:', '').strip()
+                elif linea.startswith('DURACION:'):
+                    actividad['duracion'] = linea.replace('DURACION:', '').strip()
+                elif linea.startswith('MEJOR_EPOCA:'):
+                    actividad['mejor_epoca'] = linea.replace('MEJOR_EPOCA:', '').strip()
+                elif linea.startswith('LINK:'):
+                    actividad['link'] = linea.replace('LINK:', '').strip()
+            
+            if actividad:
+                # Generar URL de imagen para la actividad
+                actividad['imagen_url'] = obtener_imagen_lugar(f"{actividad['nombre']} {destino}")
+                # Calcular score basado en preferencias y tipo de actividad
+                actividad['score'] = calcular_score_actividad(actividad['tipo'], preferencias)
+                actividades_procesadas.append(actividad)
+
+        return {
+            'destino': destino,
+            'actividades': actividades_procesadas[:10]
+        }
+
     except Exception as e:
-        st.error(f"Error al generar recomendaciones con GPT: {e}")
-        return None
+        st.error(f"Error al generar itinerario: {str(e)}")
+        return f"Error al generar itinerario: {str(e)}"
+
+def calcular_score_actividad(tipo_actividad, preferencias):
+    """Calcula un score basado en las preferencias del usuario y el tipo de actividad"""
+    try:
+        # Convertir preferencias a diccionario para fácil acceso
+        pref_dict = {pref[0].lower(): pref[1] for pref in preferencias}
+        
+        # Mapear tipos de actividad a categorías de preferencias
+        tipo_mapping = {
+            'cultural': ['cultural', 'urbano'],
+            'aventura': ['aventura', 'deportivo'],
+            'gastronomía': ['gastronomía'],
+            'naturaleza': ['naturaleza', 'aventura'],
+            'relax': ['relax'],
+            'urbano': ['urbano', 'cultural'],
+            'nocturno': ['nocturno']
+        }
+        
+        # Obtener categorías relacionadas
+        categorias = tipo_mapping.get(tipo_actividad.lower(), [tipo_actividad.lower()])
+        
+        # Calcular score promedio
+        scores = [pref_dict.get(cat, 3) for cat in categorias]
+        score_final = sum(scores) / len(scores) / 5.0  # Normalizar a 0-1
+        
+        return min(max(score_final, 0.1), 1.0)  # Asegurar que esté entre 0.1 y 1.0
+        
+    except Exception as e:
+        return 0.5  # Valor por defecto si hay error
 
 def vectorizar_actividades(texto):
     """Genera embeddings para las actividades"""
@@ -81,77 +158,6 @@ def obtener_actividades_similares(embedding):
     except Exception as e:
         st.error(f"Error al consultar Pinecone: {e}")
         return []
-
-def generar_recomendaciones_completas(destino, user_id):
-    try:
-        # Obtener preferencias del usuario
-        preferencias = obtener_preferencias_usuario(user_id)
-        if not preferencias:
-            return "No se encontraron preferencias para el usuario"
-
-        # Crear cliente OpenAI
-        client = OpenAI(api_key=st.secrets["api_keys"]["apigpt_key"])
-
-        # Prompt para el GPT
-        prompt = f"""Genera 10 actividades turísticas para {destino} basadas en estas preferencias:
-        {preferencias}
-        
-        Para cada actividad, proporciona la siguiente información en este formato exacto:
-        ACTIVIDAD: [nombre de la actividad]
-        DESCRIPCION: [descripción detallada]
-        TIPO: [tipo de actividad: cultural/aventura/gastronomía/etc]
-        DURACION: [duración estimada]
-        MEJOR_EPOCA: [mejor época para realizar la actividad]
-        LINK: [URL relevante de la actividad]
-        ---
-        """
-
-        # Obtener respuesta del GPT
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": prompt}]
-        )
-
-        # Procesar la respuesta
-        texto_completo = response.choices[0].message.content
-        # Eliminar el primer separador si existe
-        texto_completo = texto_completo.lstrip('---').strip()
-        actividades_raw = [act.strip() for act in texto_completo.split('---') if act.strip()]
-        
-        actividades_procesadas = []
-        for actividad_texto in actividades_raw:
-            lineas = [l.strip() for l in actividad_texto.split('\n') if l.strip()]
-            actividad = {}
-            
-            for linea in lineas:
-                if linea.startswith('ACTIVIDAD:'):
-                    actividad['nombre'] = linea.replace('ACTIVIDAD:', '').strip()
-                elif linea.startswith('DESCRIPCION:'):
-                    actividad['descripcion'] = linea.replace('DESCRIPCION:', '').strip()
-                elif linea.startswith('TIPO:'):
-                    actividad['tipo'] = linea.replace('TIPO:', '').strip()
-                elif linea.startswith('DURACION:'):
-                    actividad['duracion'] = linea.replace('DURACION:', '').strip()
-                elif linea.startswith('MEJOR_EPOCA:'):
-                    actividad['mejor_epoca'] = linea.replace('MEJOR_EPOCA:', '').strip()
-                elif linea.startswith('LINK:'):
-                    actividad['link'] = linea.replace('LINK:', '').strip()
-            
-            if actividad:
-                # Generar URL de imagen para la actividad
-                actividad['imagen_url'] = obtener_imagen_lugar(f"{actividad['nombre']} {destino}")
-                # Calcular score basado en las preferencias
-                actividad['score'] = 0.95  # Valor temporal
-                actividades_procesadas.append(actividad)
-
-        return {
-            'destino': destino,
-            'actividades': actividades_procesadas[:10]  # Asegurar que solo devolvemos 10 actividades
-        }
-
-    except Exception as e:
-        st.error(f"Error al generar recomendaciones: {str(e)}")
-        return f"Error al generar recomendaciones: {str(e)}"
 
 def obtener_usuario_actual():
     """Obtiene el ID del usuario actual desde la sesión de Streamlit"""
@@ -203,66 +209,6 @@ def obtener_imagen_lugar(lugar):
         return f"https://source.unsplash.com/400x300/?{lugar_limpio.replace(' ', '+')},landmark"
     except:
         return None
-
-def generar_recomendaciones_destinos(user_id):
-    """Genera recomendaciones de destinos basados en las preferencias del usuario"""
-    try:
-        # Obtener preferencias y estilo de viaje del usuario
-        preferencias = obtener_preferencias_usuario(user_id)
-        travel_style = obtener_travel_style(user_id)  # Nueva función
-        
-        if not preferencias:
-            return "No se encontraron preferencias para el usuario."
-
-        client = OpenAI(api_key=st.secrets["api_keys"]["apigpt_key"])
-        
-        actividades = [f"{pref[0]} (nivel de interés: {pref[1]})" for pref in preferencias]
-        prompt = f"""Actúa como un experto agente de viajes y recomienda los 5 mejores destinos DIFERENTES del mundo 
-        para un viajero que viaja {travel_style} y tiene las siguientes preferencias: {', '.join(actividades)}.
-        
-        IMPORTANTE: 
-        - Cada destino debe ser una ciudad DIFERENTE, NO repitas ninguna ciudad
-        - Asegúrate de que los 5 destinos sean únicos
-        - Sigue EXACTAMENTE el formato especificado
-        
-        Para cada destino, proporciona:
-        1. Nombre del destino (ciudad y país)
-        2. Por qué es ideal según las preferencias
-        3. Mejor época para visitar
-        4. Duración recomendada
-        5. Una actividad destacada con link
-        
-        Formato EXACTO para cada recomendación:
-        Destino: [Ciudad], [País]
-        ¿Por qué?: [explicación]
-        Mejor época: [temporada]
-        Duración sugerida: [días]
-        Actividad destacada: [nombre] | [link]
-        ---"""
-
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": prompt}]
-        )
-        
-        recomendaciones_destinos = response.choices[0].message.content
-
-        # 3. Generar embedding para las recomendaciones
-        embedding = vectorizar_actividades(recomendaciones_destinos)
-        if embedding is None:
-            return "Error al generar el embedding."
-
-        # 4. Obtener destinos similares de la tabla vectorial
-        destinos_similares = obtener_actividades_similares(embedding)
-
-        return {
-            'recomendaciones_gpt': recomendaciones_destinos,
-            'destinos_similares': destinos_similares
-        }
-
-    except Exception as e:
-        st.error(f"Error al generar recomendaciones de destinos: {e}")
-        return f"Error: {str(e)}"
 
 def insertar_preferencias_viaje(user_id, preferencias):
     """Actualiza o inserta las preferencias del usuario"""
