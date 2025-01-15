@@ -504,7 +504,6 @@ def mostrar_itinerario():
             resultado = f.generar_itinerario(destino, user_id)
             
             if isinstance(resultado, dict) and 'actividades' in resultado:
-                # Contenedor para el itinerario
                 st.markdown(f"""
                 <div style="background: #1E1E1E; border-radius: 20px; margin: 40px 0; overflow: hidden;">
                     <div style="background: white; padding: 20px; text-align: center;">
@@ -515,7 +514,6 @@ def mostrar_itinerario():
                     <div style="padding: 25px;">
                 """, unsafe_allow_html=True)
                 
-                # Mostrar cada actividad en su propio contenedor
                 for i, act in enumerate(resultado['actividades'], 1):
                     st.markdown(f"""
                     <div style="background: white; border-radius: 15px; margin-bottom: 25px; 
@@ -526,19 +524,18 @@ def mostrar_itinerario():
                                 border-radius: 20px; margin-right: 10px;">Día {i}</span>
                             {act['nombre']}
                         </div>
-                        
                         <div style="padding: 25px;">
                             <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 20px;">
                                 <div>
-                                    <img src="{act['imagen_url']}"
-                                        style="width: 100%; height: 250px; object-fit: cover; border-radius: 10px;">
+                                    <img src="{act['imagen_url']}" 
+                                        style="width: 100%; height: 250px; object-fit: cover; border-radius: 10px;"
+                                        onerror="this.onerror=null; this.src='https://via.placeholder.com/400x300?text=Imagen+no+disponible';">
                                 </div>
                                 <div>
                                     <div style="color: #333; line-height: 1.6; font-size: 16px; 
                                         background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
                                         {act['descripcion']}
                                     </div>
-                                    
                                     <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
                                         <div style="background: #FFE5E5; color: #FF4B4B; padding: 8px 15px; 
                                             border-radius: 20px; font-size: 14px;">
@@ -553,7 +550,6 @@ def mostrar_itinerario():
                                             ⭐ Score: {act['score']:.2f}
                                         </div>
                                     </div>
-                                    
                                     <a href="{act['link']}" target="_blank" style="text-decoration: none;">
                                         <div style="background: #FF4B4B; color: white; padding: 12px 20px;
                                             border-radius: 10px; display: inline-block; transition: all 0.3s ease;">

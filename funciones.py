@@ -286,3 +286,41 @@ def obtener_travel_style(user_id):
         return "solo"
     finally:
         conn.close()
+
+def generar_recomendaciones_destinos(user_id):
+    """Genera recomendaciones de destinos basadas en las preferencias del usuario"""
+    try:
+        # Obtener preferencias del usuario
+        preferencias = obtener_preferencias_usuario(user_id)
+        if not preferencias:
+            return "No se encontraron preferencias para el usuario"
+
+        # Crear cliente OpenAI
+        client = OpenAI(api_key=st.secrets["api_keys"]["apigpt_key"])
+
+        # Prompt para el GPT
+        prompt = f"""Como experto en viajes, recomienda 5 destinos basados en estas preferencias:
+        {preferencias}
+        
+        Para cada destino, proporciona la siguiente información en este formato exacto:
+        Destino: [Ciudad], [País]
+        ¿Por qué?: [Explicación breve de por qué este destino]
+        Mejor época: [Mejor temporada para visitar]
+        Duración sugerida: [Tiempo recomendado de estadía]
+        Actividad destacada: [Nombre de la actividad] | [URL de la actividad]
+        ---
+        """
+
+        # Obtener respuesta del GPT
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": prompt}]
+        )
+
+        return {
+            'recomendaciones_gpt': response.choices[0].message.content
+        }
+
+    except Exception as e:
+        st.error(f"Error al generar recomendaciones: {str(e)}")
+        return f"Error al generar recomendaciones: {str(e)}"
