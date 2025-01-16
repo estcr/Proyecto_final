@@ -431,7 +431,7 @@ def interfaz_recomendaciones():
                             st.markdown(f"""
                             <div style="display: inline-block; background: #2E2E2E; color: white;
                                 padding: 8px 15px; border-radius: 20px; margin: 5px;">
-                                🗓️ {epoca}
+                                🗓️ Estación recomendada para viajar: {epoca}
                             </div>
                             """, unsafe_allow_html=True)
                         elif 'Duración sugerida:' in linea:
@@ -439,7 +439,7 @@ def interfaz_recomendaciones():
                             st.markdown(f"""
                             <div style="display: inline-block; background: #2E2E2E; color: white;
                                 padding: 8px 15px; border-radius: 20px; margin: 5px;">
-                                ⏱️ {duracion}
+                                ⏱️ Rango de días recomendados: {duracion}
                             </div>
                             """, unsafe_allow_html=True)
                         elif 'Actividad destacada:' in linea:
@@ -450,7 +450,7 @@ def interfaz_recomendaciones():
                             <a href="{link}" target="_blank" style="text-decoration: none;">
                                 <div style="background: #FF4B4B; color: white; padding: 12px 20px;
                                     border-radius: 12px; margin-top: 15px; display: inline-block;">
-                                    🎯 {nombre}
+                                    🎯 Actividad recomendada: {nombre}
                                 </div>
                             </a>
                             """, unsafe_allow_html=True)
