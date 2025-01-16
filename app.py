@@ -581,21 +581,17 @@ def mostrar_itinerario():
                         <div style="color: #666; font-size: 18px;">Elige tus actividades favoritas</div>
                     </div>
                 """, unsafe_allow_html=True)
-                
-                # Solo mostrar el clima si hay datos y se solicitó
+
+                # Mostrar el clima si está disponible
                 if incluir_clima and resultado.get('clima_html'):
-                    st.markdown(f"""
-                    <div style="background: #2E2E2E; padding: 15px; text-align: center;">
-                        <h4 style="color: white; margin-bottom: 10px;">🌤️ Pronóstico del tiempo</h4>
-                        <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
-                            {resultado['clima_html']}
-                        </div>
-                    </div>
-                    """, unsafe_allow_html=True)
-                
-                st.markdown("""<div style="padding: 25px;">""", unsafe_allow_html=True)
-                
-                # Mostrar todas las actividades
+                    st.markdown(resultado['clima_html'], unsafe_allow_html=True)
+
+                # Contenedor para las actividades
+                st.markdown("""
+                <div style="padding: 25px;">
+                """, unsafe_allow_html=True)
+
+                # Mostrar actividades
                 for i, act in enumerate(resultado['actividades'], 1):
                     st.markdown(f"""
                     <div style="background: white; border-radius: 15px; margin-bottom: 25px; 
@@ -644,7 +640,7 @@ def mostrar_itinerario():
                     </div>
                     """, unsafe_allow_html=True)
                 
-                # Cerrar los divs contenedores correctamente
+                # Cerrar todos los contenedores
                 st.markdown("""
                     </div>
                 </div>
