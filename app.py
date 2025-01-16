@@ -223,18 +223,18 @@ def pagina_inicio():
                                     st.session_state.mostrar_login = False
                                     st.session_state.mostrar_registro = True
                                     st.rerun()
-                else:
-                    # Botones de acción
-                    st.markdown("<div style='padding: 20px;'></div>", unsafe_allow_html=True)
-                    col1, col2 = st.columns(2)
-                    with col1:
-                        if st.button("🔑 Iniciar Sesión", use_container_width=True):
-                            st.session_state.mostrar_login = True
-                            st.session_state.mostrar_registro = False
-                    with col2:
-                        if st.button("📝 Registrarse", use_container_width=True):
-                            st.session_state.mostrar_registro = True
-                            st.session_state.mostrar_login = False
+                    else:
+                        # Botones de acción
+                        st.markdown("<div style='padding: 20px;'></div>", unsafe_allow_html=True)
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            if st.button("🔑 Iniciar Sesión", use_container_width=True):
+                                st.session_state.mostrar_login = True
+                                st.session_state.mostrar_registro = False
+                        with col2:
+                            if st.button("📝 Registrarse", use_container_width=True):
+                                st.session_state.mostrar_registro = True
+                                st.session_state.mostrar_login = False
             else:
                 # Contenedor de bienvenida para usuarios logueados
                 st.markdown("""
