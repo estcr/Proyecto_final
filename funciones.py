@@ -487,15 +487,7 @@ def generar_pdf_itinerario(destino, actividades, clima_html=None):
     """Genera un PDF con el itinerario"""
     try:
         buffer = BytesIO()
-        doc = SimpleDocTemplate(
-            buffer,
-            pagesize=letter,
-            rightMargin=72,
-            leftMargin=72,
-            topMargin=72,
-            bottomMargin=72
-        )
-        
+        doc = SimpleDocTemplate(buffer, pagesize=letter)
         story = []
         styles = getSampleStyleSheet()
         
@@ -545,4 +537,5 @@ def generar_pdf_itinerario(destino, actividades, clima_html=None):
         return buffer.getvalue()
         
     except Exception as e:
+        st.error(f"Error al generar el PDF: {str(e)}")
         return None

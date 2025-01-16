@@ -1,29 +1,159 @@
-import streamlit as st
+import os
 import funciones as f
+import config as c
+import streamlit as st
+import pandas as pd
 from datetime import datetime
+import requests
+from PIL import Image
+from io import BytesIO
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image as RLImage
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+import pdfkit
 
-# Configuración de la página
-st.set_page_config(page_title="TuGuía", page_icon="🌍")
+# Configuración de la página y eliminación del mensaje de Streamlit
+st.set_page_config(
+    page_title="TuGuía - Tu Planificador de Viajes",
+    page_icon="https://raw.githubusercontent.com/estcr/Proyecto_final/main/img/t-vectorizada.png",
+    layout="wide",
+    initial_sidebar_state="expanded",
+    menu_items={
+        'Get Help': None,
+        'Report a bug': None,
+        'About': None
+    }
+)
+
+# Estilos CSS personalizados actualizados
+st.markdown("""
+    <style>
+    .titulo-seccion {
+        text-align: center;
+        font-size: 28px;
+        font-weight: bold;
+        color: #2e7bcf;
+        margin: 40px 0;
+        padding: 15px;
+    }
+    
+    .destino-container {
+        background: #1a1a1a;
+        border-radius: 20px;
+        padding: 30px;
+        margin: 40px 0;
+        position: relative;
+    }
+    
+    .ranking {
+        position: absolute;
+        top: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #FF4B4B;
+        color: white;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 16px;
+        z-index: 2;
+    }
+    
+    .destino-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-top: 20px;
+    }
+    
+    .destino-header {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+    
+    .ciudad {
+        font-size: 32px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 5px;
+    }
+    
+    .pais {
+        font-size: 18px;
+    }
+    
+    .destino-content {
+        margin-top: 20px;
+    }
+    
+    .descripcion {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 10px;
+        margin: 15px 0;
+        line-height: 1.6;
+        color: black;
+    }
+    
+    .info-tag {
+        display: inline-block;
+        padding: 8px 15px;
+        margin: 5px;
+        border-radius: 20px;
+        font-size: 14px;
+        color: black;
+    }
+    
+    .epoca {
+        background: #e3f2fd;
+    }
+    
+    .duracion {
+        background: #f3e5f5;
+    }
+    
+    .separador {
+        height: 2px;
+        background: rgba(255,255,255,0.1);
+        margin: 40px 0;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 # Función para mostrar el logo
 def mostrar_logo():
-    st.image("img/logo.png", width=200)  # Asegúrate de que la imagen esté en la carpeta correcta
+    col1, col2, col3 = st.columns([1,2,1])
+    with col2:
+        try:
+            st.image("img/t-vectorizada.png", width=300)
+        except:
+            # Fallback a la URL de GitHub si la imagen local no se encuentra
+            st.image("https://raw.githubusercontent.com/estcr/Proyecto_final/main/img/t-vectorizada.png", width=300)
 
-# Función para la página de inicio
+# Función para la página de inicio actualizada
 def pagina_inicio():
-    mostrar_logo()
+    # Grid principal con logo y título
+    col_logo, col_title = st.columns([1, 2])
     
-    # Contenedor principal con estilo moderno
-    st.markdown("""
-    <div style="text-align: center; margin-bottom: 2rem;">
-        <h1 style="color: #FF4B4B; font-size: 2.5rem; margin-bottom: 1rem;">
-            ¡Bienvenido a TuGuÍA! 🌎
-        </h1>
-        <p style="color: #888; font-size: 1.2rem;">
-            Tu compañero perfecto para planificar aventuras inolvidables
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
+    with col_logo:
+        try:
+            st.image("img/t-vectorizada.png", width=300)
+        except:
+            st.image("https://raw.githubusercontent.com/estcr/Proyecto_final/main/img/t-vectorizada.png", width=300)
+    
+    with col_title:
+        st.markdown("""
+        <div style="padding: 20px;">
+            <h1 style="color: #FF4B4B; font-size: 2.5rem; margin-bottom: 1rem;">
+                ¡Bienvenido a TuGuÍA! 🌎
+            </h1>
+            <p style="color: #888; font-size: 1.2rem;">
+                Tu compañero perfecto para planificar aventuras inolvidables
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
     
     # Espacio entre el título y los contenedores
     st.markdown("<br>", unsafe_allow_html=True)
@@ -90,14 +220,17 @@ def pagina_inicio():
                 with col2:
                     if st.button("🚀 ¡Comenzar la Aventura!", key="login_button"):
                         if email:
-                            user_id = f.obtener_usuario_por_email(email)
+                            user_id = obtener_usuario_por_email(email)
                             if user_id:
                                 st.session_state.id_usuario = user_id
                                 st.session_state.mostrar_login = False
                                 st.rerun()
                             else:
                                 st.error("Usuario no encontrado")
-                                st.button("📝 ¿Quieres registrarte?", key="register_redirect")
+                                if st.button("📝 ¿Quieres registrarte?", key="register_redirect"):
+                                    st.session_state.mostrar_login = False
+                                    st.session_state.mostrar_registro = True
+                                    st.rerun()
                 else:
                     # Botones de acción
                     st.markdown("<div style='padding: 20px;'></div>", unsafe_allow_html=True)
@@ -110,22 +243,22 @@ def pagina_inicio():
                         if st.button("📝 Registrarse", use_container_width=True):
                             st.session_state.mostrar_registro = True
                             st.session_state.mostrar_login = False
-        else:
-            # Contenedor de bienvenida para usuarios logueados
-            st.markdown("""
-            <div style="background: #1E1E1E; padding: 25px; border-radius: 15px; height: 100%;">
-                <h3 style="color: #FF4B4B; margin-bottom: 15px;">✨ ¡Bienvenido de nuevo!</h3>
-                <div style="color: white;">
-                    <p style="margin-bottom: 20px;">¿Qué te gustaría hacer hoy?</p>
-                    <ul style="list-style-type: none; padding: 0;">
-                        <li style="margin: 15px 0;">⭐ Actualiza tus preferencias de viaje</li>
-                        <li style="margin: 15px 0;">🎯 Descubre nuevos destinos recomendados</li>
-                        <li style="margin: 15px 0;">📍 Planifica tu próxima aventura</li>
-                        <li style="margin: 15px 0;">🌍 Explora destinos únicos</li>
-                    </ul>
+            else:
+                # Contenedor de bienvenida para usuarios logueados
+                st.markdown("""
+                <div style="background: #1E1E1E; padding: 25px; border-radius: 15px; height: 100%;">
+                    <h3 style="color: #FF4B4B; margin-bottom: 15px;">✨ ¡Bienvenido de nuevo!</h3>
+                    <div style="color: white;">
+                        <p style="margin-bottom: 20px;">¿Qué te gustaría hacer hoy?</p>
+                        <ul style="list-style-type: none; padding: 0;">
+                            <li style="margin: 15px 0;">⭐ Actualiza tus preferencias de viaje</li>
+                            <li style="margin: 15px 0;">🎯 Descubre nuevos destinos recomendados</li>
+                            <li style="margin: 15px 0;">📍 Planifica tu próxima aventura</li>
+                            <li style="margin: 15px 0;">🌍 Explora destinos únicos</li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
-            """, unsafe_allow_html=True)
+                """, unsafe_allow_html=True)
 
 # Función principal
 def main():
