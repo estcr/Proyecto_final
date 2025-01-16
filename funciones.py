@@ -537,7 +537,7 @@ def generar_pdf_itinerario(destino, actividades, clima_html=None):
         doc.build(story)
         buffer.seek(0)
         return buffer.getvalue()
-
-        except Exception as e:
+        
+    except Exception as e:
         st.error(f"Error al generar el PDF: {str(e)}")
         return None
