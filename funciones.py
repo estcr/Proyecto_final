@@ -77,25 +77,38 @@ def procesar_clima(info_clima, fecha_inicio, fecha_fin):
         
     dias_clima = {}
     fecha_actual = fecha_inicio
-    while fecha_actual <= fecha_fin:
+    dias_totales = (fecha_fin - fecha_inicio).days + 1
+    
+    # HTML para el título con información sobre los días disponibles
+    html_titulo = f"""
+    <div style="text-align: center; margin-bottom: 15px;">
+        <h4 style="color: white; margin-bottom: 10px;">🌤️ Pronóstico del tiempo</h4>
+        {f'<p style="color: #ccc; font-size: 0.9em;">* Solo disponible para los primeros 5 días</p>' if dias_totales > 5 else ''}
+    </div>
+    """
+    
+    # Procesar solo los primeros 5 días (limitación de la API gratuita)
+    dias_procesados = 0
+    while fecha_actual <= fecha_fin and dias_procesados < 5:
         fecha_str = fecha_actual.strftime('%Y-%m-%d')
-        # Buscar la predicción más cercana para esta fecha
         for prediccion in info_clima['list']:
             pred_fecha = datetime.fromtimestamp(prediccion['dt']).strftime('%Y-%m-%d')
             if pred_fecha == fecha_str:
                 desc_original = prediccion['weather'][0]['description']
                 dias_clima[fecha_str] = {
-                    'temp': round(prediccion['main']['temp']),  # Redondear temperatura
+                    'temp': round(prediccion['main']['temp']),
                     'descripcion': traducciones.get(desc_original, desc_original),
                     'icono': prediccion['weather'][0]['icon']
                 }
                 break
         fecha_actual += timedelta(days=1)
+        dias_procesados += 1
     
-    html_clima = ""
+    # Generar HTML para cada día
+    html_dias = ""
     for fecha, datos in dias_clima.items():
-        fecha_formato = datetime.strptime(fecha, '%Y-%m-%d').strftime('%d/%m/%Y')  # Agregado el año
-        html_clima += f"""
+        fecha_formato = datetime.strptime(fecha, '%Y-%m-%d').strftime('%d/%m/%Y')
+        html_dias += f"""
         <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px; text-align: center;">
             <div style="color: white; font-weight: bold;">{fecha_formato}</div>
             <img src="http://openweathermap.org/img/w/{datos['icono']}.png" 
@@ -105,7 +118,14 @@ def procesar_clima(info_clima, fecha_inicio, fecha_fin):
         </div>
         """
     
-    return html_clima
+    return f"""
+    <div style="padding: 15px;">
+        {html_titulo}
+        <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+            {html_dias}
+        </div>
+    </div>
+    """
 
 def generar_itinerario(destino, user_id, fecha_inicio=None, fecha_fin=None, incluir_clima=False):
     """Genera un itinerario detallado para un destino específico"""
