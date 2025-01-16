@@ -692,7 +692,7 @@ def mostrar_itinerario():
                 </div>
                 """, unsafe_allow_html=True)
 
-                # Contenedor de descarga más compacto y centrado
+                # Contenedor de descarga más compacto
                 col_pdf1, col_pdf2, col_pdf3 = st.columns([1,2,1])
                 with col_pdf2:
                     st.markdown("""
@@ -708,23 +708,13 @@ def mostrar_itinerario():
                         resultado.get('clima_html')
                     )
                     
-                    # Contenedor centrado para el botón
-                    st.markdown("""
-                    <div style="display: flex; justify-content: center;">
-                    """, unsafe_allow_html=True)
-                    
-                    # Botón de descarga centrado
-                    col1, col2, col3 = st.columns([1,1,1])
-                    with col2:
-                        st.download_button(
-                            label="📄 Descargar PDF",
-                            data=pdf_buffer,
-                            file_name=f"itinerario_{destino.lower().replace(' ', '_')}.pdf",
-                            mime="application/pdf",
-                            use_container_width=True
-                        )
-                    
-                    st.markdown("</div>", unsafe_allow_html=True)
+                    # Botón de descarga
+                    st.download_button(
+                        label="📄 Descargar PDF",
+                        data=pdf_buffer,
+                        file_name=f"itinerario_{destino.lower().replace(' ', '_')}.pdf",
+                        mime="application/pdf"
+                    )
             else:
                 st.error("No se pudo generar el itinerario. Por favor, intenta de nuevo.")
 
@@ -803,13 +793,7 @@ def main():
 
     # Barra lateral
     with st.sidebar:
-        # Solo el texto "TuGuÍA" con emoji
-        st.markdown("""
-        <div style="text-align: center; padding: 1rem 0;">
-            <h1 style="color: white; font-size: 1.5rem; margin: 0;">🌍 TuGuÍA</h1>
-        </div>
-        """, unsafe_allow_html=True)
-
+        st.markdown("### 🌍 TuGuía")
     if st.session_state.id_usuario:
             st.success("Sesión iniciada ✅")
             if st.button("Cerrar Sesión 👋"):
