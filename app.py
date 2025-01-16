@@ -803,7 +803,14 @@ def main():
 
     # Barra lateral
     with st.sidebar:
-        st.markdown("### 🌍 TuGuía")
+        # Logo en lugar del texto
+        st.markdown("""
+        <div style="text-align: center; padding: 1rem 0;">
+            <img src="https://raw.githubusercontent.com/estcr/Proyecto_final/main/img/t-vectorizada.png" 
+                 style="width: 150px; margin: 0 auto;">
+        </div>
+        """, unsafe_allow_html=True)
+
         if st.session_state.id_usuario:
             st.success("Sesión iniciada ✅")
             if st.button("Cerrar Sesión 👋"):
