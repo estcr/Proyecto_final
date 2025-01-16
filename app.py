@@ -576,18 +576,21 @@ def mostrar_itinerario():
         st.markdown("""
         <div style="background: #1E1E1E; padding: 20px; border-radius: 15px; margin: 20px 0; max-width: 600px;">
             <h4 style="color: #FF4B4B; margin-bottom: 15px; text-align: center;">📅 Fechas del Viaje</h4>
-            <div style="margin-bottom: 10px;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <label style="color: white;">🌤️ Incluir información del clima</label>
-                    <div style="background: #FF4B4B; color: white; padding: 3px 8px; border-radius: 10px; font-size: 0.8em;">
-                        Solo para viajes en los próximos 15 días
-                    </div>
-                </div>
-            </div>
         </div>
         """, unsafe_allow_html=True)
         
-        incluir_clima = st.checkbox("", value=False, label_visibility="collapsed")
+        # Checkbox y texto informativo en la misma línea
+        col_check1, col_check2 = st.columns([1.5, 2])
+        with col_check1:
+            incluir_clima = st.checkbox("🌤️ Incluir información del clima")
+        with col_check2:
+            st.markdown("""
+            <div style="padding-top: 5px;">
+                <span style="background: #FF4B4B; color: white; padding: 3px 8px; border-radius: 10px; font-size: 0.8em;">
+                    Solo para viajes en los próximos 15 días
+                </span>
+            </div>
+            """, unsafe_allow_html=True)
         
         col1, col2 = st.columns(2)
         with col1:
