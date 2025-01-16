@@ -656,6 +656,28 @@ def main():
                 key="nav_no_session"  # Agregamos una key única para este radio
             )
             st.session_state.pagina_actual = "🏠 Inicio"
+        
+        # Agregar información del autor al final del sidebar
+        st.markdown("---")  # Línea separadora
+        st.markdown("""
+        <div style="position: fixed; bottom: 20px; left: 20px; width: calc(100% - 40px);">
+            <p style="color: #666; font-size: 0.9em; margin-bottom: 10px;">
+                Autor: Esteban Daniel Cristos Muzzupappa
+            </p>
+            <div style="display: flex; gap: 10px;">
+                <a href="https://www.linkedin.com/in/esteban-daniel-cristos-muzzupappa-37b72635/" target="_blank" 
+                   style="color: #0A66C2; text-decoration: none;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" 
+                         width="20" style="vertical-align: middle;"> LinkedIn
+                </a>
+                <a href="https://github.com/estcr" target="_blank" 
+                   style="color: #333; text-decoration: none;">
+                    <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" 
+                         width="20" style="vertical-align: middle;"> GitHub
+                </a>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
     # Mostrar la página correspondiente
     if st.session_state.pagina_actual == "🏠 Inicio":
