@@ -803,11 +803,12 @@ def main():
 
     # Barra lateral
     with st.sidebar:
-        # Logo en lugar del texto
+        # Solo el logo con el texto "TuGuÍA"
         st.markdown("""
         <div style="text-align: center; padding: 1rem 0;">
             <img src="https://raw.githubusercontent.com/estcr/Proyecto_final/main/img/t-vectorizada.png" 
-                 style="width: 150px; margin: 0 auto;">
+                 style="width: 180px; margin: 0 auto;">
+            <h1 style="color: white; font-size: 1.5rem; margin: 0;">TuGuÍA</h1>
         </div>
         """, unsafe_allow_html=True)
 
