@@ -20,7 +20,35 @@ def obtener_preferencias_usuario(user_id):
         st.error(f"Error al obtener las preferencias del usuario: {e}")
         return None
 
-def generar_itinerario(destino, user_id):
+def obtener_clima(ciudad, fecha):
+    """Obtiene el pronóstico del clima para una ciudad y fecha específica"""
+    try:
+        api_key = st.secrets["api_keys"]["weather_key"]
+        # Primero obtener coordenadas de la ciudad
+        geo_url = f"http://api.openweathermap.org/geo/1.0/direct?q={ciudad}&limit=1&appid={api_key}"
+        geo_response = requests.get(geo_url)
+        if geo_response.status_code != 200:
+            return None
+            
+        geo_data = geo_response.json()
+        if not geo_data:
+            return None
+            
+        lat = geo_data[0]['lat']
+        lon = geo_data[0]['lon']
+        
+        # Obtener pronóstico
+        weather_url = f"http://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={api_key}&units=metric"
+        weather_response = requests.get(weather_url)
+        if weather_response.status_code != 200:
+            return None
+            
+        return weather_response.json()
+    except Exception as e:
+        st.error(f"Error al obtener el clima: {e}")
+        return None
+
+def generar_itinerario(destino, user_id, fecha_inicio=None, fecha_fin=None, incluir_clima=False):
     """Genera un itinerario detallado para un destino específico"""
     try:
         # Obtener preferencias del usuario
@@ -28,22 +56,35 @@ def generar_itinerario(destino, user_id):
         if not preferencias:
             return "No se encontraron preferencias para el usuario"
 
-        # Crear cliente OpenAI
-        client = OpenAI(api_key=st.secrets["api_keys"]["apigpt_key"])
-
-        # Prompt para el GPT
-        prompt = f"""Como experto guía turístico, genera un itinerario detallado de 10 días para {destino}.
-        El viajero tiene las siguientes preferencias: {preferencias}
+        # Obtener información del clima si es necesario
+        info_clima = None
+        if incluir_clima:
+            info_clima = obtener_clima(destino, fecha_inicio)
         
+        # Crear prompt base
+        prompt = f"""Como experto guía turístico, genera un itinerario detallado para {destino}.
+        El viajero tiene las siguientes preferencias: {preferencias}
+        Fechas del viaje: del {fecha_inicio} al {fecha_fin}
+        """
+        
+        # Agregar información del clima si está disponible
+        if info_clima:
+            prompt += "\nInformación del clima para los días del viaje:"
+            # Aquí procesaríamos la información del clima para incluirla en el prompt
+            
+        prompt += """
         Para cada día, proporciona la siguiente información en este formato exacto:
         ACTIVIDAD: [nombre de la actividad principal del día]
         DESCRIPCION: [descripción detallada incluyendo lugares específicos, consejos y recomendaciones]
         TIPO: [tipo de actividad: cultural/aventura/gastronomía/etc]
         DURACION: [duración estimada de la actividad]
-        MEJOR_EPOCA: [mejor momento del día o temporada para esta actividad]
+        MEJOR_EPOCA: [mejor momento del día para esta actividad]
         LINK: [URL de la atracción principal o lugar recomendado]
         ---
         """
+
+        # Crear cliente OpenAI
+        client = OpenAI(api_key=st.secrets["api_keys"]["apigpt_key"])
 
         # Obtener respuesta del GPT
         response = client.chat.completions.create(

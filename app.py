@@ -537,13 +537,40 @@ def mostrar_itinerario():
         label_visibility="collapsed"
     )
     
+    # Agregar selector de fechas
+    st.markdown("""
+    <div style="background: #1E1E1E; padding: 20px; border-radius: 15px; margin: 20px 0;">
+        <h4 style="color: #FF4B4B; margin-bottom: 15px;">📅 Fechas del Viaje</h4>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    incluir_clima = st.checkbox("🌤️ Incluir información del clima (disponible solo para viajes en los próximos 15 días)")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        fecha_inicio = st.date_input("Fecha de inicio", min_value=datetime.now().date())
+    with col2:
+        fecha_fin = st.date_input("Fecha de fin", min_value=fecha_inicio)
+    
+    # Validar fechas y mostrar mensajes
+    dias_hasta_viaje = (fecha_inicio - datetime.now().date()).days
+    if incluir_clima and dias_hasta_viaje > 15:
+        st.warning("⚠️ El pronóstico del clima solo está disponible para los próximos 15 días. Se generará un itinerario sin información del clima.")
+        incluir_clima = False
+    
     if st.button("🗺️ Generar Itinerario", use_container_width=True):
         if not destino:
             st.warning("Por favor, ingresa un destino")
             return
             
         with st.spinner("Creando tu itinerario personalizado... 🌍"):
-            resultado = f.generar_itinerario(destino, user_id)
+            resultado = f.generar_itinerario(
+                destino, 
+                user_id, 
+                fecha_inicio=fecha_inicio,
+                fecha_fin=fecha_fin,
+                incluir_clima=incluir_clima
+            )
             
             if isinstance(resultado, dict) and 'actividades' in resultado:
                 st.markdown(f"""
