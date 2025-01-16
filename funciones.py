@@ -6,6 +6,11 @@ import streamlit as st
 import config as c
 import requests
 from datetime import datetime, timedelta
+from io import BytesIO
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib import colors
 
 def obtener_preferencias_usuario(user_id):
     """Obtiene las preferencias del usuario desde la base de datos"""
@@ -471,3 +476,68 @@ def generar_recomendaciones_destinos(user_id):
     except Exception as e:
         st.error(f"Error al generar recomendaciones: {str(e)}")
         return f"Error al generar recomendaciones: {str(e)}"
+
+def generar_pdf_itinerario(destino, actividades, clima_html=None):
+    """Genera un PDF con el itinerario"""
+    try:
+        buffer = BytesIO()
+        doc = SimpleDocTemplate(
+            buffer,
+            pagesize=letter,
+            rightMargin=72,
+            leftMargin=72,
+            topMargin=72,
+            bottomMargin=72
+        )
+        
+        story = []
+        styles = getSampleStyleSheet()
+        
+        # Estilo personalizado para títulos
+        titulo_style = ParagraphStyle(
+            'CustomTitle',
+            parent=styles['Heading1'],
+            fontSize=24,
+            textColor=colors.HexColor('#FF4B4B'),
+            spaceAfter=30,
+            alignment=1  # Centrado
+        )
+        
+        # Título del itinerario
+        story.append(Paragraph(f"Tu Itinerario en {destino}", titulo_style))
+        story.append(Spacer(1, 20))
+        
+        # Agregar cada actividad
+        for i, act in enumerate(actividades, 1):
+            # Título de la actividad
+            story.append(Paragraph(
+                f"Día {i}: {act.get('nombre', 'Actividad sin nombre')}",
+                styles['Heading2']
+            ))
+            story.append(Spacer(1, 10))
+            
+            # Descripción
+            descripcion = act.get('DESCRIPCION', act.get('descripcion', 'No hay descripción disponible'))
+            story.append(Paragraph(descripcion, styles['Normal']))
+            story.append(Spacer(1, 10))
+            
+            # Detalles
+            detalles = [
+                f"🕒 Duración: {act.get('DURACION', act.get('duracion', 'No especificada'))}",
+                f"📅 Mejor momento: {act.get('MEJOR_EPOCA', act.get('mejor_epoca', 'No especificado'))}",
+                f"🔗 Más información: {act.get('LINK', act.get('link', 'No disponible'))}"
+            ]
+            
+            for detalle in detalles:
+                story.append(Paragraph(detalle, styles['Normal']))
+            
+            story.append(Spacer(1, 20))
+        
+        # Generar el PDF
+        doc.build(story)
+        buffer.seek(0)
+        return buffer.getvalue()
+        
+    except Exception as e:
+        st.error(f"Error al generar el PDF: {str(e)}")
+        return None

@@ -577,7 +577,12 @@ def mostrar_itinerario():
         <div style="background: #1E1E1E; padding: 20px; border-radius: 15px; margin: 20px 0; max-width: 600px;">
             <h4 style="color: #FF4B4B; margin-bottom: 15px; text-align: center;">📅 Fechas del Viaje</h4>
             <div style="margin-bottom: 10px;">
-                <label style="color: white;">🌤️ Incluir información del clima</label>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <label style="color: white;">🌤️ Incluir información del clima</label>
+                    <div style="background: #FF4B4B; color: white; padding: 3px 8px; border-radius: 10px; font-size: 0.8em;">
+                        Solo para viajes en los próximos 15 días
+                    </div>
+                </div>
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -694,7 +699,7 @@ def mostrar_itinerario():
                     """, unsafe_allow_html=True)
                     
                     # Primero generamos el PDF
-                    pdf_buffer = generar_pdf_itinerario(
+                    pdf_buffer = f.generar_pdf_itinerario(
                         destino,
                         resultado['actividades'],
                         resultado.get('clima_html')
@@ -844,69 +849,4 @@ def main():
 # Ejecutamos la aplicación
 if __name__ == "__main__":
     main()
-
-def generar_pdf_itinerario(destino, actividades, clima_html=None):
-    """Genera un PDF con el itinerario"""
-    try:
-        buffer = BytesIO()
-        doc = SimpleDocTemplate(
-            buffer,
-            pagesize=letter,
-            rightMargin=72,
-            leftMargin=72,
-            topMargin=72,
-            bottomMargin=72
-        )
-        
-        story = []
-        styles = getSampleStyleSheet()
-        
-        # Estilo personalizado para títulos
-        titulo_style = ParagraphStyle(
-            'CustomTitle',
-            parent=styles['Heading1'],
-            fontSize=24,
-            textColor=colors.HexColor('#FF4B4B'),
-            spaceAfter=30,
-            alignment=1  # Centrado
-        )
-        
-        # Título del itinerario
-        story.append(Paragraph(f"Tu Itinerario en {destino}", titulo_style))
-        story.append(Spacer(1, 20))
-        
-        # Agregar cada actividad
-        for i, act in enumerate(actividades, 1):
-            # Título de la actividad
-            story.append(Paragraph(
-                f"Día {i}: {act.get('nombre', 'Actividad sin nombre')}",
-                styles['Heading2']
-            ))
-            story.append(Spacer(1, 10))
-            
-            # Descripción
-            descripcion = act.get('DESCRIPCION', act.get('descripcion', 'No hay descripción disponible'))
-            story.append(Paragraph(descripcion, styles['Normal']))
-            story.append(Spacer(1, 10))
-            
-            # Detalles
-            detalles = [
-                f"🕒 Duración: {act.get('DURACION', act.get('duracion', 'No especificada'))}",
-                f"📅 Mejor momento: {act.get('MEJOR_EPOCA', act.get('mejor_epoca', 'No especificado'))}",
-                f"🔗 Más información: {act.get('LINK', act.get('link', 'No disponible'))}"
-            ]
-            
-            for detalle in detalles:
-                story.append(Paragraph(detalle, styles['Normal']))
-            
-            story.append(Spacer(1, 20))
-        
-        # Generar el PDF
-        doc.build(story)
-        buffer.seek(0)
-        return buffer.getvalue()
-        
-    except Exception as e:
-        st.error(f"Error al generar el PDF: {str(e)}")
-        return None
 
