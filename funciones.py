@@ -75,52 +75,36 @@ def procesar_clima(info_clima, fecha_inicio, fecha_fin):
         'fog': 'Niebla'
     }
         
-    dias_clima = {}
-    fecha_actual = fecha_inicio
-    dias_totales = (fecha_fin - fecha_inicio).days + 1
+    # Construir el HTML de forma más simple
+    html = '<div style="background: #2E2E2E; padding: 20px; border-radius: 15px; margin-bottom: 20px;">'
+    html += '<h4 style="color: white; text-align: center; margin-bottom: 15px;">🌤️ Pronóstico del tiempo para tu viaje</h4>'
+    html += '<div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">'
     
-    # Procesar días
+    fecha_actual = fecha_inicio
     dias_procesados = 0
+    
     while fecha_actual <= fecha_fin and dias_procesados < 5:
-        fecha_str = fecha_actual.strftime('%Y-%m-%d')
         for prediccion in info_clima['list']:
             pred_fecha = datetime.fromtimestamp(prediccion['dt']).strftime('%Y-%m-%d')
-            if pred_fecha == fecha_str:
+            if pred_fecha == fecha_actual.strftime('%Y-%m-%d'):
                 desc_original = prediccion['weather'][0]['description']
-                dias_clima[fecha_str] = {
-                    'temp': round(prediccion['main']['temp']),
-                    'descripcion': traducciones.get(desc_original, desc_original),
-                    'icono': prediccion['weather'][0]['icon']
-                }
+                temp = round(prediccion['main']['temp'])
+                desc = traducciones.get(desc_original, desc_original)
+                icono = prediccion['weather'][0]['icon']
+                
+                html += f'''
+                <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px; text-align: center;">
+                    <div style="color: white; font-weight: bold;">{fecha_actual.strftime('%d/%m/%Y')}</div>
+                    <img src="http://openweathermap.org/img/w/{icono}.png" style="width: 50px; height: 50px;">
+                    <div style="color: white;">{temp}°C</div>
+                    <div style="color: #ccc; font-size: 0.8em;">{desc}</div>
+                </div>'''
                 break
         fecha_actual += timedelta(days=1)
         dias_procesados += 1
-
-    # Construir el HTML
-    tarjetas_clima = []
-    for fecha, datos in dias_clima.items():
-        fecha_formato = datetime.strptime(fecha, '%Y-%m-%d').strftime('%d/%m/%Y')
-        tarjeta = f"""
-        <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px; text-align: center; margin: 5px;">
-            <div style="color: white; font-weight: bold;">{fecha_formato}</div>
-            <img src="http://openweathermap.org/img/w/{datos['icono']}.png" style="width: 50px; height: 50px;">
-            <div style="color: white;">{datos['temp']}°C</div>
-            <div style="color: #ccc; font-size: 0.8em;">{datos['descripcion']}</div>
-        </div>"""
-        tarjetas_clima.append(tarjeta)
-
-    contenedor_clima = f"""
-    <div style="background: #2E2E2E; padding: 20px; border-radius: 15px; margin-bottom: 20px;">
-        <h4 style="color: white; text-align: center; margin-bottom: 15px;">
-            🌤️ Pronóstico del tiempo para tu viaje
-            {f'<span style="display: block; font-size: 0.8em; color: #999; margin-top: 5px;">* Solo disponible para los próximos 15 días</span>' if dias_totales > 5 else ''}
-        </h4>
-        <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
-            {''.join(tarjetas_clima)}
-        </div>
-    </div>"""
-
-    return contenedor_clima
+    
+    html += '</div></div>'
+    return html
 
 def generar_itinerario(destino, user_id, fecha_inicio=None, fecha_fin=None, incluir_clima=False):
     """Genera un itinerario detallado para un destino específico"""
@@ -166,10 +150,12 @@ def generar_itinerario(destino, user_id, fecha_inicio=None, fecha_fin=None, incl
             prompt_clima = ""
 
         # Crear prompt con fechas específicas
-        prompt = f"""Como experto guía turístico, genera un itinerario detallado para {destino}.
-        El viaje será del {fecha_inicio.strftime('%d/%m/%Y')} al {fecha_fin.strftime('%d/%m/%Y')} ({dias} días).
+        prompt = f"""Como experto guía turístico, genera un itinerario detallado para {destino} con EXACTAMENTE {dias} días.
+        El viaje será del {fecha_inicio.strftime('%d/%m/%Y')} al {fecha_fin.strftime('%d/%m/%Y')}.
         El viajero tiene las siguientes preferencias: {preferencias}
         {prompt_clima}
+        IMPORTANTE: Genera EXACTAMENTE {dias} actividades, una para cada día del viaje.
+        
         Para cada día, proporciona la siguiente información en este formato exacto:
         ACTIVIDAD: [nombre de la actividad principal del día]
         DESCRIPCION: [descripción detallada incluyendo lugares específicos, consejos y recomendaciones]
@@ -219,6 +205,12 @@ def generar_itinerario(destino, user_id, fecha_inicio=None, fecha_fin=None, incl
                 # Calcular score basado en preferencias y tipo de actividad
                 actividad['score'] = calcular_score_actividad(actividad['tipo'], preferencias)
                 actividades_procesadas.append(actividad)
+
+        # Asegurarnos de que tenemos el número correcto de actividades
+        if len(actividades_procesadas) < dias:
+            st.warning(f"El itinerario generado tiene menos actividades ({len(actividades_procesadas)}) que los días solicitados ({dias})")
+            # Repetir la generación si es necesario
+            return generar_itinerario(destino, user_id, fecha_inicio, fecha_fin, incluir_clima)
 
         return {
             'destino': destino,
