@@ -11,7 +11,6 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
-from bs4 import BeautifulSoup
 
 def obtener_preferencias_usuario(user_id):
     """Obtiene las preferencias del usuario desde la base de datos"""
@@ -388,7 +387,7 @@ def insertar_preferencias_viaje(user_id, preferencias):
         st.error(f"Error al actualizar preferencias: {e}")
     finally:
         conn.close()
-
+    
 def insertar_usuario(name, email, travel_style, registration_date):
     """Inserta un nuevo usuario en la base de datos"""
     conn = c.conectar_bd()
@@ -478,16 +477,19 @@ def generar_recomendaciones_destinos(user_id):
         st.error(f"Error al generar recomendaciones: {str(e)}")
         return f"Error al generar recomendaciones: {str(e)}"
 
-def obtener_usuario_por_email(email):
-    """Obtiene el usuario por su email."""
-    # Implementar la lógica para obtener el usuario
-    pass
-
 def generar_pdf_itinerario(destino, actividades, clima_html=None):
     """Genera un PDF con el itinerario"""
     try:
         buffer = BytesIO()
-        doc = SimpleDocTemplate(buffer, pagesize=letter)
+        doc = SimpleDocTemplate(
+            buffer,
+            pagesize=letter,
+            rightMargin=72,
+            leftMargin=72,
+            topMargin=72,
+            bottomMargin=72
+        )
+        
         story = []
         styles = getSampleStyleSheet()
         
@@ -535,7 +537,7 @@ def generar_pdf_itinerario(destino, actividades, clima_html=None):
         doc.build(story)
         buffer.seek(0)
         return buffer.getvalue()
-        
-    except Exception as e:
+
+        except Exception as e:
         st.error(f"Error al generar el PDF: {str(e)}")
         return None
