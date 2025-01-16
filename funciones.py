@@ -5,7 +5,7 @@ import pinecone
 import streamlit as st
 import config as c
 import requests
-from datetime import datetime
+from datetime import datetime, timedelta
 
 def obtener_preferencias_usuario(user_id):
     """Obtiene las preferencias del usuario desde la base de datos"""
@@ -49,23 +49,29 @@ def obtener_clima(ciudad, fecha):
         st.error(f"Error al obtener el clima: {e}")
         return None
 
-def procesar_clima(info_clima):
+def procesar_clima(info_clima, fecha_inicio, fecha_fin):
     """Procesa la información del clima y genera HTML para mostrar"""
     if not info_clima or 'list' not in info_clima:
         return None
         
     dias_clima = {}
-    for prediccion in info_clima['list']:
-        fecha = datetime.fromtimestamp(prediccion['dt']).strftime('%Y-%m-%d')
-        if fecha not in dias_clima:
-            dias_clima[fecha] = {
-                'temp': prediccion['main']['temp'],
-                'descripcion': prediccion['weather'][0]['description'],
-                'icono': prediccion['weather'][0]['icon']
-            }
+    fecha_actual = fecha_inicio
+    while fecha_actual <= fecha_fin:
+        fecha_str = fecha_actual.strftime('%Y-%m-%d')
+        # Buscar la predicción más cercana para esta fecha
+        for prediccion in info_clima['list']:
+            pred_fecha = datetime.fromtimestamp(prediccion['dt']).strftime('%Y-%m-%d')
+            if pred_fecha == fecha_str:
+                dias_clima[fecha_str] = {
+                    'temp': prediccion['main']['temp'],
+                    'descripcion': prediccion['weather'][0]['description'],
+                    'icono': prediccion['weather'][0]['icon']
+                }
+                break
+        fecha_actual += timedelta(days=1)
     
     html_clima = ""
-    for fecha, datos in list(dias_clima.items())[:5]:  # Mostrar solo 5 días
+    for fecha, datos in dias_clima.items():
         fecha_formato = datetime.strptime(fecha, '%Y-%m-%d').strftime('%d/%m')
         html_clima += f"""
         <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px; text-align: center;">
@@ -98,16 +104,23 @@ def generar_itinerario(destino, user_id, fecha_inicio=None, fecha_fin=None, incl
         clima_html = None
         if incluir_clima:
             info_clima = obtener_clima(destino, fecha_inicio)
-            clima_html = procesar_clima(info_clima)
+            clima_html = procesar_clima(info_clima, fecha_inicio, fecha_fin)
             
             # Agregar información del clima al prompt si está disponible
             if info_clima and 'list' in info_clima:
                 clima_info = []
-                for prediccion in info_clima['list'][:5]:  # Tomamos solo los primeros 5 días
-                    fecha = datetime.fromtimestamp(prediccion['dt']).strftime('%Y-%m-%d')
-                    temp = prediccion['main']['temp']
-                    desc = prediccion['weather'][0]['description']
-                    clima_info.append(f"Día {fecha}: {desc}, {temp}°C")
+                fecha_actual = fecha_inicio
+                while fecha_actual <= fecha_fin:
+                    fecha_str = fecha_actual.strftime('%Y-%m-%d')
+                    for prediccion in info_clima['list']:
+                        pred_fecha = datetime.fromtimestamp(prediccion['dt']).strftime('%Y-%m-%d')
+                        if pred_fecha == fecha_str:
+                            temp = prediccion['main']['temp']
+                            desc = prediccion['weather'][0]['description']
+                            clima_info.append(f"Día {fecha_actual.strftime('%d/%m')}: {desc}, {temp}°C")
+                            break
+                    fecha_actual += timedelta(days=1)
+                
                 clima_texto = "\n".join(clima_info)
                 prompt_clima = f"\nCondiciones climáticas durante tu viaje:\n{clima_texto}\n"
             else:
