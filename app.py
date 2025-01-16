@@ -13,7 +13,7 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image as RL
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 import pdfkit
 
-# Configuración de la página y eliminación del mensaje de Streamlit
+# Configuración de la página
 st.set_page_config(
     page_title="TuGuía - Tu Planificador de Viajes",
     page_icon="https://raw.githubusercontent.com/estcr/Proyecto_final/main/img/t-vectorizada.png",
@@ -26,7 +26,7 @@ st.set_page_config(
     }
 )
 
-# Estilos CSS personalizados actualizados
+# Estilos CSS personalizados
 st.markdown("""
     <style>
     .titulo-seccion {
@@ -129,31 +129,23 @@ def mostrar_logo():
         try:
             st.image("img/t-vectorizada.png", width=300)
         except:
-            # Fallback a la URL de GitHub si la imagen local no se encuentra
             st.image("https://raw.githubusercontent.com/estcr/Proyecto_final/main/img/t-vectorizada.png", width=300)
 
-# Función para la página de inicio actualizada
+# Función para la página de inicio
 def pagina_inicio():
-    # Grid principal con logo y título
-    col_logo, col_title = st.columns([1, 2])
+    mostrar_logo()
     
-    with col_logo:
-        try:
-            st.image("img/t-vectorizada.png", width=300)
-        except:
-            st.image("https://raw.githubusercontent.com/estcr/Proyecto_final/main/img/t-vectorizada.png", width=300)
-    
-    with col_title:
-        st.markdown("""
-        <div style="padding: 20px;">
-            <h1 style="color: #FF4B4B; font-size: 2.5rem; margin-bottom: 1rem;">
-                ¡Bienvenido a TuGuÍA! 🌎
-            </h1>
-            <p style="color: #888; font-size: 1.2rem;">
-                Tu compañero perfecto para planificar aventuras inolvidables
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
+    # Contenedor principal con estilo moderno
+    st.markdown("""
+    <div style="text-align: center; margin-bottom: 2rem;">
+        <h1 style="color: #FF4B4B; font-size: 2.5rem; margin-bottom: 1rem;">
+            ¡Bienvenido a TuGuÍA! 🌎
+        </h1>
+        <p style="color: #888; font-size: 1.2rem;">
+            Tu compañero perfecto para planificar aventuras inolvidables
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
     
     # Espacio entre el título y los contenedores
     st.markdown("<br>", unsafe_allow_html=True)
@@ -220,7 +212,7 @@ def pagina_inicio():
                 with col2:
                     if st.button("🚀 ¡Comenzar la Aventura!", key="login_button"):
                         if email:
-                            user_id = obtener_usuario_por_email(email)
+                            user_id = f.obtener_usuario_por_email(email)
                             if user_id:
                                 st.session_state.id_usuario = user_id
                                 st.session_state.mostrar_login = False
@@ -274,12 +266,10 @@ def main():
 
     # Barra lateral
     with st.sidebar:
-        # Solo el logo con el texto "TuGuÍA"
+        # Solo el texto "TuGuÍA" con emoji
         st.markdown("""
         <div style="text-align: center; padding: 1rem 0;">
-            <img src="https://raw.githubusercontent.com/estcr/Proyecto_final/main/img/t-vectorizada.png" 
-                 style="width: 180px; margin: 0 auto;">
-            <h1 style="color: white; font-size: 1.5rem; margin: 0;">TuGuÍA</h1>
+            <h1 style="color: white; font-size: 1.5rem; margin: 0;">🌍 TuGuÍA</h1>
         </div>
         """, unsafe_allow_html=True)
 
