@@ -269,97 +269,20 @@ def pagina_inicio():
 
 # Función para obtener datos del usuario y guardarlos en la base de datos
 def obtener_datos_usuario():
-    # Contenedor principal con fondo oscuro
-    st.markdown("""
-    <style>
-    .main {
-        background-color: #13151a;
-    }
-    .stButton > button {
-        width: 100%;
-        background-color: #FF4B4B !important;
-        color: white !important;
-        font-weight: bold;
-        padding: 0.5rem 1rem;
-        border-radius: 10px;
-        border: none;
-        transition: all 0.3s ease;
-    }
-    .stButton > button:hover {
-        background-color: #ff6b6b !important;
-        transform: translateY(-2px);
-    }
-    .stTextInput > div > div > input {
-        background-color: #1E1E1E;
-        color: white;
-        border: 1px solid #333;
-        padding: 1rem;
-        border-radius: 10px;
-    }
-    .stSelectbox > div > div {
-        background-color: #1E1E1E;
-        color: white;
-        border: 1px solid #333;
-        padding: 0.5rem;
-        border-radius: 10px;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
-    col1, col2, col3 = st.columns([1,2,1])
+    st.title("Registro de Usuario")
     
-    with col2:
-        # Logo y título
-        st.image("https://raw.githubusercontent.com/estcr/Proyecto_final/main/img/t-vectorizada.png", 
-                width=150)
-        
-        # Contenedor del formulario
-        st.markdown("""
-        <div style="background: #1E1E1E; padding: 2rem; border-radius: 20px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin: 2rem 0;">
-            <div style="text-align: center; margin-bottom: 2rem;">
-                <h1 style="color: #FF4B4B; font-size: 2rem; margin-bottom: 0.5rem;">
-                    ¡Únete a la aventura! 🌎
-                </h1>
-                <p style="color: #888; font-size: 1rem;">
-                    Crea tu cuenta y descubre destinos increíbles
-                </p>
-            </div>
-        """, unsafe_allow_html=True)
-
-        name = st.text_input("👤 Nombre", placeholder="Tu nombre", label_visibility="collapsed")
-        email = st.text_input("📧 Email", placeholder="tucorreo@ejemplo.com", label_visibility="collapsed")
-        
-        travel_style = st.selectbox("🎒 Estilo de viaje", 
-            ["solo", "amigos", "pareja", "trabajo"],
-            format_func=lambda x: {
-                "solo": "Viajero solitario 🚶",
-                "amigos": "Con amigos 👥",
-                "pareja": "En pareja 💑",
-                "trabajo": "Viaje de trabajo 💼"
-            }[x],
-            label_visibility="collapsed"
-        )
-        
-        registration_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-        if st.button("🚀 ¡Comenzar mi aventura!"):
+    name = st.text_input("Nombre")
+    email = st.text_input("Email")
+    registration_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    travel_style = st.selectbox("Estilo de viaje", ["solo", "amigos", "pareja", "trabajo"])
+    
+    if st.button("Registrar"):
         if name and email:
-                if f.insertar_usuario(name, email, travel_style, registration_date):
-                    st.success("¡Registro exitoso! 🎉")
-                    st.balloons()
+            if f.insertar_usuario(name, email, travel_style, registration_date):
+                st.success("¡Registro exitoso! 🎉")
+                st.balloons()
         else:
-                st.warning("Por favor, completa todos los campos 📝")
-        
-        st.markdown("""
-        <div style="text-align: center; margin-top: 2rem;">
-            <p style="color: #888;">¿Ya tienes una cuenta?</p>
-            <a href="#" style="color: #FF4B4B; text-decoration: none; font-weight: bold;">
-                ¡Inicia sesión aquí! ✨
-            </a>
-        </div>
-        </div>
-        """, unsafe_allow_html=True)
+            st.warning("Por favor, completa todos los campos 📝")
 
 # Función de preferencias modernizada
 def interfaz_preferencias():
@@ -728,8 +651,12 @@ def obtener_datos_usuario():
     travel_style = st.selectbox("Estilo de viaje", ["solo", "amigos", "pareja", "trabajo"])
     
     if st.button("Registrar"):
-        f.insertar_usuario(name, email, travel_style, registration_date)
-        st.success("Usuario registrado exitosamente")
+        if name and email:
+            if f.insertar_usuario(name, email, travel_style, registration_date):
+                st.success("¡Registro exitoso! 🎉")
+                st.balloons()
+        else:
+            st.warning("Por favor, completa todos los campos 📝")
 
 # Función para manejar el inicio de sesión
 def login():
