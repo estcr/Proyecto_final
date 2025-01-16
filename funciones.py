@@ -101,10 +101,13 @@ def generar_itinerario(destino, user_id, fecha_inicio=None, fecha_fin=None, incl
             clima_html = procesar_clima(info_clima)
             
             # Agregar información del clima al prompt si está disponible
-            if info_clima:
+            if info_clima and 'list' in info_clima:
                 clima_info = []
-                for fecha, datos in info_clima.items():
-                    clima_info.append(f"Día {fecha}: {datos['descripcion']}, {datos['temp']}°C")
+                for prediccion in info_clima['list'][:5]:  # Tomamos solo los primeros 5 días
+                    fecha = datetime.fromtimestamp(prediccion['dt']).strftime('%Y-%m-%d')
+                    temp = prediccion['main']['temp']
+                    desc = prediccion['weather'][0]['description']
+                    clima_info.append(f"Día {fecha}: {desc}, {temp}°C")
                 clima_texto = "\n".join(clima_info)
                 prompt_clima = f"\nCondiciones climáticas durante tu viaje:\n{clima_texto}\n"
             else:
@@ -169,7 +172,7 @@ def generar_itinerario(destino, user_id, fecha_inicio=None, fecha_fin=None, incl
 
         return {
             'destino': destino,
-            'actividades': actividades_procesadas[:dias],  # Limitar al número exacto de días
+            'actividades': actividades_procesadas[:dias],
             'clima_html': clima_html if incluir_clima else None
         }
 
