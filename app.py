@@ -578,8 +578,16 @@ def mostrar_itinerario():
                     <div style="background: white; padding: 20px; text-align: center;">
                         <div style="color: #FF4B4B; font-size: 32px; font-weight: bold; text-transform: uppercase;
                             letter-spacing: 2px; margin-bottom: 5px;">Tu Itinerario en {destino}</div>
-                        <div style="color: #666; font-size: 18px;">Actividades día a día</div>
+                        <div style="color: #666; font-size: 18px;">Elige tus actividades favoritas</div>
                     </div>
+                    {f'''
+                    <div style="background: #2E2E2E; padding: 15px; text-align: center;">
+                        <h4 style="color: white; margin-bottom: 10px;">🌤️ Pronóstico del tiempo</h4>
+                        <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+                            {resultado.get('clima_html', '')}
+                        </div>
+                    </div>
+                    ''' if incluir_clima else ''}
                     <div style="padding: 25px;">
                 """, unsafe_allow_html=True)
                 
@@ -741,17 +749,17 @@ def main():
         st.markdown("---")  # Línea separadora
         st.markdown("""
         <div style="position: fixed; bottom: 20px; left: 20px; width: calc(100% - 40px);">
-            <p style="color: #888; font-size: 0.9em; margin-bottom: 10px;">
+            <p style="color: white; font-size: 0.9em; margin-bottom: 10px;">
                 Autor: Esteban Daniel Cristos Muzzupappa
             </p>
             <div style="display: flex; gap: 10px;">
                 <a href="https://www.linkedin.com/in/esteban-daniel-cristos-muzzupappa-37b72635/" target="_blank" 
-                   style="color: #888; text-decoration: none; transition: color 0.3s ease;">
+                   style="color: white; text-decoration: none; transition: opacity 0.3s ease;">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" 
                          width="20" style="vertical-align: middle;"> LinkedIn
                 </a>
                 <a href="https://github.com/estcr" target="_blank" 
-                   style="color: #888; text-decoration: none; transition: color 0.3s ease;">
+                   style="color: white; text-decoration: none; transition: opacity 0.3s ease;">
                     <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" 
                          width="20" style="vertical-align: middle;"> GitHub
                 </a>

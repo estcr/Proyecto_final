@@ -5,6 +5,7 @@ import pinecone
 import streamlit as st
 import config as c
 import requests
+from datetime import datetime
 
 def obtener_preferencias_usuario(user_id):
     """Obtiene las preferencias del usuario desde la base de datos"""
@@ -48,6 +49,36 @@ def obtener_clima(ciudad, fecha):
         st.error(f"Error al obtener el clima: {e}")
         return None
 
+def procesar_clima(info_clima):
+    """Procesa la información del clima y genera HTML para mostrar"""
+    if not info_clima or 'list' not in info_clima:
+        return None
+        
+    dias_clima = {}
+    for prediccion in info_clima['list']:
+        fecha = datetime.fromtimestamp(prediccion['dt']).strftime('%Y-%m-%d')
+        if fecha not in dias_clima:
+            dias_clima[fecha] = {
+                'temp': prediccion['main']['temp'],
+                'descripcion': prediccion['weather'][0]['description'],
+                'icono': prediccion['weather'][0]['icon']
+            }
+    
+    html_clima = ""
+    for fecha, datos in list(dias_clima.items())[:5]:  # Mostrar solo 5 días
+        fecha_formato = datetime.strptime(fecha, '%Y-%m-%d').strftime('%d/%m')
+        html_clima += f"""
+        <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px; text-align: center;">
+            <div style="color: white; font-weight: bold;">{fecha_formato}</div>
+            <img src="http://openweathermap.org/img/w/{datos['icono']}.png" 
+                 style="width: 50px; height: 50px;">
+            <div style="color: white;">{datos['temp']}°C</div>
+            <div style="color: #ccc; font-size: 0.8em;">{datos['descripcion'].capitalize()}</div>
+        </div>
+        """
+    
+    return html_clima
+
 def generar_itinerario(destino, user_id, fecha_inicio=None, fecha_fin=None, incluir_clima=False):
     """Genera un itinerario detallado para un destino específico"""
     try:
@@ -56,10 +87,12 @@ def generar_itinerario(destino, user_id, fecha_inicio=None, fecha_fin=None, incl
         if not preferencias:
             return "No se encontraron preferencias para el usuario"
 
-        # Obtener información del clima si es necesario
+        # Obtener y procesar información del clima
         info_clima = None
+        clima_html = None
         if incluir_clima:
             info_clima = obtener_clima(destino, fecha_inicio)
+            clima_html = procesar_clima(info_clima)
         
         # Crear prompt base
         prompt = f"""Como experto guía turístico, genera un itinerario detallado para {destino}.
@@ -125,7 +158,8 @@ def generar_itinerario(destino, user_id, fecha_inicio=None, fecha_fin=None, incl
 
         return {
             'destino': destino,
-            'actividades': actividades_procesadas[:10]
+            'actividades': actividades_procesadas[:10],
+            'clima_html': clima_html if incluir_clima else None
         }
 
     except Exception as e:
