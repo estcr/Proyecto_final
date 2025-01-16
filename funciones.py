@@ -94,8 +94,14 @@ def generar_itinerario(destino, user_id, fecha_inicio=None, fecha_fin=None, incl
             info_clima = obtener_clima(destino, fecha_inicio)
             clima_html = procesar_clima(info_clima)
         
-        # Crear prompt base
-        prompt = f"""Como experto guía turístico, genera un itinerario detallado para {destino}.
+        # Calcular número de días
+        if fecha_inicio and fecha_fin:
+            dias = (fecha_fin - fecha_inicio).days + 1
+        else:
+            dias = 5  # valor por defecto
+        
+        # Modificar el prompt para incluir el número específico de días
+        prompt = f"""Como experto guía turístico, genera un itinerario detallado para {destino} para {dias} días.
         El viajero tiene las siguientes preferencias: {preferencias}
         Fechas del viaje: del {fecha_inicio} al {fecha_fin}
         """
@@ -158,7 +164,7 @@ def generar_itinerario(destino, user_id, fecha_inicio=None, fecha_fin=None, incl
 
         return {
             'destino': destino,
-            'actividades': actividades_procesadas[:10],
+            'actividades': actividades_procesadas[:dias],  # Limitar al número de días
             'clima_html': clima_html if incluir_clima else None
         }
 

@@ -580,16 +580,20 @@ def mostrar_itinerario():
                             letter-spacing: 2px; margin-bottom: 5px;">Tu Itinerario en {destino}</div>
                         <div style="color: #666; font-size: 18px;">Elige tus actividades favoritas</div>
                     </div>
-                    {f'''
+                    """, unsafe_allow_html=True)
+                
+                # Solo mostrar el clima si hay datos y se solicitó
+                if incluir_clima and resultado.get('clima_html'):
+                    st.markdown(f"""
                     <div style="background: #2E2E2E; padding: 15px; text-align: center;">
                         <h4 style="color: white; margin-bottom: 10px;">🌤️ Pronóstico del tiempo</h4>
                         <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
-                            {resultado.get('clima_html', '')}
+                            {resultado['clima_html']}
                         </div>
                     </div>
-                    ''' if incluir_clima else ''}
-                    <div style="padding: 25px;">
-                """, unsafe_allow_html=True)
+                    """, unsafe_allow_html=True)
+                
+                st.markdown("""<div style="padding: 25px;">""", unsafe_allow_html=True)
                 
                 for i, act in enumerate(resultado['actividades'], 1):
                     st.markdown(f"""
