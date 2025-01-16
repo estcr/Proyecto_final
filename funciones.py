@@ -87,31 +87,36 @@ def generar_itinerario(destino, user_id, fecha_inicio=None, fecha_fin=None, incl
         if not preferencias:
             return "No se encontraron preferencias para el usuario"
 
+        # Calcular número de días
+        if fecha_inicio and fecha_fin:
+            dias = (fecha_fin - fecha_inicio).days + 1
+        else:
+            dias = 5  # valor por defecto
+
         # Obtener y procesar información del clima
         info_clima = None
         clima_html = None
         if incluir_clima:
             info_clima = obtener_clima(destino, fecha_inicio)
             clima_html = procesar_clima(info_clima)
-        
-        # Calcular número de días
-        if fecha_inicio and fecha_fin:
-            dias = (fecha_fin - fecha_inicio).days + 1
-        else:
-            dias = 5  # valor por defecto
-        
-        # Modificar el prompt para incluir el número específico de días
-        prompt = f"""Como experto guía turístico, genera un itinerario detallado para {destino} para {dias} días.
-        El viajero tiene las siguientes preferencias: {preferencias}
-        Fechas del viaje: del {fecha_inicio} al {fecha_fin}
-        """
-        
-        # Agregar información del clima si está disponible
-        if info_clima:
-            prompt += "\nInformación del clima para los días del viaje:"
-            # Aquí procesaríamos la información del clima para incluirla en el prompt
             
-        prompt += """
+            # Agregar información del clima al prompt si está disponible
+            if info_clima:
+                clima_info = []
+                for fecha, datos in info_clima.items():
+                    clima_info.append(f"Día {fecha}: {datos['descripcion']}, {datos['temp']}°C")
+                clima_texto = "\n".join(clima_info)
+                prompt_clima = f"\nCondiciones climáticas durante tu viaje:\n{clima_texto}\n"
+            else:
+                prompt_clima = ""
+        else:
+            prompt_clima = ""
+
+        # Crear prompt con fechas específicas
+        prompt = f"""Como experto guía turístico, genera un itinerario detallado para {destino}.
+        El viaje será del {fecha_inicio.strftime('%d/%m/%Y')} al {fecha_fin.strftime('%d/%m/%Y')} ({dias} días).
+        El viajero tiene las siguientes preferencias: {preferencias}
+        {prompt_clima}
         Para cada día, proporciona la siguiente información en este formato exacto:
         ACTIVIDAD: [nombre de la actividad principal del día]
         DESCRIPCION: [descripción detallada incluyendo lugares específicos, consejos y recomendaciones]
@@ -164,7 +169,7 @@ def generar_itinerario(destino, user_id, fecha_inicio=None, fecha_fin=None, incl
 
         return {
             'destino': destino,
-            'actividades': actividades_procesadas[:dias],  # Limitar al número de días
+            'actividades': actividades_procesadas[:dias],  # Limitar al número exacto de días
             'clima_html': clima_html if incluir_clima else None
         }
 

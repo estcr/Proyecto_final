@@ -644,7 +644,7 @@ def mostrar_itinerario():
                     </div>
                     """, unsafe_allow_html=True)
                 
-                # Cerrar los divs contenedores
+                # Cerrar los divs contenedores correctamente
                 st.markdown("""
                     </div>
                 </div>
