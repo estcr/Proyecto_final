@@ -54,6 +54,27 @@ def procesar_clima(info_clima, fecha_inicio, fecha_fin):
     if not info_clima or 'list' not in info_clima:
         return None
         
+    # Diccionario para traducir descripciones del clima
+    traducciones = {
+        'clear sky': 'Cielo despejado',
+        'few clouds': 'Pocas nubes',
+        'scattered clouds': 'Nubes dispersas',
+        'broken clouds': 'Nublado parcial',
+        'shower rain': 'Lluvia ligera',
+        'rain': 'Lluvia',
+        'thunderstorm': 'Tormenta',
+        'snow': 'Nieve',
+        'mist': 'Neblina',
+        'overcast clouds': 'Nublado',
+        'light rain': 'Lluvia ligera',
+        'moderate rain': 'Lluvia moderada',
+        'heavy rain': 'Lluvia fuerte',
+        'light snow': 'Nieve ligera',
+        'heavy snow': 'Nieve intensa',
+        'drizzle': 'Llovizna',
+        'fog': 'Niebla'
+    }
+        
     dias_clima = {}
     fecha_actual = fecha_inicio
     while fecha_actual <= fecha_fin:
@@ -62,9 +83,10 @@ def procesar_clima(info_clima, fecha_inicio, fecha_fin):
         for prediccion in info_clima['list']:
             pred_fecha = datetime.fromtimestamp(prediccion['dt']).strftime('%Y-%m-%d')
             if pred_fecha == fecha_str:
+                desc_original = prediccion['weather'][0]['description']
                 dias_clima[fecha_str] = {
-                    'temp': prediccion['main']['temp'],
-                    'descripcion': prediccion['weather'][0]['description'],
+                    'temp': round(prediccion['main']['temp']),  # Redondear temperatura
+                    'descripcion': traducciones.get(desc_original, desc_original),
                     'icono': prediccion['weather'][0]['icon']
                 }
                 break
@@ -72,14 +94,14 @@ def procesar_clima(info_clima, fecha_inicio, fecha_fin):
     
     html_clima = ""
     for fecha, datos in dias_clima.items():
-        fecha_formato = datetime.strptime(fecha, '%Y-%m-%d').strftime('%d/%m')
+        fecha_formato = datetime.strptime(fecha, '%Y-%m-%d').strftime('%d/%m/%Y')  # Agregado el año
         html_clima += f"""
         <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px; text-align: center;">
             <div style="color: white; font-weight: bold;">{fecha_formato}</div>
             <img src="http://openweathermap.org/img/w/{datos['icono']}.png" 
                  style="width: 50px; height: 50px;">
             <div style="color: white;">{datos['temp']}°C</div>
-            <div style="color: #ccc; font-size: 0.8em;">{datos['descripcion'].capitalize()}</div>
+            <div style="color: #ccc; font-size: 0.8em;">{datos['descripcion']}</div>
         </div>
         """
     
