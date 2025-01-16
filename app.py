@@ -367,6 +367,31 @@ def interfaz_preferencias():
 def interfaz_recomendaciones():
     st.title("✨ Descubre Lugares Increíbles")
     
+    # Agregar sección explicativa
+    st.markdown("""
+    <div style="background: #1E1E1E; padding: 25px; border-radius: 15px; margin-bottom: 30px;">
+        <h3 style="color: #FF4B4B; margin-bottom: 15px;">🎯 Sistema de Recomendación Inteligente</h3>
+        <p style="color: #fff; margin-bottom: 15px;">
+            Nuestro algoritmo analiza tus preferencias y utiliza inteligencia artificial para sugerirte 
+            destinos perfectamente adaptados a tus gustos. Para cada destino, te proporcionamos:
+        </p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; color: #fff;">
+            <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+                <h4 style="color: #FF4B4B;">📸 Visualización</h4>
+                <p>Imágenes reales del destino para inspirarte</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+                <h4 style="color: #FF4B4B;">🗓️ Planificación</h4>
+                <p>Mejor época para visitar y duración recomendada</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+                <h4 style="color: #FF4B4B;">🎯 Actividades</h4>
+                <p>Experiencias destacadas con enlaces directos</p>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
     if "id_usuario" not in st.session_state or st.session_state.id_usuario is None:
         st.warning("Por favor, inicia sesión primero")
         return
@@ -462,6 +487,34 @@ def interfaz_recomendaciones():
 # Función para generar itinerario
 def mostrar_itinerario():
     st.title("✨ Planifica tus Actividades")
+    
+    # Agregar sección explicativa
+    st.markdown("""
+    <div style="background: #1E1E1E; padding: 25px; border-radius: 15px; margin-bottom: 30px;">
+        <h3 style="color: #FF4B4B; margin-bottom: 15px;">🗺️ Planificador Inteligente de Itinerarios</h3>
+        <p style="color: #fff; margin-bottom: 15px;">
+            Utilizando tecnología de IA avanzada, creamos itinerarios personalizados que maximizan tu experiencia de viaje.
+            Nuestro sistema considera:
+        </p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; color: #fff;">
+            <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+                <h4 style="color: #FF4B4B;">⭐ Score Personalizado</h4>
+                <p>Actividades puntuadas según tus preferencias</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+                <h4 style="color: #FF4B4B;">📅 Optimización Temporal</h4>
+                <p>Organización eficiente de actividades por día</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+                <h4 style="color: #FF4B4B;">🎯 Experiencias Únicas</h4>
+                <p>Recomendaciones basadas en datos reales</p>
+            </div>
+        </div>
+        <p style="color: #888; font-size: 0.9em; margin-top: 15px; text-align: center;">
+            Powered by OpenAI GPT & Google Places API
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
     
     if "id_usuario" not in st.session_state or st.session_state.id_usuario is None:
         st.warning("Por favor, inicia sesión primero")
@@ -661,17 +714,17 @@ def main():
         st.markdown("---")  # Línea separadora
         st.markdown("""
         <div style="position: fixed; bottom: 20px; left: 20px; width: calc(100% - 40px);">
-            <p style="color: #666; font-size: 0.9em; margin-bottom: 10px;">
+            <p style="color: #888; font-size: 0.9em; margin-bottom: 10px;">
                 Autor: Esteban Daniel Cristos Muzzupappa
             </p>
             <div style="display: flex; gap: 10px;">
                 <a href="https://www.linkedin.com/in/esteban-daniel-cristos-muzzupappa-37b72635/" target="_blank" 
-                   style="color: #0A66C2; text-decoration: none;">
+                   style="color: #888; text-decoration: none; transition: color 0.3s ease;">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" 
                          width="20" style="vertical-align: middle;"> LinkedIn
                 </a>
                 <a href="https://github.com/estcr" target="_blank" 
-                   style="color: #333; text-decoration: none;">
+                   style="color: #888; text-decoration: none; transition: color 0.3s ease;">
                     <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" 
                          width="20" style="vertical-align: middle;"> GitHub
                 </a>
