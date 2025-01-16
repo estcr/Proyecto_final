@@ -129,13 +129,11 @@ def mostrar_logo():
 
 # Función para la página de inicio actualizada
 def pagina_inicio():
-    mostrar_logo()
-    
     # Contenedor principal con estilo moderno
     st.markdown("""
     <div style="text-align: center; margin-bottom: 2rem;">
         <h1 style="color: #FF4B4B; font-size: 2.5rem; margin-bottom: 1rem;">
-            ¡Bienvenido a TuGuía! 🌎
+            ¡Bienvenido a TuGuIA! 🌎
         </h1>
         <p style="color: #888; font-size: 1.2rem;">
             Tu compañero perfecto para planificar aventuras inolvidables
@@ -143,99 +141,109 @@ def pagina_inicio():
     </div>
     """, unsafe_allow_html=True)
     
-    # Grid de características principales
-    col1, col2 = st.columns(2)
+    # Grid principal con logo y contenido
+    col_logo, col_content = st.columns([1, 2])
     
-    with col1:
-        st.markdown("""
-        <div style="background: #1E1E1E; padding: 25px; border-radius: 15px; height: 100%;">
-            <h3 style="color: #FF4B4B; margin-bottom: 15px;">🎯 Tu Destino, Tu Aventura</h3>
-            <p style="color: white; margin-bottom: 20px;">
-                Descubre lugares increíbles basados en tus preferencias personales.
-                Planifica tu próximo viaje con recomendaciones personalizadas y
-                consejos de expertos.
-            </p>
-            <div style="color: white;">
-                <h4 style="color: #FF4B4B;">✨ Características</h4>
-                <ul style="list-style-type: none; padding: 0;">
-                    <li style="margin: 10px 0;">🎯 Recomendaciones personalizadas</li>
-                    <li style="margin: 10px 0;">🗺️ Planificación de itinerarios</li>
-                    <li style="margin: 10px 0;">🌟 Destinos únicos</li>
-                    <li style="margin: 10px 0;">📅 Organización de viajes</li>
-                </ul>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+    with col_logo:
+        try:
+            st.image("img/t-vectorizada.png", width=300)
+        except:
+            st.image("https://raw.githubusercontent.com/estcr/Proyecto_final/main/img/t-vectorizada.png", width=300)
     
-    with col2:
-        if not st.session_state.id_usuario:
-            # Contenedor de inicio de sesión para usuarios no logueados
+    with col_content:
+        # Grid de características principales
+        col1, col2 = st.columns(2)
+        
+        with col1:
             st.markdown("""
             <div style="background: #1E1E1E; padding: 25px; border-radius: 15px; height: 100%;">
-                <h3 style="color: #FF4B4B; margin-bottom: 15px;">🚀 Comienza Tu Viaje</h3>
+                <h3 style="color: #FF4B4B; margin-bottom: 15px;">🎯 Tu Destino, Tu Aventura</h3>
+                <p style="color: white; margin-bottom: 20px;">
+                    Descubre lugares increíbles basados en tus preferencias personales.
+                    Planifica tu próximo viaje con recomendaciones personalizadas y
+                    consejos de expertos.
+                </p>
                 <div style="color: white;">
-                    <p style="margin-bottom: 20px;">Sigue estos pasos para comenzar:</p>
-                    <ol style="padding-left: 20px;">
-                        <li style="margin: 10px 0;">Regístrate o inicia sesión</li>
-                        <li style="margin: 10px 0;">Completa tus preferencias</li>
-                        <li style="margin: 10px 0;">Obtén recomendaciones personalizadas</li>
-                        <li style="margin: 10px 0;">¡Planifica tu aventura!</li>
-                    </ol>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            # Formulario de inicio de sesión
-            if st.session_state.get('mostrar_login', False):
-                st.markdown("""
-                <div style="background: #2E2E2E; padding: 20px; border-radius: 15px; margin-top: 20px;">
-                    <h4 style="color: #FF4B4B; text-align: center; margin-bottom: 15px;">
-                        🔑 Inicia Sesión
-                    </h4>
-                </div>
-                """, unsafe_allow_html=True)
-                
-                email = st.text_input("📧 Email", placeholder="tucorreo@ejemplo.com", key="login_email")
-                col1, col2, col3 = st.columns([1,2,1])
-                with col2:
-                    if st.button("🚀 ¡Comenzar la Aventura!", key="login_button"):
-                        if email:
-                            user_id = obtener_usuario_por_email(email)
-                            if user_id:
-                                st.session_state.id_usuario = user_id
-                                st.session_state.mostrar_login = False
-                                st.rerun()
-                            else:
-                                st.error("Usuario no encontrado")
-                                st.button("📝 ¿Quieres registrarte?", key="register_redirect")
-            else:
-                # Botones de acción
-                st.markdown("<div style='padding: 20px;'></div>", unsafe_allow_html=True)
-                col1, col2 = st.columns(2)
-                with col1:
-                    if st.button("🔑 Iniciar Sesión", use_container_width=True):
-                        st.session_state.mostrar_login = True
-                        st.session_state.mostrar_registro = False
-                with col2:
-                    if st.button("📝 Registrarse", use_container_width=True):
-                        st.session_state.mostrar_registro = True
-                        st.session_state.mostrar_login = False
-        else:
-            # Contenedor de bienvenida para usuarios logueados
-            st.markdown("""
-            <div style="background: #1E1E1E; padding: 25px; border-radius: 15px; height: 100%;">
-                <h3 style="color: #FF4B4B; margin-bottom: 15px;">✨ ¡Bienvenido de nuevo!</h3>
-                <div style="color: white;">
-                    <p style="margin-bottom: 20px;">¿Qué te gustaría hacer hoy?</p>
+                    <h4 style="color: #FF4B4B;">✨ Características</h4>
                     <ul style="list-style-type: none; padding: 0;">
-                        <li style="margin: 15px 0;">⭐ Actualiza tus preferencias de viaje</li>
-                        <li style="margin: 15px 0;">🎯 Descubre nuevos destinos recomendados</li>
-                        <li style="margin: 15px 0;">📍 Planifica tu próxima aventura</li>
-                        <li style="margin: 15px 0;">🌍 Explora destinos únicos</li>
+                        <li style="margin: 10px 0;">🎯 Recomendaciones personalizadas</li>
+                        <li style="margin: 10px 0;">🗺️ Planificación de itinerarios</li>
+                        <li style="margin: 10px 0;">🌟 Destinos únicos</li>
+                        <li style="margin: 10px 0;">📅 Organización de viajes</li>
                     </ul>
                 </div>
             </div>
             """, unsafe_allow_html=True)
+        
+        with col2:
+            if not st.session_state.id_usuario:
+                # Contenedor de inicio de sesión para usuarios no logueados
+                st.markdown("""
+                <div style="background: #1E1E1E; padding: 25px; border-radius: 15px; height: 100%;">
+                    <h3 style="color: #FF4B4B; margin-bottom: 15px;">🚀 Comienza Tu Viaje</h3>
+                    <div style="color: white;">
+                        <p style="margin-bottom: 20px;">Sigue estos pasos para comenzar:</p>
+                        <ol style="padding-left: 20px;">
+                            <li style="margin: 10px 0;">Regístrate o inicia sesión</li>
+                            <li style="margin: 10px 0;">Completa tus preferencias</li>
+                            <li style="margin: 10px 0;">Obtén recomendaciones personalizadas</li>
+                            <li style="margin: 10px 0;">¡Planifica tu aventura!</li>
+                        </ol>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                # Formulario de inicio de sesión
+                if st.session_state.get('mostrar_login', False):
+                    st.markdown("""
+                    <div style="background: #2E2E2E; padding: 20px; border-radius: 15px; margin-top: 20px;">
+                        <h4 style="color: #FF4B4B; text-align: center; margin-bottom: 15px;">
+                            🔑 Inicia Sesión
+                        </h4>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    email = st.text_input("📧 Email", placeholder="tucorreo@ejemplo.com", key="login_email")
+                    col1, col2, col3 = st.columns([1,2,1])
+                    with col2:
+                        if st.button("🚀 ¡Comenzar la Aventura!", key="login_button"):
+                            if email:
+                                user_id = obtener_usuario_por_email(email)
+                                if user_id:
+                                    st.session_state.id_usuario = user_id
+                                    st.session_state.mostrar_login = False
+                                    st.rerun()
+                                else:
+                                    st.error("Usuario no encontrado")
+                                    st.button("📝 ¿Quieres registrarte?", key="register_redirect")
+                else:
+                    # Botones de acción
+                    st.markdown("<div style='padding: 20px;'></div>", unsafe_allow_html=True)
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        if st.button("🔑 Iniciar Sesión", use_container_width=True):
+                            st.session_state.mostrar_login = True
+                            st.session_state.mostrar_registro = False
+                    with col2:
+                        if st.button("📝 Registrarse", use_container_width=True):
+                            st.session_state.mostrar_registro = True
+                            st.session_state.mostrar_login = False
+            else:
+                # Contenedor de bienvenida para usuarios logueados
+                st.markdown("""
+                <div style="background: #1E1E1E; padding: 25px; border-radius: 15px; height: 100%;">
+                    <h3 style="color: #FF4B4B; margin-bottom: 15px;">✨ ¡Bienvenido de nuevo!</h3>
+                    <div style="color: white;">
+                        <p style="margin-bottom: 20px;">¿Qué te gustaría hacer hoy?</p>
+                        <ul style="list-style-type: none; padding: 0;">
+                            <li style="margin: 15px 0;">⭐ Actualiza tus preferencias de viaje</li>
+                            <li style="margin: 15px 0;">🎯 Descubre nuevos destinos recomendados</li>
+                            <li style="margin: 15px 0;">📍 Planifica tu próxima aventura</li>
+                            <li style="margin: 15px 0;">🌍 Explora destinos únicos</li>
+                        </ul>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
 
 # Función para obtener datos del usuario y guardarlos en la base de datos
 def obtener_datos_usuario():
