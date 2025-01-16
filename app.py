@@ -7,6 +7,11 @@ from datetime import datetime
 import requests
 from PIL import Image
 from io import BytesIO
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image as RLImage
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+import pdfkit
 
 # Configuración de la página y eliminación del mensaje de Streamlit
 st.set_page_config(
@@ -673,6 +678,30 @@ def mostrar_itinerario():
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
+
+                # Agregar botón de descarga
+                st.markdown("""
+                <div style="background: #1E1E1E; padding: 20px; border-radius: 15px; margin-top: 20px; text-align: center;">
+                    <h4 style="color: #FF4B4B; margin-bottom: 15px;">📥 Descarga tu Itinerario</h4>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                col1, col2, col3 = st.columns([1,2,1])
+                with col2:
+                    if st.button("📄 Descargar PDF", use_container_width=True):
+                        pdf_buffer = generar_pdf_itinerario(
+                            destino,
+                            resultado['actividades'],
+                            resultado.get('clima_html')
+                        )
+                        
+                        st.download_button(
+                            label="📥 Guardar Itinerario",
+                            data=pdf_buffer,
+                            file_name=f"itinerario_{destino.lower().replace(' ', '_')}.pdf",
+                            mime="application/pdf",
+                            use_container_width=True
+                        )
             else:
                 st.error("No se pudo generar el itinerario. Por favor, intenta de nuevo.")
 
@@ -810,4 +839,60 @@ def main():
 # Ejecutamos la aplicación
 if __name__ == "__main__":
     main()
+
+def generar_pdf_itinerario(destino, actividades, clima_html=None):
+    """Genera un PDF con el itinerario"""
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+    story = []
+    styles = getSampleStyleSheet()
+    
+    # Estilo personalizado para títulos
+    titulo_style = ParagraphStyle(
+        'CustomTitle',
+        parent=styles['Heading1'],
+        fontSize=24,
+        textColor=colors.HexColor('#FF4B4B'),
+        spaceAfter=30
+    )
+    
+    # Título del itinerario
+    story.append(Paragraph(f"Tu Itinerario en {destino}", titulo_style))
+    story.append(Spacer(1, 20))
+    
+    # Si hay información del clima, agregarla
+    if clima_html:
+        story.append(Paragraph("Pronóstico del Tiempo", styles['Heading2']))
+        story.append(Spacer(1, 10))
+        # Convertir el HTML del clima a texto plano
+        clima_texto = BeautifulSoup(clima_html, 'html.parser').get_text()
+        story.append(Paragraph(clima_texto, styles['Normal']))
+        story.append(Spacer(1, 20))
+    
+    # Agregar cada actividad
+    for i, act in enumerate(actividades, 1):
+        # Título de la actividad
+        story.append(Paragraph(f"Día {i}: {act['nombre']}", styles['Heading2']))
+        story.append(Spacer(1, 10))
+        
+        # Descripción
+        story.append(Paragraph(act.get('DESCRIPCION', act.get('descripcion', '')), styles['Normal']))
+        story.append(Spacer(1, 10))
+        
+        # Detalles
+        detalles = [
+            f"Duración: {act.get('DURACION', act.get('duracion', 'No especificada'))}",
+            f"Mejor momento: {act.get('MEJOR_EPOCA', act.get('mejor_epoca', 'No especificado'))}",
+            f"Más información: {act.get('LINK', act.get('link', 'No disponible'))}"
+        ]
+        
+        for detalle in detalles:
+            story.append(Paragraph(detalle, styles['Normal']))
+        
+        story.append(Spacer(1, 20))
+    
+    # Generar el PDF
+    doc.build(story)
+    buffer.seek(0)
+    return buffer
 
