@@ -132,7 +132,7 @@ def pagina_inicio():
     mostrar_logo()
     st.title("¡Bienvenido a TuGuía! 🌎")
     
-    # Si el usuario ya está logueado, mostrar solo la bienvenida
+    # Si el usuario ya está logueado, mostrar solo la bienvenida básica
     if st.session_state.id_usuario:
         col1, col2 = st.columns(2)
         with col1:
@@ -152,7 +152,7 @@ def pagina_inicio():
             """)
         return
 
-    # Solo mostrar el contenido de bienvenida si no se está mostrando el login
+    # Si no está logueado, mostrar el contenido completo
     if not st.session_state.get('mostrar_login', False):
         col1, col2 = st.columns(2)
         
@@ -203,20 +203,22 @@ def pagina_inicio():
 
     # Mostrar formulario de login si se presionó el botón
     if st.session_state.get('mostrar_login', False):
-        with st.container():
+        col1, col2, col3 = st.columns([1,2,1])
+        with col2:
             email = st.text_input("📧 Email", placeholder="tucorreo@ejemplo.com")
-            col1, col2, col3 = st.columns([1,1,1])
-            with col2:
-                if st.button("🚀 Acceder"):
-                    if email:
-                        user_id = obtener_usuario_por_email(email)
-                        if user_id:
-                            st.session_state.id_usuario = user_id
-                            st.success("¡Inicio de sesión exitoso! 🎉")
+            if st.button("🚀 ¡Comenzar la Aventura!", key="login_button"):
+                if email:
+                    user_id = obtener_usuario_por_email(email)
+                    if user_id:
+                        st.session_state.id_usuario = user_id
+                        st.session_state.mostrar_login = False
+                        st.rerun()
+                    else:
+                        st.error("Usuario no encontrado. ¿Quieres registrarte?")
+                        if st.button("📝 Registrarme ahora"):
                             st.session_state.mostrar_login = False
+                            st.session_state.mostrar_registro = True
                             st.rerun()
-                        else:
-                            st.error("Usuario no encontrado")
 
 # Función para obtener datos del usuario y guardarlos en la base de datos
 def obtener_datos_usuario():
