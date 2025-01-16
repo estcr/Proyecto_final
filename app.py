@@ -132,107 +132,75 @@ def pagina_inicio():
     mostrar_logo()
     st.title("¡Bienvenido a TuGuía! 🌎")
     
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.markdown("""
-        ### 🎯 Tu Destino, Tu Aventura
-        Descubre lugares increíbles basados en tus preferencias personales.
-        Planifica tu próximo viaje con recomendaciones personalizadas y
-        consejos de expertos.
-        """)
+    # Solo mostrar el contenido de bienvenida si no se está mostrando el login
+    if not st.session_state.get('mostrar_login', False):
+        col1, col2 = st.columns(2)
         
-        st.markdown("""
-        ### ✨ Características
-        - 🎯 Recomendaciones personalizadas
-        - 🗺️ Planificación de itinerarios
-        - 🌟 Destinos únicos
-        - 📅 Organización de viajes
-        """)
-    
-    with col2:
-        st.markdown("""
-        ### 🚀 Comienza Tu Viaje
-        1. Regístrate o inicia sesión
-        2. Completa tus preferencias
-        3. Obtén recomendaciones personalizadas
-        4. ¡Planifica tu aventura!
-        """)
-    
-    # Botones de acción centrados
-    st.markdown("<br>", unsafe_allow_html=True)
-    col1, col2, col3 = st.columns([1,2,1])
-    with col2:
-        st.markdown("""
-        <div style="text-align: center; padding: 20px;">
-            <h2 style="color: #FF4B4B;">¿Listo para empezar? 🚀</h2>
-        </div>
-        """, unsafe_allow_html=True)
+        with col1:
+            st.markdown("""
+            ### 🎯 Tu Destino, Tu Aventura
+            Descubre lugares increíbles basados en tus preferencias personales.
+            Planifica tu próximo viaje con recomendaciones personalizadas y
+            consejos de expertos.
+            """)
+            
+            st.markdown("""
+            ### ✨ Características
+            - 🎯 Recomendaciones personalizadas
+            - 🗺️ Planificación de itinerarios
+            - 🌟 Destinos únicos
+            - 📅 Organización de viajes
+            """)
         
-        col_btn1, col_btn2 = st.columns(2)
-        with col_btn1:
-            if st.button("🔑 Iniciar Sesión", use_container_width=True):
-                st.session_state.mostrar_login = True
-                st.session_state.mostrar_registro = False
-        with col_btn2:
-            if st.button("📝 Registrarse", use_container_width=True):
-                st.session_state.mostrar_registro = True
-                st.session_state.mostrar_login = False
+        with col2:
+            st.markdown("""
+            ### 🚀 Comienza Tu Viaje
+            1. Regístrate o inicia sesión
+            2. Completa tus preferencias
+            3. Obtén recomendaciones personalizadas
+            4. ¡Planifica tu aventura!
+            """)
+        
+        # Botones de acción centrados
+        st.markdown("<br>", unsafe_allow_html=True)
+        col1, col2, col3 = st.columns([1,2,1])
+        with col2:
+            st.markdown("""
+            <div style="text-align: center; padding: 20px;">
+                <h2 style="color: #FF4B4B;">¿Listo para empezar? 🚀</h2>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            col_btn1, col_btn2 = st.columns(2)
+            with col_btn1:
+                if st.button("🔑 Iniciar Sesión", use_container_width=True):
+                    st.session_state.mostrar_login = True
+                    st.session_state.mostrar_registro = False
+            with col_btn2:
+                if st.button("📝 Registrarse", use_container_width=True):
+                    st.session_state.mostrar_registro = True
+                    st.session_state.mostrar_login = False
 
-        # Mostrar formulario de login si se presionó el botón
-        if st.session_state.get('mostrar_login', False):
-            with st.container():
-                st.markdown("""
-                <div style="background: #1E1E1E; padding: 2rem; border-radius: 20px; 
-                    box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin: 2rem 0;">
-                    <h3 style="color: #FF4B4B; text-align: center;">Iniciar Sesión</h3>
-                </div>
-                """, unsafe_allow_html=True)
-                email = st.text_input("📧 Email", placeholder="tucorreo@ejemplo.com")
-                if st.button("🚀 Acceder", use_container_width=True):
-                    if email:
-                        user_id = obtener_usuario_por_email(email)
-                        if user_id:
-                            st.session_state.id_usuario = user_id
-                            st.success("¡Inicio de sesión exitoso! 🎉")
-                            st.session_state.mostrar_login = False
-                            st.rerun()
-                        else:
-                            st.error("Usuario no encontrado 😕")
+    # Mostrar formulario de login si se presionó el botón
+    if st.session_state.get('mostrar_login', False):
+        with st.container():
+            st.markdown("""
+            <div style="background: #1E1E1E; padding: 2rem; border-radius: 20px; 
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin: 2rem 0;">
+                <h3 style="color: #FF4B4B; text-align: center;">Iniciar Sesión</h3>
+            </div>
+            """, unsafe_allow_html=True)
+            email = st.text_input("📧 Email", placeholder="tucorreo@ejemplo.com")
+            if st.button("🚀 Acceder", use_container_width=True):
+                if email:
+                    user_id = obtener_usuario_por_email(email)
+                    if user_id:
+                        st.session_state.id_usuario = user_id
+                        st.success("¡Inicio de sesión exitoso! 🎉")
+                        st.session_state.mostrar_login = False
+                        st.rerun()
                     else:
-                        st.warning("Por favor, ingresa tu email 📧")
-
-        # Mostrar formulario de registro si se presionó el botón
-        if st.session_state.get('mostrar_registro', False):
-            with st.container():
-                st.markdown("""
-                <div style="background: #1E1E1E; padding: 2rem; border-radius: 20px; 
-                    box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin: 2rem 0;">
-                    <h3 style="color: #FF4B4B; text-align: center;">Registro de Usuario</h3>
-                </div>
-                """, unsafe_allow_html=True)
-                name = st.text_input("👤 Nombre", placeholder="Tu nombre")
-                email = st.text_input("📧 Email", placeholder="tucorreo@ejemplo.com")
-                travel_style = st.selectbox("🎒 Estilo de viaje", 
-                    ["solo", "amigos", "pareja", "trabajo"],
-                    format_func=lambda x: {
-                        "solo": "Viajero solitario 🚶",
-                        "amigos": "Con amigos 👥",
-                        "pareja": "En pareja 💑",
-                        "trabajo": "Viaje de trabajo 💼"
-                    }[x]
-                )
-                
-                if st.button("🚀 Registrarme", use_container_width=True):
-                    if name and email:
-                        registration_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                        if f.insertar_usuario(name, email, travel_style, registration_date):
-                            st.success("¡Registro exitoso! 🎉")
-                            st.balloons()
-                            st.session_state.mostrar_registro = False
-                            st.rerun()
-                    else:
-                        st.warning("Por favor, completa todos los campos 📝")
+                        st.error("Usuario no encontrado")
 
 # Función para obtener datos del usuario y guardarlos en la base de datos
 def obtener_datos_usuario():

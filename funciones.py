@@ -84,6 +84,7 @@ def procesar_clima(info_clima, fecha_inicio, fecha_fin):
     dias_procesados = 0
     
     while fecha_actual <= fecha_fin and dias_procesados < 5:
+        encontrado = False
         for prediccion in info_clima['list']:
             pred_fecha = datetime.fromtimestamp(prediccion['dt']).strftime('%Y-%m-%d')
             if pred_fecha == fecha_actual.strftime('%Y-%m-%d'):
@@ -99,7 +100,25 @@ def procesar_clima(info_clima, fecha_inicio, fecha_fin):
                     <div style="color: white;">{temp}°C</div>
                     <div style="color: #ccc; font-size: 0.8em;">{desc}</div>
                 </div>'''
+                encontrado = True
                 break
+        
+        if not encontrado:
+            # Si no hay datos para este día, buscar la predicción más cercana
+            ultima_prediccion = info_clima['list'][-1]
+            desc_original = ultima_prediccion['weather'][0]['description']
+            temp = round(ultima_prediccion['main']['temp'])
+            desc = traducciones.get(desc_original, desc_original)
+            icono = ultima_prediccion['weather'][0]['icon']
+            
+            html += f'''
+            <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px; text-align: center;">
+                <div style="color: white; font-weight: bold;">{fecha_actual.strftime('%d/%m/%Y')}</div>
+                <img src="http://openweathermap.org/img/w/{icono}.png" style="width: 50px; height: 50px;">
+                <div style="color: white;">{temp}°C</div>
+                <div style="color: #ccc; font-size: 0.8em;">{desc}</div>
+            </div>'''
+            
         fecha_actual += timedelta(days=1)
         dias_procesados += 1
     
