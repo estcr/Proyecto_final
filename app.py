@@ -516,30 +516,30 @@ def mostrar_itinerario():
                         <div style="padding: 25px;">
                             <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 20px;">
                                 <div>
-                                    <img src="{act['imagen_url']}" 
+                                    <img src="{act.get('imagen_url', 'https://via.placeholder.com/400x300?text=Imagen+no+disponible')}" 
                                         style="width: 100%; height: 250px; object-fit: cover; border-radius: 10px;"
                                         onerror="this.onerror=null; this.src='https://via.placeholder.com/400x300?text=Imagen+no+disponible';">
                                 </div>
                                 <div>
                                     <div style="color: #333; line-height: 1.6; font-size: 16px; 
                                         background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-                                        {act['descripcion']}
+                                        {act.get('DESCRIPCION', act.get('descripcion', 'No hay descripción disponible'))}
                                     </div>
                                     <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
                                         <div style="background: #FFE5E5; color: #FF4B4B; padding: 8px 15px; 
                                             border-radius: 20px; font-size: 14px;">
-                                            ⏱️ {act['duracion']}
+                                            ⏱️ {act.get('DURACION', act.get('duracion', 'Duración no especificada'))}
                                         </div>
                                         <div style="background: #f0f0f0; color: #333; padding: 8px 15px; 
                                             border-radius: 20px; font-size: 14px;">
-                                            🗓️ {act['mejor_epoca']}
+                                            🗓️ {act.get('MEJOR_EPOCA', act.get('mejor_epoca', 'Época no especificada'))}
                                         </div>
                                         <div style="background: #FFE5E5; color: #FF4B4B; padding: 8px 15px; 
                                             border-radius: 20px; font-size: 14px;">
-                                            ⭐ Score: {act['score']:.2f}
+                                            ⭐ Score: {act.get('score', 0.0):.2f}
                                         </div>
                                     </div>
-                                    <a href="{act['link']}" target="_blank" style="text-decoration: none;">
+                                    <a href="{act.get('LINK', act.get('link', '#'))}" target="_blank" style="text-decoration: none;">
                                         <div style="background: #FF4B4B; color: white; padding: 12px 20px;
                                             border-radius: 10px; display: inline-block; transition: all 0.3s ease;">
                                             🔗 Ver más detalles
