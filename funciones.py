@@ -79,7 +79,7 @@ def procesar_clima(info_clima, fecha_inicio, fecha_fin):
     fecha_actual = fecha_inicio
     dias_totales = (fecha_fin - fecha_inicio).days + 1
     
-    # Procesar solo los primeros 5 días (limitación de la API gratuita)
+    # Procesar días
     dias_procesados = 0
     while fecha_actual <= fecha_fin and dias_procesados < 5:
         fecha_str = fecha_actual.strftime('%Y-%m-%d')
@@ -95,31 +95,32 @@ def procesar_clima(info_clima, fecha_inicio, fecha_fin):
                 break
         fecha_actual += timedelta(days=1)
         dias_procesados += 1
-    
-    # Generar HTML para cada día
-    html_dias = ""
+
+    # Construir el HTML
+    tarjetas_clima = []
     for fecha, datos in dias_clima.items():
         fecha_formato = datetime.strptime(fecha, '%Y-%m-%d').strftime('%d/%m/%Y')
-        html_dias += f"""
-        <div class="clima-dia" style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px; text-align: center;">
+        tarjeta = f"""
+        <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px; text-align: center; margin: 5px;">
             <div style="color: white; font-weight: bold;">{fecha_formato}</div>
-            <img src="http://openweathermap.org/img/w/{datos['icono']}.png" 
-                 style="width: 50px; height: 50px;">
+            <img src="http://openweathermap.org/img/w/{datos['icono']}.png" style="width: 50px; height: 50px;">
             <div style="color: white;">{datos['temp']}°C</div>
             <div style="color: #ccc; font-size: 0.8em;">{datos['descripcion']}</div>
         </div>"""
-    
-    # Retornar el HTML completo en una sola estructura
-    return f"""
-    <div class="clima-container" style="background: #2E2E2E; padding: 20px; border-radius: 15px; margin-bottom: 20px;">
+        tarjetas_clima.append(tarjeta)
+
+    contenedor_clima = f"""
+    <div style="background: #2E2E2E; padding: 20px; border-radius: 15px; margin-bottom: 20px;">
         <h4 style="color: white; text-align: center; margin-bottom: 15px;">
             🌤️ Pronóstico del tiempo para tu viaje
             {f'<span style="display: block; font-size: 0.8em; color: #999; margin-top: 5px;">* Solo disponible para los próximos 15 días</span>' if dias_totales > 5 else ''}
         </h4>
-        <div class="clima-dias" style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
-            {html_dias}
+        <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+            {''.join(tarjetas_clima)}
         </div>
     </div>"""
+
+    return contenedor_clima
 
 def generar_itinerario(destino, user_id, fecha_inicio=None, fecha_fin=None, incluir_clima=False):
     """Genera un itinerario detallado para un destino específico"""
