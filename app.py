@@ -223,34 +223,18 @@ def pagina_inicio():
                                     st.session_state.mostrar_login = False
                                     st.session_state.mostrar_registro = True
                                     st.rerun()
-                    else:
-                        # Botones de acción
-                        st.markdown("<div style='padding: 20px;'></div>", unsafe_allow_html=True)
-                        col1, col2 = st.columns(2)
-                        with col1:
-                            if st.button("🔑 Iniciar Sesión", use_container_width=True):
-                                st.session_state.mostrar_login = True
-                                st.session_state.mostrar_registro = False
-                        with col2:
-                            if st.button("📝 Registrarse", use_container_width=True):
-                                st.session_state.mostrar_registro = True
-                                st.session_state.mostrar_login = False
             else:
-                # Contenedor de bienvenida para usuarios logueados
-                st.markdown("""
-                <div style="background: #1E1E1E; padding: 25px; border-radius: 15px; height: 100%;">
-                    <h3 style="color: #FF4B4B; margin-bottom: 15px;">✨ ¡Bienvenido de nuevo!</h3>
-                    <div style="color: white;">
-                        <p style="margin-bottom: 20px;">¿Qué te gustaría hacer hoy?</p>
-                        <ul style="list-style-type: none; padding: 0;">
-                            <li style="margin: 15px 0;">⭐ Actualiza tus preferencias de viaje</li>
-                            <li style="margin: 15px 0;">🎯 Descubre nuevos destinos recomendados</li>
-                            <li style="margin: 15px 0;">📍 Planifica tu próxima aventura</li>
-                            <li style="margin: 15px 0;">🌍 Explora destinos únicos</li>
-                        </ul>
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
+                # Botones de acción
+                st.markdown("<div style='padding: 20px;'></div>", unsafe_allow_html=True)
+                col1, col2 = st.columns(2)
+                with col1:
+                    if st.button("🔑 Iniciar Sesión", use_container_width=True):
+                        st.session_state.mostrar_login = True
+                        st.session_state.mostrar_registro = False
+                with col2:
+                    if st.button("📝 Registrarse", use_container_width=True):
+                        st.session_state.mostrar_registro = True
+                        st.session_state.mostrar_login = False
 
 # Función principal
 def main():
@@ -300,11 +284,11 @@ def main():
     if st.session_state.pagina_actual == "🏠 Inicio":
         pagina_inicio()
     elif st.session_state.pagina_actual == "⭐ Preferencias":
-        interfaz_preferencias()
+        f.interfaz_preferencias()
     elif st.session_state.pagina_actual == "🎯 Lugares Recomendados":
-        interfaz_recomendaciones()
+        f.interfaz_recomendaciones()
     elif st.session_state.pagina_actual == "📍 Planifica tus Actividades":
-        mostrar_itinerario()
+        f.mostrar_itinerario()
 
 # Ejecutamos la aplicación
 if __name__ == "__main__":
