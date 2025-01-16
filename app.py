@@ -132,6 +132,26 @@ def pagina_inicio():
     mostrar_logo()
     st.title("¡Bienvenido a TuGuía! 🌎")
     
+    # Si el usuario ya está logueado, mostrar solo la bienvenida
+    if st.session_state.id_usuario:
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown("""
+            ### 🎯 Tu Destino, Tu Aventura
+            Descubre lugares increíbles basados en tus preferencias personales.
+            Planifica tu próximo viaje con recomendaciones personalizadas y
+            consejos de expertos.
+            """)
+        with col2:
+            st.markdown("""
+            ### ✨ Características
+            - 🎯 Recomendaciones personalizadas
+            - 🗺️ Planificación de itinerarios
+            - 🌟 Destinos únicos
+            - 📅 Organización de viajes
+            """)
+        return
+
     # Solo mostrar el contenido de bienvenida si no se está mostrando el login
     if not st.session_state.get('mostrar_login', False):
         col1, col2 = st.columns(2)
@@ -184,23 +204,19 @@ def pagina_inicio():
     # Mostrar formulario de login si se presionó el botón
     if st.session_state.get('mostrar_login', False):
         with st.container():
-            st.markdown("""
-            <div style="background: #1E1E1E; padding: 2rem; border-radius: 20px; 
-                box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin: 2rem 0;">
-                <h3 style="color: #FF4B4B; text-align: center;">Iniciar Sesión</h3>
-            </div>
-            """, unsafe_allow_html=True)
             email = st.text_input("📧 Email", placeholder="tucorreo@ejemplo.com")
-            if st.button("🚀 Acceder", use_container_width=True):
-                if email:
-                    user_id = obtener_usuario_por_email(email)
-                    if user_id:
-                        st.session_state.id_usuario = user_id
-                        st.success("¡Inicio de sesión exitoso! 🎉")
-                        st.session_state.mostrar_login = False
-                        st.rerun()
-                    else:
-                        st.error("Usuario no encontrado")
+            col1, col2, col3 = st.columns([1,1,1])
+            with col2:
+                if st.button("🚀 Acceder"):
+                    if email:
+                        user_id = obtener_usuario_por_email(email)
+                        if user_id:
+                            st.session_state.id_usuario = user_id
+                            st.success("¡Inicio de sesión exitoso! 🎉")
+                            st.session_state.mostrar_login = False
+                            st.rerun()
+                        else:
+                            st.error("Usuario no encontrado")
 
 # Función para obtener datos del usuario y guardarlos en la base de datos
 def obtener_datos_usuario():
