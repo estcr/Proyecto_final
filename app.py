@@ -570,20 +570,25 @@ def mostrar_itinerario():
         label_visibility="collapsed"
     )
     
-    # Agregar selector de fechas
-    st.markdown("""
-    <div style="background: #1E1E1E; padding: 20px; border-radius: 15px; margin: 20px 0;">
-        <h4 style="color: #FF4B4B; margin-bottom: 15px;">📅 Fechas del Viaje</h4>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    incluir_clima = st.checkbox("🌤️ Incluir información del clima (disponible solo para viajes en los próximos 15 días)")
-    
-    col1, col2 = st.columns(2)
-    with col1:
-        fecha_inicio = st.date_input("Fecha de inicio", min_value=datetime.now().date())
-    with col2:
-        fecha_fin = st.date_input("Fecha de fin", min_value=fecha_inicio)
+    # Contenedor de fechas más compacto
+    col_main1, col_main2, col_main3 = st.columns([1,2,1])
+    with col_main2:
+        st.markdown("""
+        <div style="background: #1E1E1E; padding: 20px; border-radius: 15px; margin: 20px 0; max-width: 600px;">
+            <h4 style="color: #FF4B4B; margin-bottom: 15px; text-align: center;">📅 Fechas del Viaje</h4>
+            <div style="margin-bottom: 10px;">
+                <label style="color: white;">🌤️ Incluir información del clima</label>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        incluir_clima = st.checkbox("", value=False, label_visibility="collapsed")
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            fecha_inicio = st.date_input("Fecha de inicio", min_value=datetime.now().date())
+        with col2:
+            fecha_fin = st.date_input("Fecha de fin", min_value=fecha_inicio)
     
     # Validar fechas y mostrar mensajes
     dias_hasta_viaje = (fecha_inicio - datetime.now().date()).days
@@ -679,29 +684,29 @@ def mostrar_itinerario():
                 </div>
                 """, unsafe_allow_html=True)
 
-                # Agregar botón de descarga
-                st.markdown("""
-                <div style="background: #1E1E1E; padding: 20px; border-radius: 15px; margin-top: 20px; text-align: center;">
-                    <h4 style="color: #FF4B4B; margin-bottom: 15px;">📥 Descarga tu Itinerario</h4>
-                </div>
-                """, unsafe_allow_html=True)
-                
-                col1, col2, col3 = st.columns([1,2,1])
-                with col2:
-                    if st.button("📄 Descargar PDF", use_container_width=True):
-                        pdf_buffer = generar_pdf_itinerario(
-                            destino,
-                            resultado['actividades'],
-                            resultado.get('clima_html')
-                        )
-                        
-                        st.download_button(
-                            label="📥 Guardar Itinerario",
-                            data=pdf_buffer,
-                            file_name=f"itinerario_{destino.lower().replace(' ', '_')}.pdf",
-                            mime="application/pdf",
-                            use_container_width=True
-                        )
+                # Contenedor de descarga más compacto
+                col_pdf1, col_pdf2, col_pdf3 = st.columns([1,2,1])
+                with col_pdf2:
+                    st.markdown("""
+                    <div style="background: #1E1E1E; padding: 15px; border-radius: 15px; margin: 20px auto; max-width: 400px; text-align: center;">
+                        <h4 style="color: #FF4B4B; margin-bottom: 10px;">📥 Descarga tu Itinerario</h4>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    # Primero generamos el PDF
+                    pdf_buffer = generar_pdf_itinerario(
+                        destino,
+                        resultado['actividades'],
+                        resultado.get('clima_html')
+                    )
+                    
+                    # Botón de descarga
+                    st.download_button(
+                        label="📄 Descargar PDF",
+                        data=pdf_buffer,
+                        file_name=f"itinerario_{destino.lower().replace(' ', '_')}.pdf",
+                        mime="application/pdf"
+                    )
             else:
                 st.error("No se pudo generar el itinerario. Por favor, intenta de nuevo.")
 
@@ -842,57 +847,66 @@ if __name__ == "__main__":
 
 def generar_pdf_itinerario(destino, actividades, clima_html=None):
     """Genera un PDF con el itinerario"""
-    buffer = BytesIO()
-    doc = SimpleDocTemplate(buffer, pagesize=letter)
-    story = []
-    styles = getSampleStyleSheet()
-    
-    # Estilo personalizado para títulos
-    titulo_style = ParagraphStyle(
-        'CustomTitle',
-        parent=styles['Heading1'],
-        fontSize=24,
-        textColor=colors.HexColor('#FF4B4B'),
-        spaceAfter=30
-    )
-    
-    # Título del itinerario
-    story.append(Paragraph(f"Tu Itinerario en {destino}", titulo_style))
-    story.append(Spacer(1, 20))
-    
-    # Si hay información del clima, agregarla
-    if clima_html:
-        story.append(Paragraph("Pronóstico del Tiempo", styles['Heading2']))
-        story.append(Spacer(1, 10))
-        # Convertir el HTML del clima a texto plano
-        clima_texto = BeautifulSoup(clima_html, 'html.parser').get_text()
-        story.append(Paragraph(clima_texto, styles['Normal']))
+    try:
+        buffer = BytesIO()
+        doc = SimpleDocTemplate(
+            buffer,
+            pagesize=letter,
+            rightMargin=72,
+            leftMargin=72,
+            topMargin=72,
+            bottomMargin=72
+        )
+        
+        story = []
+        styles = getSampleStyleSheet()
+        
+        # Estilo personalizado para títulos
+        titulo_style = ParagraphStyle(
+            'CustomTitle',
+            parent=styles['Heading1'],
+            fontSize=24,
+            textColor=colors.HexColor('#FF4B4B'),
+            spaceAfter=30,
+            alignment=1  # Centrado
+        )
+        
+        # Título del itinerario
+        story.append(Paragraph(f"Tu Itinerario en {destino}", titulo_style))
         story.append(Spacer(1, 20))
-    
-    # Agregar cada actividad
-    for i, act in enumerate(actividades, 1):
-        # Título de la actividad
-        story.append(Paragraph(f"Día {i}: {act['nombre']}", styles['Heading2']))
-        story.append(Spacer(1, 10))
         
-        # Descripción
-        story.append(Paragraph(act.get('DESCRIPCION', act.get('descripcion', '')), styles['Normal']))
-        story.append(Spacer(1, 10))
+        # Agregar cada actividad
+        for i, act in enumerate(actividades, 1):
+            # Título de la actividad
+            story.append(Paragraph(
+                f"Día {i}: {act.get('nombre', 'Actividad sin nombre')}",
+                styles['Heading2']
+            ))
+            story.append(Spacer(1, 10))
+            
+            # Descripción
+            descripcion = act.get('DESCRIPCION', act.get('descripcion', 'No hay descripción disponible'))
+            story.append(Paragraph(descripcion, styles['Normal']))
+            story.append(Spacer(1, 10))
+            
+            # Detalles
+            detalles = [
+                f"🕒 Duración: {act.get('DURACION', act.get('duracion', 'No especificada'))}",
+                f"📅 Mejor momento: {act.get('MEJOR_EPOCA', act.get('mejor_epoca', 'No especificado'))}",
+                f"🔗 Más información: {act.get('LINK', act.get('link', 'No disponible'))}"
+            ]
+            
+            for detalle in detalles:
+                story.append(Paragraph(detalle, styles['Normal']))
+            
+            story.append(Spacer(1, 20))
         
-        # Detalles
-        detalles = [
-            f"Duración: {act.get('DURACION', act.get('duracion', 'No especificada'))}",
-            f"Mejor momento: {act.get('MEJOR_EPOCA', act.get('mejor_epoca', 'No especificado'))}",
-            f"Más información: {act.get('LINK', act.get('link', 'No disponible'))}"
-        ]
+        # Generar el PDF
+        doc.build(story)
+        buffer.seek(0)
+        return buffer.getvalue()
         
-        for detalle in detalles:
-            story.append(Paragraph(detalle, styles['Normal']))
-        
-        story.append(Spacer(1, 20))
-    
-    # Generar el PDF
-    doc.build(story)
-    buffer.seek(0)
-    return buffer
+    except Exception as e:
+        st.error(f"Error al generar el PDF: {str(e)}")
+        return None
 
