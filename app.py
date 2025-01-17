@@ -729,7 +729,7 @@ def main():
     # Barra lateral
     with st.sidebar:
         st.markdown("### 🌍 TuGuía")
-    if st.session_state.id_usuario:
+        if st.session_state.id_usuario:
             st.success("Sesión iniciada ✅")
             if st.button("Cerrar Sesión 👋"):
                 st.session_state.id_usuario = None
@@ -743,7 +743,7 @@ def main():
                 ["🏠 Inicio", "⭐ Preferencias", "🎯 Lugares Recomendados", "📍 Planifica tus Actividades"]
             )
             st.session_state.pagina_actual = pagina_actual
-    else:
+        else:
             # Mostrar solo Inicio en el sidebar cuando no hay sesión
             st.radio(
                 "Navegación",
@@ -755,23 +755,23 @@ def main():
         # Agregar información del autor al final del sidebar
         st.markdown("---")  # Línea separadora
         st.markdown("""
-        <div style="position: fixed; bottom: 20px; left: 20px; width: calc(100% - 40px);">
-            <p style="color: white; font-size: 0.9em; margin-bottom: 10px;">
-                Autor: Esteban Daniel Cristos Muzzupappa
-            </p>
-            <div style="display: flex; gap: 10px;">
-                <a href="https://www.linkedin.com/in/esteban-daniel-cristos-muzzupappa-37b72635/" target="_blank" 
-                   style="color: white; text-decoration: none; transition: opacity 0.3s ease;">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" 
-                         width="20" style="vertical-align: middle;"> LinkedIn
-                </a>
-                <a href="https://github.com/estcr" target="_blank" 
-                   style="color: white; text-decoration: none; transition: opacity 0.3s ease;">
-                    <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" 
-                         width="20" style="vertical-align: middle;"> GitHub
-                </a>
+            <div style="position: fixed; bottom: 20px; left: 20px; width: calc(100% - 40px);">
+                <p style="color: white; font-size: 0.9em; margin-bottom: 10px;">
+                    Autor: Esteban Daniel Cristos Muzzupappa
+                </p>
+                <div style="display: flex; gap: 10px;">
+                    <a href="https://www.linkedin.com/in/esteban-daniel-cristos-muzzupappa-37b72635/" target="_blank" 
+                       style="color: white; text-decoration: none; transition: opacity 0.3s ease;">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" 
+                             width="20" style="vertical-align: middle;"> LinkedIn
+                    </a>
+                    <a href="https://github.com/estcr" target="_blank" 
+                       style="color: white; text-decoration: none; transition: opacity 0.3s ease;">
+                        <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" 
+                             width="20" style="vertical-align: middle;"> GitHub
+                    </a>
+                </div>
             </div>
-        </div>
         """, unsafe_allow_html=True)
 
     # Mostrar la página correspondiente
