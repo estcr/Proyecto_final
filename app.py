@@ -271,11 +271,11 @@ def pagina_inicio():
 def obtener_datos_usuario():
     st.title("Registro de Usuario")
     
-        name = st.text_input("Nombre")
-        email = st.text_input("Email")
-        registration_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    name = st.text_input("Nombre")
+    email = st.text_input("Email")
+    registration_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     travel_style = st.selectbox("Estilo de viaje", ["solo", "amigos", "pareja", "trabajo"])
-
+    
     if st.button("Registrar"):
         if name and email:
             if f.insertar_usuario(name, email, travel_style, registration_date):
