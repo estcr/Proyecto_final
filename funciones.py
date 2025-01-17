@@ -12,7 +12,6 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image as RLImage
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
-import openai
 
 def obtener_preferencias_usuario(user_id):
     """Obtiene las preferencias del usuario desde la base de datos"""
@@ -449,15 +448,12 @@ def generar_recomendaciones_destinos(user_id):
         if not preferencias:
             return "No se encontraron preferencias para el usuario"
 
-        # Configurar OpenAI sin proxies
-        openai.api_key = st.secrets["api_keys"]["apigpt_key"]
-
-        # Formatear las preferencias para el prompt
-        preferencias_texto = "\n".join([f"- {pref[0]}: {pref[1]}/5" for pref in preferencias])
+        # Crear cliente OpenAI
+        client = OpenAI(api_key=st.secrets["api_keys"]["apigpt_key"])
 
         # Prompt para el GPT
         prompt = f"""Como experto en viajes, recomienda 5 destinos basados en estas preferencias:
-        {preferencias_texto}
+        {preferencias}
         
         Proporciona la información en este formato exacto, empezando cada destino con '---':
         ---
@@ -468,16 +464,14 @@ def generar_recomendaciones_destinos(user_id):
         Actividad destacada: [Nombre de la actividad] | [URL de la actividad]
         """
 
-        # Obtener respuesta del GPT usando la API directamente
-        response = openai.ChatCompletion.create(
+        # Obtener respuesta del GPT
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.7,
-            max_tokens=1500
+            messages=[{"role": "user", "content": prompt}]
         )
 
         return {
-            'recomendaciones_gpt': response.choices[0].message['content'].strip()
+            'recomendaciones_gpt': response.choices[0].message.content.strip()
         }
 
     except Exception as e:
