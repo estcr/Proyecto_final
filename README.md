@@ -2,18 +2,13 @@
 
 <div align="center">
   <img src="img/t-vectorizada.png" alt="TuGuIA Logo" width="200"/>
-  
-  [![Python](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/)
-  [![Streamlit](https://img.shields.io/badge/Streamlit-1.28-FF4B4B.svg)](https://streamlit.io/)
-  [![OpenAI](https://img.shields.io/badge/OpenAI-GPT-00A67E.svg)](https://openai.com/)
-  [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
 </div>
 
 ## 🌟 Bienvenido a TuGuIA
 
-Bienvenido a TuGuIA 🌍, tu asistente personal de viajes potenciado por Inteligencia Artificial. Este proyecto revoluciona la forma de planificar viajes combinando el poder de Chat GPT, bases de datos vectoriales y APIs globales para crear experiencias de viaje únicas y personalizadas.
+Bienvenido a **TuGuIA** 🌍, tu asistente personal de viajes potenciado por Inteligencia Artificial. Este proyecto revoluciona la forma de planificar viajes combinando el poder de Chat GPT, bases de datos vectoriales y APIs globales para crear experiencias de viaje únicas y personalizadas.
 
-**Explora la aplicación en vivo**: [TuGuIA Demo](https://tuguia-demo.streamlit.app/) 🔗
+**Explora la aplicación en vivo**: [TuGuIA Demo](https://tuguia.streamlit.app/#17a7a59d) 🔗
 
 ## 🎯 Propósito del Proyecto
 
@@ -62,4 +57,45 @@ TuGuIA nace con el objetivo de resolver los principales desafíos en la planific
 
 ## 📊 Arquitectura del Sistema
 
-### Base de Datos 
+### Base de Datos
+- **MySQL**: Almacena información de usuarios, preferencias y actividades.
+- **Pinecone**: Base de datos vectorial para búsqueda semántica de actividades.
+
+### APIs Utilizadas
+- **OpenAI API**: Generación de recomendaciones y procesamiento de lenguaje natural.
+- **Google Places API**: Obtención de imágenes y detalles de lugares.
+- **OpenWeatherMap API**: Pronóstico del clima para destinos específicos.
+
+### Flujo de Datos
+1. **Usuario**: Ingresa sus preferencias y destino.
+2. **Backend**: Procesa la información y consulta las APIs.
+3. **IA**: Genera recomendaciones y itinerarios personalizados.
+4. **Frontend**: Muestra los resultados y permite la descarga del itinerario en PDF.
+
+## 📈 Resultados Esperados
+- **Mejora en la planificación de viajes**: Usuarios pueden planificar viajes de manera eficiente y personalizada.
+- **Aumento de la satisfacción del usuario**: Recomendaciones precisas y útiles basadas en preferencias individuales.
+- **Optimización del tiempo**: Reducción significativa del tiempo dedicado a la planificación de viajes.
+
+## 🔮 Futuras Mejoras
+
+### 1. Expansión de la Base de Datos Vectorial
+- **Nuevas Actividades**: A partir de los destinos ingresados por los usuarios, se agregarán nuevas actividades a la base de datos vectorial para mejorar las recomendaciones futuras.
+- **Enriquecimiento de Datos**: Integración de más fuentes de datos para enriquecer la información de actividades y destinos.
+
+### 2. Soporte para Múltiples Usuarios
+- **Preferencias de Grupo**: Permitir que los usuarios ingresen preferencias de más personas para generar itinerarios que satisfagan a todos los miembros del grupo.
+- **Colaboración en Tiempo Real**: Funcionalidad para que varios usuarios puedan colaborar en la planificación de un viaje en tiempo real.
+
+### 3. Integración con Redes Sociales
+- **Compartir Itinerarios**: Posibilidad de compartir itinerarios y recomendaciones en redes sociales.
+- **Opiniones y Valoraciones**: Permitir a los usuarios dejar opiniones y valoraciones sobre las actividades y destinos visitados.
+
+## 👨‍💻 Autor
+
+**Esteban Daniel Cristos Muzzupappa**
+
+- [LinkedIn](https://www.linkedin.com/in/esteban-daniel-cristos-muzzupappa-37b72635/)
+- [GitHub](https://github.com/estcr)
+
+¡Gracias por visitar TuGuIA! Esperamos que disfrutes planificando tus próximas aventuras con nosotros. 🌍✈️
