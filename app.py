@@ -11,6 +11,7 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image as RLImage
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+import pdfkit
 
 # Configuración de la página y eliminación del mensaje de Streamlit
 st.set_page_config(
@@ -270,11 +271,11 @@ def pagina_inicio():
 def obtener_datos_usuario():
     st.title("Registro de Usuario")
     
-    name = st.text_input("Nombre")
-    email = st.text_input("Email")
-    registration_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        name = st.text_input("Nombre")
+        email = st.text_input("Email")
+        registration_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     travel_style = st.selectbox("Estilo de viaje", ["solo", "amigos", "pareja", "trabajo"])
-    
+
     if st.button("Registrar"):
         if name and email:
             if f.insertar_usuario(name, email, travel_style, registration_date):
@@ -312,8 +313,8 @@ def interfaz_preferencias():
         submitted = st.form_submit_button("Guardar mis preferencias")
     
     if submitted:
-        if "id_usuario" in st.session_state:
-            f.insertar_preferencias_viaje(st.session_state.id_usuario, actividades)
+            if "id_usuario" in st.session_state:
+                f.insertar_preferencias_viaje(st.session_state.id_usuario, actividades)
             st.success("¡Preferencias actualizadas! 🎯")
         else:
             st.warning("Inicia sesión para guardar tus preferencias 🔒")
@@ -516,18 +517,9 @@ def mostrar_itinerario():
         
         col1, col2 = st.columns(2)
         with col1:
-            fecha_inicio = st.date_input(
-                "Fecha de inicio",
-                min_value=datetime.now().date(),
-                value=datetime.now().date()
-            )
+            fecha_inicio = st.date_input("Fecha de inicio", min_value=datetime.now().date())
         with col2:
-            # Asegurarnos de que fecha_fin no sea anterior a fecha_inicio
-            fecha_fin = st.date_input(
-                "Fecha de fin",
-                min_value=fecha_inicio,
-                value=fecha_inicio
-            )
+            fecha_fin = st.date_input("Fecha de fin", min_value=fecha_inicio)
     
     # Validar fechas y mostrar mensajes
     dias_hasta_viaje = (fecha_inicio - datetime.now().date()).days
@@ -729,7 +721,7 @@ def main():
     # Barra lateral
     with st.sidebar:
         st.markdown("### 🌍 TuGuía")
-        if st.session_state.id_usuario:
+    if st.session_state.id_usuario:
             st.success("Sesión iniciada ✅")
             if st.button("Cerrar Sesión 👋"):
                 st.session_state.id_usuario = None
@@ -743,7 +735,7 @@ def main():
                 ["🏠 Inicio", "⭐ Preferencias", "🎯 Lugares Recomendados", "📍 Planifica tus Actividades"]
             )
             st.session_state.pagina_actual = pagina_actual
-        else:
+    else:
             # Mostrar solo Inicio en el sidebar cuando no hay sesión
             st.radio(
                 "Navegación",
@@ -755,23 +747,23 @@ def main():
         # Agregar información del autor al final del sidebar
         st.markdown("---")  # Línea separadora
         st.markdown("""
-            <div style="position: fixed; bottom: 20px; left: 20px; width: calc(100% - 40px);">
-                <p style="color: white; font-size: 0.9em; margin-bottom: 10px;">
-                    Autor: Esteban Daniel Cristos Muzzupappa
-                </p>
-                <div style="display: flex; gap: 10px;">
-                    <a href="https://www.linkedin.com/in/esteban-daniel-cristos-muzzupappa-37b72635/" target="_blank" 
-                       style="color: white; text-decoration: none; transition: opacity 0.3s ease;">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" 
-                             width="20" style="vertical-align: middle;"> LinkedIn
-                    </a>
-                    <a href="https://github.com/estcr" target="_blank" 
-                       style="color: white; text-decoration: none; transition: opacity 0.3s ease;">
-                        <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" 
-                             width="20" style="vertical-align: middle;"> GitHub
-                    </a>
-                </div>
+        <div style="position: fixed; bottom: 20px; left: 20px; width: calc(100% - 40px);">
+            <p style="color: white; font-size: 0.9em; margin-bottom: 10px;">
+                Autor: Esteban Daniel Cristos Muzzupappa
+            </p>
+            <div style="display: flex; gap: 10px;">
+                <a href="https://www.linkedin.com/in/esteban-daniel-cristos-muzzupappa-37b72635/" target="_blank" 
+                   style="color: white; text-decoration: none; transition: opacity 0.3s ease;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" 
+                         width="20" style="vertical-align: middle;"> LinkedIn
+                </a>
+                <a href="https://github.com/estcr" target="_blank" 
+                   style="color: white; text-decoration: none; transition: opacity 0.3s ease;">
+                    <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" 
+                         width="20" style="vertical-align: middle;"> GitHub
+                </a>
             </div>
+        </div>
         """, unsafe_allow_html=True)
 
     # Mostrar la página correspondiente

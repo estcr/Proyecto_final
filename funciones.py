@@ -7,9 +7,8 @@ import config as c
 import requests
 from datetime import datetime, timedelta
 from io import BytesIO
-from PIL import Image
 from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image as RLImage
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
 
@@ -192,8 +191,7 @@ def generar_itinerario(destino, user_id, fecha_inicio=None, fecha_fin=None, incl
         """
 
         # Crear cliente OpenAI
-        api_key = st.secrets["api_keys"]["apigpt_key"]
-        client = OpenAI(api_key=api_key)
+        client = OpenAI(api_key=st.secrets["api_keys"]["apigpt_key"])
 
         # Obtener respuesta del GPT
         response = client.chat.completions.create(
@@ -279,10 +277,8 @@ def calcular_score_actividad(tipo_actividad, preferencias):
 
 def vectorizar_actividades(texto):
     """Genera embeddings para las actividades"""
+    client = OpenAI(api_key=st.secrets["api_keys"]["apigpt_key"])
     try:
-        api_key = st.secrets["api_keys"]["apigpt_key"]
-        client = OpenAI(api_key=api_key)
-        
         response = client.embeddings.create(
             model="text-embedding-ada-002",
             input=texto
@@ -451,16 +447,12 @@ def generar_recomendaciones_destinos(user_id):
         if not preferencias:
             return "No se encontraron preferencias para el usuario"
 
-        # Crear cliente OpenAI con la API key
-        api_key = st.secrets["api_keys"]["apigpt_key"]
-        client = OpenAI(api_key=api_key)
-
-        # Formatear las preferencias para el prompt
-        preferencias_texto = "\n".join([f"- {pref[0]}: {pref[1]}/5" for pref in preferencias])
+        # Crear cliente OpenAI
+        client = OpenAI(api_key=st.secrets["api_keys"]["apigpt_key"])
 
         # Prompt para el GPT
         prompt = f"""Como experto en viajes, recomienda 5 destinos basados en estas preferencias:
-        {preferencias_texto}
+        {preferencias}
         
         Proporciona la información en este formato exacto, empezando cada destino con '---':
         ---
@@ -486,22 +478,22 @@ def generar_recomendaciones_destinos(user_id):
         return f"Error al generar recomendaciones: {str(e)}"
 
 def generar_pdf_itinerario(destino, actividades, clima_html=None):
-    """Genera un PDF con el itinerario incluyendo imágenes"""
+    """Genera un PDF con el itinerario"""
     try:
         buffer = BytesIO()
         doc = SimpleDocTemplate(
             buffer,
             pagesize=letter,
-            rightMargin=36,
-            leftMargin=36,
-            topMargin=36,
-            bottomMargin=36
+            rightMargin=72,
+            leftMargin=72,
+            topMargin=72,
+            bottomMargin=72
         )
         
         story = []
         styles = getSampleStyleSheet()
         
-        # Estilos personalizados
+        # Estilo personalizado para títulos
         titulo_style = ParagraphStyle(
             'CustomTitle',
             parent=styles['Heading1'],
@@ -511,165 +503,41 @@ def generar_pdf_itinerario(destino, actividades, clima_html=None):
             alignment=1  # Centrado
         )
         
-        subtitulo_style = ParagraphStyle(
-            'Subtitulo',
-            parent=styles['Heading2'],
-            fontSize=18,
-            textColor=colors.HexColor('#333333'),
-            spaceAfter=20,
-            spaceBefore=20
-        )
-        
-        texto_style = ParagraphStyle(
-            'TextoNormal',
-            parent=styles['Normal'],
-            fontSize=12,
-            leading=16,
-            textColor=colors.HexColor('#333333')
-        )
-        
-        detalle_style = ParagraphStyle(
-            'Detalle',
-            parent=styles['Normal'],
-            fontSize=10,
-            textColor=colors.HexColor('#666666'),
-            leftIndent=20
-        )
-        
-        # Logo y título
-        try:
-            logo_url = "https://raw.githubusercontent.com/estcr/Proyecto_final/main/img/t-vectorizada.png"
-            logo_response = requests.get(logo_url)
-            logo_img = BytesIO(logo_response.content)
-            logo = RLImage(logo_img, width=100, height=100)
-            story.append(logo)
-        except:
-            pass  # Si no se puede cargar el logo, continuamos sin él
-        
         # Título del itinerario
         story.append(Paragraph(f"Tu Itinerario en {destino}", titulo_style))
         story.append(Spacer(1, 20))
         
         # Agregar cada actividad
         for i, act in enumerate(actividades, 1):
-            # Contenedor de actividad con fondo gris claro
-            story.append(Paragraph(
-                f'<para backColor="#f8f9fa" borderPadding="20">',
-                texto_style
-            ))
-            
             # Título de la actividad
             story.append(Paragraph(
                 f"Día {i}: {act.get('nombre', 'Actividad sin nombre')}",
-                subtitulo_style
+                styles['Heading2']
             ))
-            
-            # Intentar agregar la imagen de la actividad
-            try:
-                img_url = act.get('imagen_url')
-                if img_url:
-                    img_response = requests.get(img_url)
-                    img_data = BytesIO(img_response.content)
-                    img = RLImage(img_data, width=400, height=200)
-                    story.append(img)
-            except:
-                pass  # Si no se puede cargar la imagen, continuamos sin ella
-            
             story.append(Spacer(1, 10))
             
             # Descripción
             descripcion = act.get('DESCRIPCION', act.get('descripcion', 'No hay descripción disponible'))
-            story.append(Paragraph(descripcion, texto_style))
+            story.append(Paragraph(descripcion, styles['Normal']))
             story.append(Spacer(1, 10))
             
-            # Detalles con iconos
+            # Detalles
             detalles = [
-                f"⏱️ Duración: {act.get('DURACION', act.get('duracion', 'No especificada'))}",
+                f"🕒 Duración: {act.get('DURACION', act.get('duracion', 'No especificada'))}",
                 f"📅 Mejor momento: {act.get('MEJOR_EPOCA', act.get('mejor_epoca', 'No especificado'))}",
                 f"🔗 Más información: {act.get('LINK', act.get('link', 'No disponible'))}"
             ]
             
             for detalle in detalles:
-                story.append(Paragraph(detalle, detalle_style))
+                story.append(Paragraph(detalle, styles['Normal']))
             
-            story.append(Paragraph('</para>', texto_style))
             story.append(Spacer(1, 20))
-        
-        # Agregar pie de página
-        story.append(Spacer(1, 30))
-        story.append(Paragraph(
-            f"Generado por TuGuIA - {datetime.now().strftime('%d/%m/%Y')}",
-            detalle_style
-        ))
         
         # Generar el PDF
         doc.build(story)
         buffer.seek(0)
         return buffer.getvalue()
-        
-    except Exception as e:
+
+        except Exception as e:
         st.error(f"Error al generar el PDF: {str(e)}")
         return None
-
-def mostrar_logo():
-    """Muestra el logo de la aplicación en el centro de la página"""
-    col1, col2, col3 = st.columns([1,2,1])
-    with col2:
-        try:
-            st.image("img/t-vectorizada.png", width=300)
-        except:
-            st.image("https://raw.githubusercontent.com/estcr/Proyecto_final/main/img/t-vectorizada.png", width=300)
-
-def login():
-    """Maneja el proceso de inicio de sesión de usuarios"""
-    st.title("Inicio de Sesión")
-    email = st.text_input("Email")
-    if st.button("Iniciar Sesión"):
-        user_id = obtener_usuario_por_email(email)
-        if user_id:
-            st.session_state.id_usuario = user_id
-            st.success("Inicio de sesión exitoso")
-        else:
-            st.error("Usuario no encontrado")
-
-def logout():
-    """Maneja el proceso de cierre de sesión"""
-    st.session_state.id_usuario = None
-    st.success("Sesión cerrada exitosamente")
-
-def obtener_usuario_por_email(email):
-    """Obtiene el ID del usuario basado en su email
-    
-    Args:
-        email (str): Email del usuario a buscar
-        
-    Returns:
-        int or None: ID del usuario si existe, None si no se encuentra
-    """
-    conn = c.conectar_bd()
-    try:
-        cursor = conn.cursor()
-        query = "SELECT user_id FROM users WHERE email = %s"
-        cursor.execute(query, (email,))
-        result = cursor.fetchone()
-        conn.close()
-        if result:
-            return result[0]
-        else:
-            return None
-    except Exception as e:
-        st.error(f"Error al obtener el usuario: {e}")
-        return None
-
-def mostrar_imagen_segura(url):
-    """Muestra una imagen de forma segura, con manejo de errores
-    
-    Args:
-        url (str): URL de la imagen a mostrar
-    """
-    try:
-        response = requests.get(url)
-        img = Image.open(BytesIO(response.content))
-        st.image(img, width=200)
-    except Exception as e:
-        st.warning("No se pudo cargar la imagen 🖼️")
