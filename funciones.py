@@ -448,9 +448,9 @@ def generar_recomendaciones_destinos(user_id):
         if not preferencias:
             return "No se encontraron preferencias para el usuario"
 
-        # Crear cliente OpenAI
-        client = OpenAI()
-        client.api_key = st.secrets["api_keys"]["apigpt_key"]
+        # Crear cliente OpenAI con la API key
+        api_key = st.secrets["api_keys"]["apigpt_key"]
+        client = OpenAI(api_key=api_key)
 
         # Formatear las preferencias para el prompt
         preferencias_texto = "\n".join([f"- {pref[0]}: {pref[1]}/5" for pref in preferencias])
