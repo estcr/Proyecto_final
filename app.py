@@ -345,8 +345,9 @@ def interfaz_preferencias():
     
     if submitted:
         if "id_usuario" in st.session_state:
-            f.insertar_preferencias_viaje(st.session_state.id_usuario, actividades)
-            st.success("¡Preferencias actualizadas! 🎯")
+            if f.insertar_preferencias_viaje(st.session_state.id_usuario, actividades):
+                st.success("¡Preferencias actualizadas! 🎯")
+                st.balloons()
         else:
             st.warning("Inicia sesión para guardar tus preferencias 🔒")
 

@@ -381,10 +381,11 @@ def insertar_preferencias_viaje(user_id, preferencias):
             cursor.execute(insert_query, (user_id, actividad, nivel))
         
         conn.commit()
-        st.success("Preferencias actualizadas exitosamente")
+        return True
     except Exception as e:
         conn.rollback()
         st.error(f"Error al actualizar preferencias: {e}")
+        return False
     finally:
         conn.close()
     
