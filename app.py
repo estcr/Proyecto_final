@@ -616,10 +616,10 @@ def mostrar_itinerario():
                 """, unsafe_allow_html=True)
 
                 # Contenedor de descarga más compacto
-                col_pdf1, col_pdf2, col_pdf3 = st.columns([1,2,1])
+                col_pdf1, col_pdf2, col_pdf3 = st.columns([1,1,1])
                 with col_pdf2:
                     st.markdown("""
-                    <div style="background: #1E1E1E; padding: 15px; border-radius: 15px; margin: 20px auto; max-width: 400px; text-align: center;">
+                    <div style="background: #1E1E1E; padding: 15px; border-radius: 15px; margin: 20px auto; text-align: center;">
                         <h4 style="color: #FF4B4B; margin-bottom: 10px;">📥 Descarga tu Itinerario</h4>
                     </div>
                     """, unsafe_allow_html=True)
@@ -631,13 +631,20 @@ def mostrar_itinerario():
                         resultado.get('clima_html')
                     )
                     
-                    # Botón de descarga
+                    # Botón de descarga centrado
+                    st.markdown("""
+                    <div style="display: flex; justify-content: center;">
+                    """, unsafe_allow_html=True)
+                    
                     st.download_button(
                         label="📄 Descargar PDF",
                         data=pdf_buffer,
                         file_name=f"itinerario_{destino.lower().replace(' ', '_')}.pdf",
-                        mime="application/pdf"
+                        mime="application/pdf",
+                        use_container_width=False  # Cambiado a False para que no ocupe todo el ancho
                     )
+                    
+                    st.markdown("</div>", unsafe_allow_html=True)
             else:
                 st.error("No se pudo generar el itinerario. Por favor, intenta de nuevo.")
 
