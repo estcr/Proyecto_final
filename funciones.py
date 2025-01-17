@@ -449,7 +449,8 @@ def generar_recomendaciones_destinos(user_id):
             return "No se encontraron preferencias para el usuario"
 
         # Crear cliente OpenAI
-        client = OpenAI(api_key=st.secrets["api_keys"]["apigpt_key"])
+        client = OpenAI()
+        client.api_key = st.secrets["api_keys"]["apigpt_key"]
 
         # Prompt para el GPT
         prompt = f"""Como experto en viajes, recomienda 5 destinos basados en estas preferencias:
