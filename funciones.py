@@ -192,7 +192,8 @@ def generar_itinerario(destino, user_id, fecha_inicio=None, fecha_fin=None, incl
         """
 
         # Crear cliente OpenAI
-        client = OpenAI(api_key=st.secrets["api_keys"]["apigpt_key"])
+        api_key = st.secrets["api_keys"]["apigpt_key"]
+        client = OpenAI(api_key=api_key)
 
         # Obtener respuesta del GPT
         response = client.chat.completions.create(
@@ -278,8 +279,10 @@ def calcular_score_actividad(tipo_actividad, preferencias):
 
 def vectorizar_actividades(texto):
     """Genera embeddings para las actividades"""
-    client = OpenAI(api_key=st.secrets["api_keys"]["apigpt_key"])
     try:
+        api_key = st.secrets["api_keys"]["apigpt_key"]
+        client = OpenAI(api_key=api_key)
+        
         response = client.embeddings.create(
             model="text-embedding-ada-002",
             input=texto
