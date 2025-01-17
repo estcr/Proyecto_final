@@ -448,14 +448,16 @@ def generar_recomendaciones_destinos(user_id):
         if not preferencias:
             return "No se encontraron preferencias para el usuario"
 
-        # Crear cliente OpenAI (versión actualizada)
-        client = OpenAI(
-            api_key=st.secrets["api_keys"]["apigpt_key"]
-        )
+        # Crear cliente OpenAI con la nueva sintaxis
+        api_key = st.secrets["api_keys"]["apigpt_key"]
+        client = OpenAI(api_key=api_key)
+
+        # Formatear las preferencias para el prompt
+        preferencias_texto = "\n".join([f"- {pref[0]}: {pref[1]}/5" for pref in preferencias])
 
         # Prompt para el GPT
         prompt = f"""Como experto en viajes, recomienda 5 destinos basados en estas preferencias:
-        {preferencias}
+        {preferencias_texto}
         
         Proporciona la información en este formato exacto, empezando cada destino con '---':
         ---
@@ -469,7 +471,9 @@ def generar_recomendaciones_destinos(user_id):
         # Obtener respuesta del GPT
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": prompt}]
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.7,
+            max_tokens=1500
         )
 
         return {
