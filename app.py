@@ -256,16 +256,47 @@ def pagina_inicio():
                     if st.button("🔑 Iniciar Sesión", use_container_width=True):
                         st.session_state.mostrar_login = True
                         st.session_state.mostrar_registro = False
+                        st.rerun()
                 with col2:
                     if st.button("📝 Registrarse", use_container_width=True):
                         st.session_state.mostrar_registro = True
                         st.session_state.mostrar_login = False
+                        st.rerun()
                 
                 st.markdown("""
                         </div>
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
+
+            if st.session_state.get('mostrar_registro', False):
+                st.markdown("""
+                <div style="background: #1E1E1E; padding: 25px; border-radius: 15px;">
+                    <h3 style="color: #FF4B4B; margin-bottom: 15px;">📝 Registro de Usuario</h3>
+                """, unsafe_allow_html=True)
+                
+                name = st.text_input("Nombre", key="register_name")
+                email = st.text_input("Email", key="register_email")
+                travel_style = st.selectbox(
+                    "Estilo de viaje",
+                    ["solo", "amigos", "pareja", "trabajo"],
+                    key="register_style"
+                )
+                
+                col1, col2, col3 = st.columns([1,2,1])
+                with col2:
+                    if st.button("🚀 ¡Registrarme!", key="register_button"):
+                        if name and email:
+                            registration_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                            if f.insertar_usuario(name, email, travel_style, registration_date):
+                                st.success("¡Registro exitoso! 🎉")
+                                st.balloons()
+                                st.session_state.mostrar_registro = False
+                                st.rerun()
+                        else:
+                            st.error("Por favor, completa todos los campos")
+                
+                st.markdown("</div>", unsafe_allow_html=True)
 
 # Función para obtener datos del usuario y guardarlos en la base de datos
 def obtener_datos_usuario():
