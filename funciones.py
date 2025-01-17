@@ -12,6 +12,7 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
 from reportlab.platypus.image import RLImage
+from PIL import Image
 
 def obtener_preferencias_usuario(user_id):
     """Obtiene las preferencias del usuario desde la base de datos"""
@@ -603,3 +604,66 @@ def generar_pdf_itinerario(destino, actividades, clima_html=None):
     except Exception as e:
         st.error(f"Error al generar el PDF: {str(e)}")
         return None
+
+def mostrar_logo():
+    """Muestra el logo de la aplicación en el centro de la página"""
+    col1, col2, col3 = st.columns([1,2,1])
+    with col2:
+        try:
+            st.image("img/t-vectorizada.png", width=300)
+        except:
+            st.image("https://raw.githubusercontent.com/estcr/Proyecto_final/main/img/t-vectorizada.png", width=300)
+
+def login():
+    """Maneja el proceso de inicio de sesión de usuarios"""
+    st.title("Inicio de Sesión")
+    email = st.text_input("Email")
+    if st.button("Iniciar Sesión"):
+        user_id = obtener_usuario_por_email(email)
+        if user_id:
+            st.session_state.id_usuario = user_id
+            st.success("Inicio de sesión exitoso")
+        else:
+            st.error("Usuario no encontrado")
+
+def logout():
+    """Maneja el proceso de cierre de sesión"""
+    st.session_state.id_usuario = None
+    st.success("Sesión cerrada exitosamente")
+
+def obtener_usuario_por_email(email):
+    """Obtiene el ID del usuario basado en su email
+    
+    Args:
+        email (str): Email del usuario a buscar
+        
+    Returns:
+        int or None: ID del usuario si existe, None si no se encuentra
+    """
+    conn = c.conectar_bd()
+    try:
+        cursor = conn.cursor()
+        query = "SELECT user_id FROM users WHERE email = %s"
+        cursor.execute(query, (email,))
+        result = cursor.fetchone()
+        conn.close()
+        if result:
+            return result[0]
+        else:
+            return None
+    except Exception as e:
+        st.error(f"Error al obtener el usuario: {e}")
+        return None
+
+def mostrar_imagen_segura(url):
+    """Muestra una imagen de forma segura, con manejo de errores
+    
+    Args:
+        url (str): URL de la imagen a mostrar
+    """
+    try:
+        response = requests.get(url)
+        img = Image.open(BytesIO(response.content))
+        st.image(img, width=200)
+    except Exception as e:
+        st.warning("No se pudo cargar la imagen 🖼️")
