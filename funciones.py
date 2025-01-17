@@ -11,6 +11,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
+from reportlab.platypus.image import RLImage
 
 def obtener_preferencias_usuario(user_id):
     """Obtiene las preferencias del usuario desde la base de datos"""
@@ -478,22 +479,22 @@ def generar_recomendaciones_destinos(user_id):
         return f"Error al generar recomendaciones: {str(e)}"
 
 def generar_pdf_itinerario(destino, actividades, clima_html=None):
-    """Genera un PDF con el itinerario"""
+    """Genera un PDF con el itinerario incluyendo imágenes"""
     try:
         buffer = BytesIO()
         doc = SimpleDocTemplate(
             buffer,
             pagesize=letter,
-            rightMargin=72,
-            leftMargin=72,
-            topMargin=72,
-            bottomMargin=72
+            rightMargin=36,
+            leftMargin=36,
+            topMargin=36,
+            bottomMargin=36
         )
         
         story = []
         styles = getSampleStyleSheet()
         
-        # Estilo personalizado para títulos
+        # Estilos personalizados
         titulo_style = ParagraphStyle(
             'CustomTitle',
             parent=styles['Heading1'],
@@ -503,35 +504,96 @@ def generar_pdf_itinerario(destino, actividades, clima_html=None):
             alignment=1  # Centrado
         )
         
+        subtitulo_style = ParagraphStyle(
+            'Subtitulo',
+            parent=styles['Heading2'],
+            fontSize=18,
+            textColor=colors.HexColor('#333333'),
+            spaceAfter=20,
+            spaceBefore=20
+        )
+        
+        texto_style = ParagraphStyle(
+            'TextoNormal',
+            parent=styles['Normal'],
+            fontSize=12,
+            leading=16,
+            textColor=colors.HexColor('#333333')
+        )
+        
+        detalle_style = ParagraphStyle(
+            'Detalle',
+            parent=styles['Normal'],
+            fontSize=10,
+            textColor=colors.HexColor('#666666'),
+            leftIndent=20
+        )
+        
+        # Logo y título
+        try:
+            logo_url = "https://raw.githubusercontent.com/estcr/Proyecto_final/main/img/t-vectorizada.png"
+            logo_response = requests.get(logo_url)
+            logo_img = BytesIO(logo_response.content)
+            logo = RLImage(logo_img, width=100, height=100)
+            story.append(logo)
+        except:
+            pass  # Si no se puede cargar el logo, continuamos sin él
+        
         # Título del itinerario
         story.append(Paragraph(f"Tu Itinerario en {destino}", titulo_style))
         story.append(Spacer(1, 20))
         
         # Agregar cada actividad
         for i, act in enumerate(actividades, 1):
+            # Contenedor de actividad con fondo gris claro
+            story.append(Paragraph(
+                f'<para backColor="#f8f9fa" borderPadding="20">',
+                texto_style
+            ))
+            
             # Título de la actividad
             story.append(Paragraph(
                 f"Día {i}: {act.get('nombre', 'Actividad sin nombre')}",
-                styles['Heading2']
+                subtitulo_style
             ))
+            
+            # Intentar agregar la imagen de la actividad
+            try:
+                img_url = act.get('imagen_url')
+                if img_url:
+                    img_response = requests.get(img_url)
+                    img_data = BytesIO(img_response.content)
+                    img = RLImage(img_data, width=400, height=200)
+                    story.append(img)
+            except:
+                pass  # Si no se puede cargar la imagen, continuamos sin ella
+            
             story.append(Spacer(1, 10))
             
             # Descripción
             descripcion = act.get('DESCRIPCION', act.get('descripcion', 'No hay descripción disponible'))
-            story.append(Paragraph(descripcion, styles['Normal']))
+            story.append(Paragraph(descripcion, texto_style))
             story.append(Spacer(1, 10))
             
-            # Detalles
+            # Detalles con iconos
             detalles = [
-                f"🕒 Duración: {act.get('DURACION', act.get('duracion', 'No especificada'))}",
+                f"⏱️ Duración: {act.get('DURACION', act.get('duracion', 'No especificada'))}",
                 f"📅 Mejor momento: {act.get('MEJOR_EPOCA', act.get('mejor_epoca', 'No especificado'))}",
                 f"🔗 Más información: {act.get('LINK', act.get('link', 'No disponible'))}"
             ]
             
             for detalle in detalles:
-                story.append(Paragraph(detalle, styles['Normal']))
+                story.append(Paragraph(detalle, detalle_style))
             
+            story.append(Paragraph('</para>', texto_style))
             story.append(Spacer(1, 20))
+        
+        # Agregar pie de página
+        story.append(Spacer(1, 30))
+        story.append(Paragraph(
+            f"Generado por TuGuIA - {datetime.now().strftime('%d/%m/%Y')}",
+            detalle_style
+        ))
         
         # Generar el PDF
         doc.build(story)
