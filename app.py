@@ -313,8 +313,8 @@ def interfaz_preferencias():
         submitted = st.form_submit_button("Guardar mis preferencias")
     
     if submitted:
-            if "id_usuario" in st.session_state:
-                f.insertar_preferencias_viaje(st.session_state.id_usuario, actividades)
+        if "id_usuario" in st.session_state:
+            f.insertar_preferencias_viaje(st.session_state.id_usuario, actividades)
             st.success("¡Preferencias actualizadas! 🎯")
         else:
             st.warning("Inicia sesión para guardar tus preferencias 🔒")
@@ -721,7 +721,7 @@ def main():
     # Barra lateral
     with st.sidebar:
         st.markdown("### 🌍 TuGuía")
-    if st.session_state.id_usuario:
+        if st.session_state.id_usuario:
             st.success("Sesión iniciada ✅")
             if st.button("Cerrar Sesión 👋"):
                 st.session_state.id_usuario = None
@@ -735,7 +735,7 @@ def main():
                 ["🏠 Inicio", "⭐ Preferencias", "🎯 Lugares Recomendados", "📍 Planifica tus Actividades"]
             )
             st.session_state.pagina_actual = pagina_actual
-    else:
+        else:
             # Mostrar solo Inicio en el sidebar cuando no hay sesión
             st.radio(
                 "Navegación",
