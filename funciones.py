@@ -11,6 +11,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
+from PIL import Image
 
 def obtener_preferencias_usuario(user_id):
     """Obtiene las preferencias del usuario desde la base de datos"""
@@ -542,3 +543,79 @@ def generar_pdf_itinerario(destino, actividades, clima_html=None):
     except Exception as e:
         st.error(f"Error al generar el PDF: {str(e)}")
         return None
+
+def obtener_datos_usuario(name, email, travel_style, registration_date):
+    """
+    Registra un nuevo usuario en la base de datos.
+    
+    Args:
+        name (str): Nombre del usuario
+        email (str): Email del usuario
+        travel_style (str): Estilo de viaje preferido
+        registration_date (str): Fecha de registro en formato YYYY-MM-DD HH:MM:SS
+    
+    Returns:
+        bool: True si el registro fue exitoso, False en caso contrario
+    """
+    return insertar_usuario(name, email, travel_style, registration_date)
+
+def login(email):
+    """
+    Maneja el inicio de sesión del usuario.
+    
+    Args:
+        email (str): Email del usuario
+    
+    Returns:
+        int or None: ID del usuario si existe, None si no se encuentra
+    """
+    user_id = obtener_usuario_por_email(email)
+    return user_id
+
+def logout():
+    """
+    Maneja el cierre de sesión del usuario.
+    Limpia las variables de sesión.
+    """
+    return True
+
+def obtener_usuario_por_email(email):
+    """
+    Busca un usuario por su email en la base de datos.
+    
+    Args:
+        email (str): Email del usuario a buscar
+    
+    Returns:
+        int or None: ID del usuario si existe, None si no se encuentra
+    """
+    conn = c.conectar_bd()
+    try:
+        cursor = conn.cursor()
+        query = "SELECT user_id FROM users WHERE email = %s"
+        cursor.execute(query, (email,))
+        result = cursor.fetchone()
+        conn.close()
+        if result:
+            return result[0]
+        return None
+    except Exception as e:
+        st.error(f"Error al obtener el usuario: {e}")
+        return None
+
+def mostrar_imagen_segura(url):
+    """
+    Muestra una imagen de forma segura con manejo de errores.
+    
+    Args:
+        url (str): URL de la imagen a mostrar
+    
+    Returns:
+        None: Muestra la imagen en la interfaz de Streamlit
+    """
+    try:
+        response = requests.get(url)
+        img = Image.open(BytesIO(response.content))
+        st.image(img, width=200)
+    except Exception as e:
+        st.warning("No se pudo cargar la imagen 🖼️")

@@ -222,7 +222,7 @@ def pagina_inicio():
                 with col2:
                     if st.button("🚀 ¡Comenzar la Aventura!", key="login_button"):
                         if email:
-                            user_id = obtener_usuario_por_email(email)
+                            user_id = f.obtener_usuario_por_email(email)
                             if user_id:
                                 st.session_state.id_usuario = user_id
                                 st.session_state.mostrar_login = False
@@ -702,7 +702,7 @@ def login():
     st.title("Inicio de Sesión")
     email = st.text_input("Email")
     if st.button("Iniciar Sesión"):
-        user_id = obtener_usuario_por_email(email)
+        user_id = f.obtener_usuario_por_email(email)
         if user_id:
             st.session_state.id_usuario = user_id
             st.success("Inicio de sesión exitoso")
