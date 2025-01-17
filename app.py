@@ -516,9 +516,18 @@ def mostrar_itinerario():
         
         col1, col2 = st.columns(2)
         with col1:
-            fecha_inicio = st.date_input("Fecha de inicio", min_value=datetime.now().date())
+            fecha_inicio = st.date_input(
+                "Fecha de inicio",
+                min_value=datetime.now().date(),
+                value=datetime.now().date()
+            )
         with col2:
-            fecha_fin = st.date_input("Fecha de fin", min_value=fecha_inicio)
+            # Asegurarnos de que fecha_fin no sea anterior a fecha_inicio
+            fecha_fin = st.date_input(
+                "Fecha de fin",
+                min_value=fecha_inicio,
+                value=fecha_inicio
+            )
     
     # Validar fechas y mostrar mensajes
     dias_hasta_viaje = (fecha_inicio - datetime.now().date()).days
