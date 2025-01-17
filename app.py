@@ -11,7 +11,6 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image as RLImage
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-import pdfkit
 
 # Configuración de la página y eliminación del mensaje de Streamlit
 st.set_page_config(
