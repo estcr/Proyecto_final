@@ -95,7 +95,7 @@ TuGuIA nace con el objetivo de resolver los principales desafíos en la planific
 
 **Esteban Daniel Cristos Muzzupappa**
 
-- [LinkedIn](https://www.linkedin.com/in/esteban-daniel-cristos-muzzupappa-37b72635/)
+- [LinkedIn](https://www.linkedin.com/in/esteban-cristos-m/)
 - [GitHub](https://github.com/estcr)
 
 ¡Gracias por visitar TuGuIA! Esperamos que disfrutes planificando tus próximas aventuras con nosotros. 🌍✈️
